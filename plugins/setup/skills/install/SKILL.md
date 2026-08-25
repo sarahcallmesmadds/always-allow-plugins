@@ -27,14 +27,16 @@ Six files the other skills read:
 | `sources.md` | Where your work lives. Which inbox, which channels |
 
 Plus three records that start empty and fill up over time: `decisions.md`,
-`wins.md`, `what-ive-tried.md`. Each is written with only the two header lines
-the contract requires, dated the day of this run.
+`wins.md`, `what-ive-tried.md`. The contract defines only the six files
+above; the records simply borrow its two header lines, dated the day of this
+run, so every file here opens the same way.
 
 ## Rules
 
 - Never ask for what you can go and find. Search first, show what you found,
   ask them to confirm or correct.
-- Never overwrite a file. If one is in the way, stop and say which.
+- Never overwrite a file this run did not write. If one of the nine is
+  already there from somewhere else, stop and say which.
 - Never delete anything.
 - Check every file for conflicts before writing any of them.
 - An interrupted run picks up where it stopped. On starting, look for an
@@ -111,8 +113,8 @@ True atomic replacement of nine files does not exist here. Do what the
 contract says instead:
 
 1. Write the full new set aside, in a `setup-staging/` folder in the project.
-2. Verify every file and every cross-reference against the contract. In
-   Claude Code, run the checker:
+2. Verify the six contract files and every cross-reference. In Claude Code,
+   run the checker:
 
    ```bash
    node "${CLAUDE_PLUGIN_ROOT}"/scripts/verify.js <staging-folder>
@@ -121,7 +123,9 @@ contract says instead:
    Anywhere the checker cannot run, verify by hand against
    `references/file-schemas.md`: required fields, id formats, the skill
    roster, uniqueness, enums, dates, and that every `person:` in
-   `personas.md` resolves to a `people.md` id.
+   `personas.md` resolves to a `people.md` id. The checker covers the six
+   contract files; read the three records back yourself and confirm each
+   holds exactly the two header lines with today's date.
 3. Only when the staged set verifies clean, move the files into place one at
    a time, then verify the live set the same way.
 4. If anything fails mid-replacement, report which files are new and which

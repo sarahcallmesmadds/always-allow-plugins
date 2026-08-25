@@ -10,3 +10,13 @@ include:
 exlude:
   - "special offer"
 last confirmed: 2026-08-25
+
+## Onboarding revamp
+id: pr-onboarding-revamp
+rank: 2
+since: 2026-08-10
+include:
+  - onboarding
+exlude:
+  - "kickoff call"
+last confirmed: 2026-08-25

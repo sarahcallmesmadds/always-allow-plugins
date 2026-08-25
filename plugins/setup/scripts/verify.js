@@ -7,6 +7,9 @@
 // Exit 0: no errors (warnings allowed). Exit 1: at least one error.
 // Exit 2: the invocation itself was wrong.
 //
+// AA_VERIFY_TODAY=YYYY-MM-DD fixes "today" for staleness checks, so tests are
+// deterministic. Unset, today is today.
+//
 // This is the Claude Code path. In Cowork a model does this by reading the
 // contract; anywhere a script reads these files it accepts exactly the syntax
 // the contract writes and nothing looser.
@@ -36,30 +39,24 @@ function report(file, level, message) {
 // ------------------------------------------------------------------ parsing
 
 // A field is a `key: value` line. The key runs to the first colon, the value
-// to the end of the line. Handle items like `email:x` are list items, never
-// fields, because they only appear under a dash.
+// to the end of the line. The key charset is deliberately broad so that a
+// typo like `exclude_typo:` parses as a field and gets reported as unknown
+// instead of vanishing. A handle item like `email:x` has no space after the
+// colon and is never a field.
 function parseField(line) {
-  const m = line.match(/^([A-Za-z][A-Za-z '-]*?):(?:\s+(.*))?$/);
+  const m = line.match(/^([A-Za-z0-9_][A-Za-z0-9_ '-]*?):(?:\s+(.*))?$/);
   if (!m) return null;
   return { key: m[1], value: (m[2] || '').trim() };
 }
 
+// The contract's list form is indented dashes under the key. An unindented
+// dash is not a list item.
 function isDashItem(line) {
-  return /^\s+-\s+\S/.test(line) || /^-\s+\S/.test(line);
+  return /^\s+-\s+\S/.test(line);
 }
 
 function dashValue(line) {
   return line.replace(/^\s*-\s+/, '').trim();
-}
-
-// An inline list is bracketed on one line: [a, b]. Empty [] is a valid empty
-// list. Returns null when the value is not bracketed.
-function parseInlineList(value) {
-  const m = value.match(/^\[(.*)\]$/);
-  if (!m) return null;
-  const inner = m[1].trim();
-  if (inner === '') return [];
-  return inner.split(',').map((s) => s.trim()).filter((s) => s !== '');
 }
 
 // Split a file into the header block and entries. An entry begins at an `id:`
@@ -84,20 +81,21 @@ function splitEntries(lines) {
 }
 
 // Collect the fields of one entry (or header block). A key appearing twice
-// keeps both values, so duplicates are detectable. Dash lists attach to the
-// preceding empty-valued key.
+// keeps both, so duplicates are detectable. Dash lists attach to the
+// preceding empty-valued key. Lines that are neither fields, dash items,
+// headings nor blank land in `unrecognised`.
 function collectFields(lines) {
   const fields = [];
+  const unrecognised = [];
   let openList = null;
   for (const line of lines) {
     if (/^#/.test(line) || line.trim() === '') { openList = null; continue; }
     if (isDashItem(line)) {
       if (openList) openList.list.push(dashValue(line));
+      else unrecognised.push(line.trim());
       continue;
     }
-    // An indented continuation (like `to:` under a Prefer item) only occurs
-    // in voice.md, which is parsed separately.
-    const field = parseField(line.trim());
+    const field = parseField(line);
     if (field) {
       const entry = { key: field.key, value: field.value, list: null };
       if (field.value === '') { entry.list = []; openList = entry; }
@@ -106,8 +104,9 @@ function collectFields(lines) {
       continue;
     }
     openList = null;
+    unrecognised.push(line.trim());
   }
-  return fields;
+  return { fields, unrecognised };
 }
 
 function getAll(fields, key) {
@@ -119,17 +118,13 @@ function getOne(fields, key) {
   return all.length > 0 ? all[0] : null;
 }
 
-// The value of a list-bearing field: inline brackets, or the dash list.
-function listOf(field) {
-  if (field === null) return null;
-  if (field.list !== null && field.list.length > 0) return field.list;
-  const inline = parseInlineList(field.value);
-  if (inline !== null) return inline;
-  if (field.list !== null) return field.list; // empty dash list
-  return null;
-}
-
 // ----------------------------------------------------------------- checks
+
+function today() {
+  const fixed = process.env.AA_VERIFY_TODAY;
+  if (fixed && isDate(fixed)) return new Date(`${fixed}T00:00:00Z`).getTime();
+  return Date.now();
+}
 
 function isDate(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -138,7 +133,7 @@ function isDate(value) {
 }
 
 function daysOld(value) {
-  return Math.floor((Date.now() - new Date(`${value}T00:00:00Z`).getTime()) / 86400000);
+  return Math.floor((today() - new Date(`${value}T00:00:00Z`).getTime()) / 86400000);
 }
 
 function checkDate(file, where, value, { stale = true } = {}) {
@@ -151,9 +146,17 @@ function checkDate(file, where, value, { stale = true } = {}) {
   }
 }
 
-// Every file starts with `schema: 1` and a file-level `last confirmed`.
-// Missing, malformed and unknown-version are three different messages.
-function checkHeader(file, fields) {
+// Every file starts with `schema: 1` then `last confirmed:`, in that order,
+// as its first two non-blank lines. Missing, malformed and unknown-version
+// are three different messages.
+function checkHeader(file, lines, fields) {
+  const firstTwo = lines.filter((l) => l.trim() !== '').slice(0, 2)
+    .map((l) => parseField(l));
+  if (!firstTwo[0] || firstTwo[0].key !== 'schema'
+    || !firstTwo[1] || firstTwo[1].key !== 'last confirmed') {
+    report(file, 'error', 'every file starts with "schema:" then "last confirmed:" as its first two lines');
+  }
+
   const schema = getOne(fields, 'schema');
   if (schema === null) {
     report(file, 'error', 'schema line missing');
@@ -167,6 +170,27 @@ function checkHeader(file, fields) {
     report(file, 'error', 'file-level last confirmed missing');
   } else {
     checkDate(file, 'file header', confirmed.value);
+  }
+}
+
+// A key appearing twice would have consumers silently picking one of two
+// values, so it is malformed. `note:` may repeat.
+function checkDuplicateFields(file, where, fields) {
+  const seen = new Set();
+  const dup = new Set();
+  for (const f of fields) {
+    if (f.key === 'note') continue;
+    if (seen.has(f.key)) dup.add(f.key);
+    seen.add(f.key);
+  }
+  for (const key of dup) {
+    report(file, 'error', `${where}: field "${key}" appears more than once; consumers would silently pick one`);
+  }
+}
+
+function checkUnrecognisedLines(file, where, unrecognised) {
+  for (const line of unrecognised) {
+    report(file, 'warning', `${where}: line not recognised as a field or an indented dash item: "${line}"`);
   }
 }
 
@@ -223,8 +247,9 @@ function checkEntryConfirmed(file, id, fields) {
   }
 }
 
-// Unknown fields are kept and reported once per key. `note:` is never
-// reported, because it is the documented place for a person's own additions.
+// Unknown fields are kept and reported once per key per file. `note:` is
+// never reported, because it is the documented place for a person's own
+// additions.
 function checkUnknownFields(file, fields, known, reported) {
   for (const f of fields) {
     if (f.key === 'note' || known.includes(f.key)) continue;
@@ -234,15 +259,38 @@ function checkUnknownFields(file, fields, known, reported) {
   }
 }
 
+// A required field that is present but blank is missing in every way that
+// matters, and worse, because it looks filled in.
 function requireFields(file, id, fields, required) {
-  let ok = true;
   for (const key of required) {
-    if (getOne(fields, key) === null) {
+    const field = getOne(fields, key);
+    if (field === null) {
       report(file, 'error', `${id}: required field "${key}" missing`);
-      ok = false;
+    } else if (field.value === '' && (field.list === null || field.list.length === 0)) {
+      report(file, 'error', `${id}: required field "${key}" is blank`);
     }
   }
-  return ok;
+}
+
+// A list is either bracketed inline on one line, [a, b], or indented dashes
+// under the key. Anything else, including a bare scalar and an inline list
+// with an empty element, is malformed rather than silently narrowed.
+function validateList(file, where, field) {
+  if (field === null) return null;
+  if (field.value === '') return field.list || [];
+  const m = field.value.match(/^\[(.*)\]$/);
+  if (!m) {
+    report(file, 'error', `${where}: "${field.key}" must be a bracketed inline list or indented dash items, got a bare value`);
+    return null;
+  }
+  const inner = m[1].trim();
+  if (inner === '') return [];
+  const items = inner.split(',').map((s) => s.trim());
+  if (items.some((s) => s === '')) {
+    report(file, 'error', `${where}: malformed inline list "${field.value}", empty element`);
+    return null;
+  }
+  return items;
 }
 
 // -------------------------------------------------------------- file checks
@@ -251,15 +299,17 @@ function checkAboutMe(file, lines) {
   // Fields live above the first heading; everything after is prose.
   const firstHeading = lines.findIndex((l) => /^#/.test(l));
   const top = firstHeading === -1 ? lines : lines.slice(0, firstHeading);
-  const fields = collectFields(top);
-  checkHeader(file, fields);
+  const { fields, unrecognised } = collectFields(top);
+  checkHeader(file, top, fields);
+  checkDuplicateFields(file, 'about-me', fields);
+  checkUnrecognisedLines(file, 'about-me', unrecognised);
   requireFields(file, 'about-me', fields, ['name', 'role', 'timezone']);
   checkUnknownFields(file, fields,
     ['schema', 'last confirmed', 'name', 'role', 'company', 'timezone', 'working hours', 'my handles'],
     new Set());
 
   const tz = getOne(fields, 'timezone');
-  if (tz !== null) {
+  if (tz !== null && tz.value !== '') {
     try {
       new Intl.DateTimeFormat('en-US', { timeZone: tz.value });
     } catch {
@@ -275,22 +325,32 @@ function checkAboutMe(file, lines) {
     }
   }
 
-  const handles = listOf(getOne(fields, 'my handles'));
+  const handles = validateList(file, 'about-me', getOne(fields, 'my handles'));
   if (handles !== null) {
     for (const h of handles) checkHandle(file, 'my handles', h);
   }
 }
 
+function checkEntryFileHeader(file, header) {
+  const { fields, unrecognised } = collectFields(header);
+  checkHeader(file, header, fields);
+  checkDuplicateFields(file, 'file header', fields);
+  checkUnrecognisedLines(file, 'file header', unrecognised);
+  checkUnknownFields(file, fields, ['schema', 'last confirmed'], new Set());
+}
+
 function checkPeople(file, lines) {
   const { header, entries } = splitEntries(lines);
-  checkHeader(file, collectFields(header));
+  checkEntryFileHeader(file, header);
   const seenIds = new Set();
   const seenHandles = new Map();
   const reported = new Set();
   for (const entry of entries) {
-    const fields = collectFields(entry.lines);
+    const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
     checkId(file, id, 'p', seenIds);
+    checkDuplicateFields(file, id, fields);
+    checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['kind', 'handles']);
     checkEntryConfirmed(file, id, fields);
     checkUnknownFields(file, fields,
@@ -300,9 +360,9 @@ function checkPeople(file, lines) {
     if (kind !== null && kind.value !== 'person' && kind.value !== 'shared') {
       report(file, 'error', `${id}: kind is person or shared, exactly; got "${kind.value}"`);
     }
-    const handles = listOf(getOne(fields, 'handles'));
+    const handles = validateList(file, id, getOne(fields, 'handles'));
     if (handles !== null) {
-      if (handles.length === 0) {
+      if (handles.length === 0 && getOne(fields, 'handles') !== null) {
         report(file, 'error', `${id}: handles list is empty`);
       }
       for (const h of handles) {
@@ -324,28 +384,33 @@ function checkPeople(file, lines) {
 
 function checkPriorities(file, lines) {
   const { header, entries } = splitEntries(lines);
-  checkHeader(file, collectFields(header));
+  checkEntryFileHeader(file, header);
   const seenIds = new Set();
   const reported = new Set();
   for (const entry of entries) {
-    const fields = collectFields(entry.lines);
+    const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
     checkId(file, id, 'pr', seenIds);
+    checkDuplicateFields(file, id, fields);
+    checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['rank', 'since', 'include']);
     checkEntryConfirmed(file, id, fields);
     checkUnknownFields(file, fields,
       ['rank', 'since', 'include', 'exclude', 'last confirmed'], reported);
 
     const rank = getOne(fields, 'rank');
-    if (rank !== null && !/^[1-9]\d*$/.test(rank.value)) {
-      report(file, 'error', `${id}: rank must be a positive integer, got "${rank.value}"`);
+    if (rank !== null && rank.value !== '' && !/^-?\d+$/.test(rank.value)) {
+      report(file, 'error', `${id}: rank must be an integer, got "${rank.value}"`);
     }
     const since = getOne(fields, 'since');
-    if (since !== null) checkDate(file, `${id} since`, since.value, { stale: false });
-    const include = listOf(getOne(fields, 'include'));
-    if (include !== null && include.length === 0) {
+    if (since !== null && since.value !== '') {
+      checkDate(file, `${id} since`, since.value, { stale: false });
+    }
+    const include = validateList(file, id, getOne(fields, 'include'));
+    if (include !== null && include.length === 0 && getOne(fields, 'include') !== null) {
       report(file, 'error', `${id}: include list is empty`);
     }
+    validateList(file, id, getOne(fields, 'exclude'));
   }
   if (entries.length === 0) {
     report(file, 'warning', 'semantically empty: header and no entries, valid, nothing confirmed');
@@ -360,8 +425,11 @@ function checkVoice(file, lines) {
     if (/^#/.test(line)) break;
     top.push(line);
   }
-  const fields = collectFields(top);
-  checkHeader(file, fields);
+  // The top block holds the prose instruction setup writes, so unrecognised
+  // lines are not reported here.
+  const { fields } = collectFields(top);
+  checkHeader(file, top, fields);
+  checkDuplicateFields(file, 'voice header', fields);
   checkUnknownFields(file, fields, ['schema', 'last confirmed', 'confidence'], new Set());
 
   const confidence = getOne(fields, 'confidence');
@@ -371,10 +439,17 @@ function checkVoice(file, lines) {
     report(file, 'error', `confidence "${confidence.value}" unrecognised; malformed, not silently accepted. It is corrected, accepted or absent`);
   }
 
+  if (!top.some((l) => l.includes('set confidence: corrected'))) {
+    report(file, 'warning', 'the hand-edit instruction setup writes at the top ("If you edit this file by hand, set confidence: corrected") is missing');
+  }
+
   const headings = lines.filter((l) => /^##\s/.test(l)).map((l) => l.replace(/^##\s+/, '').trim());
   for (const wanted of ['Never', 'Prefer', 'How I sound']) {
-    if (!headings.includes(wanted)) {
+    const count = headings.filter((h) => h === wanted).length;
+    if (count === 0) {
       report(file, 'error', `structural heading "## ${wanted}" missing or retitled; the three voice headings are fixed`);
+    } else if (count > 1) {
+      report(file, 'error', `structural heading "## ${wanted}" appears ${count} times; consumers cannot tell which section is meant`);
     }
   }
   for (const h of headings) {
@@ -383,7 +458,8 @@ function checkVoice(file, lines) {
     }
   }
 
-  // Prefer is a from:/to: list. A from without a to is malformed.
+  // Prefer is a from:/to: list: each item is `- from: X` immediately followed
+  // by an indented `to: Y`. Anything else in the section is malformed.
   const preferStart = lines.findIndex((l) => /^##\s+Prefer\s*$/.test(l));
   if (preferStart !== -1) {
     const section = [];
@@ -393,25 +469,36 @@ function checkVoice(file, lines) {
     }
     for (let i = 0; i < section.length; i += 1) {
       const line = section[i];
-      if (/^-\s+from:/.test(line.trim()) || /^\s+-\s+from:/.test(line)) {
+      if (line.trim() === '') continue;
+      const from = line.match(/^\s*-\s+from:\s*(.*)$/);
+      if (from) {
+        if (from[1].trim() === '') {
+          report(file, 'error', 'Prefer item has a blank from:');
+        }
         const next = (section[i + 1] || '').trim();
         if (!/^to:\s+\S/.test(next)) {
-          report(file, 'error', `Prefer item "${dashValue(line)}" has no to: line; Prefer is a from:/to: list`);
+          report(file, 'error', `Prefer item "from: ${from[1]}" has no to: line; Prefer is a from:/to: list`);
+        } else {
+          i += 1;
         }
+        continue;
       }
+      report(file, 'error', `Prefer holds a line that is not a from:/to: pair: "${line.trim()}"`);
     }
   }
 }
 
 function checkPersonas(file, lines, peopleIds) {
   const { header, entries } = splitEntries(lines);
-  checkHeader(file, collectFields(header));
+  checkEntryFileHeader(file, header);
   const seenIds = new Set();
   const reported = new Set();
   for (const entry of entries) {
-    const fields = collectFields(entry.lines);
+    const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
     checkId(file, id, 'pe', seenIds);
+    checkDuplicateFields(file, id, fields);
+    checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['cares about', 'pushes back on', 'reads']);
     checkEntryConfirmed(file, id, fields);
     checkUnknownFields(file, fields,
@@ -425,10 +512,6 @@ function checkPersonas(file, lines, peopleIds) {
         report(file, 'error', `${id}: person "${person.value}" does not resolve to a people.md id; only an absent field means deliberately unlinked`);
       }
     }
-    const pushes = getOne(fields, 'pushes back on');
-    if (pushes !== null && pushes.value === '' && (pushes.list === null || pushes.list.length === 0)) {
-      report(file, 'warning', `${id}: blank "pushes back on" makes this persona not useful`);
-    }
   }
   if (entries.length === 0) {
     report(file, 'warning', 'semantically empty: header and no entries, valid; hard-stop consumers stop and say "no personas defined"');
@@ -437,13 +520,15 @@ function checkPersonas(file, lines, peopleIds) {
 
 function checkSources(file, lines) {
   const { header, entries } = splitEntries(lines);
-  checkHeader(file, collectFields(header));
+  checkEntryFileHeader(file, header);
   const seenIds = new Set();
   const reported = new Set();
   for (const entry of entries) {
-    const fields = collectFields(entry.lines);
+    const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
     checkId(file, id, 's', seenIds);
+    checkDuplicateFields(file, id, fields);
+    checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['kind', 'account', 'required for']);
     checkEntryConfirmed(file, id, fields);
     checkUnknownFields(file, fields,
@@ -453,10 +538,10 @@ function checkSources(file, lines) {
     if (kind !== null && !['calendar', 'mail', 'chat', 'notes'].includes(kind.value)) {
       report(file, 'error', `${id}: kind "${kind.value}" is malformed, never ignored; it is calendar, mail, chat or notes`);
     }
-    const requiredFor = listOf(getOne(fields, 'required for'));
-    if (requiredFor === null && getOne(fields, 'required for') !== null) {
-      report(file, 'error', `${id}: required for must be a bracketed inline list or a dash list`);
-    }
+    const requiredForField = getOne(fields, 'required for');
+    // `required for: []` is a valid, deliberately empty list, so this list
+    // alone is exempt from the blank-required rule.
+    const requiredFor = validateList(file, id, requiredForField);
     if (requiredFor !== null) {
       for (const skill of requiredFor) {
         if (!ROSTER.includes(skill)) {
@@ -478,7 +563,7 @@ function checkSources(file, lines) {
       report(file, 'error', `${id}: at least one of look back / look ahead is required`);
     }
     if (kind !== null && kind.value === 'calendar' && getOne(fields, 'look ahead') === null) {
-      report(file, 'warning', `${id}: a calendar source without look ahead misses today's 2pm meeting`);
+      report(file, 'error', `${id}: a calendar source needs look ahead; a backward-only read misses today's 2pm meeting`);
     }
   }
   if (entries.length === 0) {

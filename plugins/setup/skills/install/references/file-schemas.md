@@ -1,8 +1,12 @@
 # The shared files
 
-Copied verbatim from `~/.planning/SCHEMAS-always-allow-shared-files.md` on
-2026-08-25, when the first skill was built against it. This copy is what the
-installed plugin reads. If the two ever disagree, say so rather than silently
+Copied from `~/.planning/SCHEMAS-always-allow-shared-files.md` on 2026-08-25,
+when the first skill was built against it, with three build-time corrections
+a review caught: the priorities, personas and sources examples now carry the
+per-entry `last confirmed` the rules already required, the window form names
+its singular, and the voice example carries the instruction line the rules
+already required. This copy is what the installed plugin reads. If the two
+ever disagree beyond those corrections, say so rather than silently
 preferring either.
 
 `setup` writes these. Other plugins read them.
@@ -200,6 +204,7 @@ include:
   - QBR
 exclude:
   - "special offer"
+last confirmed: 2026-08-24
 
 ## Hiring two AEs
 id: pr-hiring-aes
@@ -209,6 +214,7 @@ include:
   - "interview loop"
   - "offer letter"
   - candidate
+last confirmed: 2026-08-24
 ```
 
 **Required per entry:** `id`, `rank`, `since`, `include`.
@@ -249,6 +255,9 @@ schema: 1
 last confirmed: 2026-08-24
 confidence: corrected
 
+If you edit this file by hand, set confidence: corrected. The three headings
+below are fixed; retitling one makes the file unreadable to the skills.
+
 ## Never
 
 - em dashes
@@ -285,8 +294,8 @@ malformed, and the file says so in a comment `setup` writes at the top.
 | `absent` | Nothing gathered | Apply nothing. Say the guide is empty when asked to match a voice |
 
 - **If you edit this file by hand, set `confidence: corrected`.** That
-  instruction is written into the file itself, directly under the two header
-  lines. **A missing or unrecognised `confidence` is malformed**, not silently
+  instruction is written into the file itself, directly under the header
+  lines, as the example shows. **A missing or unrecognised `confidence` is malformed**, not silently
   `accepted`: hard-stop consumers stop, optional ones skip the file and say so.
   An earlier version defaulted it, which broke the no-silent-defaults rule in
   the same document that states it.
@@ -315,6 +324,7 @@ person: p-kate-lin
 cares about: whether the number moves, and whether I saw the risk early
 pushes back on: anything without a date on it
 reads: the first paragraph and the last line
+last confirmed: 2026-08-24
 ```
 
 **Required per entry:** `id`, `cares about`, `pushes back on`, `reads`.
@@ -346,6 +356,7 @@ look back: 0 days
 look ahead: 1 day
 read: events, attendees, attachments, agenda text
 skip: events I declined
+last confirmed: 2026-08-24
 
 ## Work mail
 id: s-work-mail
@@ -355,6 +366,7 @@ required for: [good-morning, inbox]
 look back: 7 days
 read: inbox, sent
 skip: newsletters, automated notifications
+last confirmed: 2026-08-24
 
 ## Team chat
 id: s-team-chat
@@ -365,6 +377,7 @@ look back: 2 days
 read: direct messages, mentions
 skip: channels I am only lurking in
 except: ignore the deal rows Sarah owns for admin reasons
+last confirmed: 2026-08-24
 ```
 
 **Required per entry:** `id`, `kind`, `account`, `required for`, and at least
@@ -377,7 +390,8 @@ one of `look back` / `look ahead`.
   configured must not count as the work source being checked.
 - **`required for` uses the skill roster.** An id not on it is malformed.
 - **`look back` and `look ahead` replace a single window.** Both are
-  non-negative integers in the exact form `N days`. **The range always includes
+  non-negative integers in the exact form `N days`, with `1 day` also
+  accepted for one. **The range always includes
   today**, in the `about-me.md` timezone: `look back: N` adds the N calendar
   days before today, `look ahead: N` adds the N after, so
   `look back: 0 days` with `look ahead: 1 day` means today and tomorrow.

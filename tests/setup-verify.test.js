@@ -8,6 +8,9 @@
 // defect and not some accident nearby. Each case asserts the exit code AND
 // the message, because a fixture that only asserts "it failed" can be
 // satisfied by the wrong failure.
+//
+// The clock is fixed via AA_VERIFY_TODAY so the fixtures' dates never age
+// into staleness and quietly change what a check means.
 
 'use strict';
 
@@ -21,6 +24,7 @@ const ROOT = path.join(__dirname, '..');
 const SCRIPT = path.join(ROOT, 'plugins', 'setup', 'scripts', 'verify.js');
 const VALID = path.join(__dirname, 'fixtures', 'valid');
 const BROKEN = path.join(__dirname, 'fixtures', 'broken');
+const TODAY = '2026-08-25';
 
 let total = 0;
 let failed = 0;
@@ -38,8 +42,9 @@ function check(what, fn) {
 }
 
 function run(args) {
+  const env = { ...process.env, AA_VERIFY_TODAY: TODAY };
   try {
-    const stdout = execFileSync(process.execPath, [SCRIPT, ...args], { encoding: 'utf8' });
+    const stdout = execFileSync(process.execPath, [SCRIPT, ...args], { encoding: 'utf8', env });
     return { code: 0, out: stdout };
   } catch (error) {
     return { code: error.status, out: (error.stdout || '') + (error.stderr || '') };
@@ -64,15 +69,10 @@ function assemble(caseName) {
 
 // ---------------------------------------------------------------- the valid set
 
-check('the valid set verifies with zero errors', () => {
+check('the valid set verifies with zero errors and zero warnings', () => {
   const { code, out } = run([assemble(null)]);
   assert.strictEqual(code, 0, `exit ${code}\n${out}`);
-  assert.match(out, /^0 errors/m, out);
-});
-
-check('note: fields are never reported as unknown', () => {
-  const { out } = run([assemble(null)]);
-  assert.ok(!out.includes('unknown field "note"'), out);
+  assert.match(out, /^0 errors, 0 warnings/m, out);
 });
 
 // ---------------------------------------------------------------- error cases
@@ -90,6 +90,15 @@ const ERROR_CASES = [
   ['missing-schema', 'priorities.md: error:', 'schema line missing'],
   ['unknown-schema-version', 'priorities.md: error:', 'schema version 2 unknown'],
   ['stray-id-line', 'people.md: error:', 'copied from IT ticket 483'],
+  ['duplicate-field', 'sources.md: error:', 'field "kind" appears more than once'],
+  ['header-order', 'priorities.md: error:', 'starts with "schema:" then "last confirmed:"'],
+  ['scalar-list', 'people.md: error:', 'must be a bracketed inline list or indented dash items'],
+  ['malformed-inline-list', 'sources.md: error:', 'malformed inline list'],
+  ['blank-account', 'sources.md: error:', 'required field "account" is blank'],
+  ['calendar-no-lookahead', 'sources.md: error:', 'calendar source needs look ahead'],
+  ['prefer-orphan-line', 'voice.md: error:', 'not a from:/to: pair'],
+  ['duplicate-voice-heading', 'voice.md: error:', '"## Never" appears 2 times'],
+  ['blank-pushes-back', 'personas.md: error:', 'required field "pushes back on" is blank'],
 ];
 
 for (const [caseName, filePrefix, message] of ERROR_CASES) {
@@ -103,16 +112,20 @@ for (const [caseName, filePrefix, message] of ERROR_CASES) {
 
 // -------------------------------------------------------------- warning cases
 
-check('an unknown field warns, is attributed, and does not fail the set', () => {
+check('an unknown field in two entries warns exactly once and does not fail the set', () => {
   const { code, out } = run([assemble('unknown-field')]);
   assert.strictEqual(code, 0, `exit ${code}\n${out}`);
-  assert.ok(out.includes('priorities.md: warning: unknown field "exlude"'), out);
+  const lines = out.split('\n').filter((l) => l.includes('unknown field "exlude"'));
+  assert.strictEqual(lines.length, 1, `expected exactly one report, got ${lines.length}:\n${out}`);
+  assert.ok(lines[0].startsWith('priorities.md: warning:'), lines[0]);
 });
 
-check('a stale entry warns and does not fail the set', () => {
+check('a stale entry warns naming the entry and does not fail the set', () => {
   const { code, out } = run([assemble('stale-entry')]);
   assert.strictEqual(code, 0, `exit ${code}\n${out}`);
-  assert.ok(out.includes('people.md: warning:') && out.includes('stale'), out);
+  const line = out.split('\n').find((l) => l.startsWith('people.md: warning:')
+    && l.includes('p-priya-shah') && l.includes('stale'));
+  assert.ok(line, `no stale warning naming p-priya-shah in:\n${out}`);
 });
 
 // -------------------------------------------------------------- missing files
