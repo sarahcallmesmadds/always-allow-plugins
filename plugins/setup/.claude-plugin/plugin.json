@@ -1,0 +1,16 @@
+{
+  "name": "setup",
+  "version": "0.1.0",
+  "description": "Runs once. Gets you from \"I installed this\" to \"it knows who I am, and something runs tomorrow morning without me.\" Finds what it can, asks only what it cannot, shows you the whole suggestion, and writes the files every other skill reads.",
+  "author": {
+    "name": "Sarah Madden",
+    "url": "https://github.com/sarahcallmesmadds"
+  },
+  "license": "MIT",
+  "keywords": [
+    "setup",
+    "onboarding",
+    "memory",
+    "configuration"
+  ]
+}
