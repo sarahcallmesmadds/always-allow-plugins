@@ -104,6 +104,10 @@ const ERROR_CASES = [
   ['unindented-prefer-to', 'voice.md: error:', 'has no to: line'],
   ['unrecognised-line', 'priorities.md: error:', 'line not recognised as a field or an indented dash item'],
   ['scalar-inline-list', 'sources.md: error:', '"account" takes a single value, not an inline list'],
+  ['wins-bad-id', 'wins.md: error:', 'does not match w- plus lowercase'],
+  ['wins-missing-date', 'wins.md: error:', 'required field "date" missing'],
+  ['wins-dangling-person', 'wins.md: error:', 'does not resolve to a people.md id'],
+  ['record-header-broken', 'decisions.md: error:', 'starts with "schema:" then "last confirmed:"'],
 ];
 
 for (const [caseName, filePrefix, message] of ERROR_CASES) {
@@ -194,6 +198,23 @@ check('a missing file is an error naming the file', () => {
   const { code, out } = run([dir]);
   assert.strictEqual(code, 1, `exit ${code}\n${out}`);
   assert.ok(out.includes('sources.md: error: missing'), out);
+});
+
+check('a missing record file is an error naming the file', () => {
+  const dir = assemble(null);
+  fs.unlinkSync(path.join(dir, 'wins.md'));
+  const { code, out } = run([dir]);
+  assert.strictEqual(code, 1, `exit ${code}\n${out}`);
+  assert.ok(out.includes('wins.md: error: missing'), out);
+});
+
+check('a header-only wins.md is the newborn state: valid, no warning', () => {
+  const dir = assemble(null);
+  fs.writeFileSync(path.join(dir, 'wins.md'), `schema: 1\nlast confirmed: ${TODAY}\n`);
+  const { code, out } = run([dir]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  const line = out.split('\n').find((l) => l.startsWith('wins.md:'));
+  assert.ok(!line, `expected nothing reported for wins.md, got:\n${line}`);
 });
 
 // ------------------------------------------------------------------- the CLI

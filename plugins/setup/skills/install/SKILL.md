@@ -27,9 +27,10 @@ Six files the other skills read:
 | `sources.md` | Where your work lives. Which inbox, which channels |
 
 Plus three records that start empty and fill up over time: `decisions.md`,
-`wins.md`, `what-ive-tried.md`. The contract defines only the six files
-above; the records simply borrow its two header lines, dated the day of this
-run, so every file here opens the same way.
+`wins.md`, `what-ive-tried.md`. The contract's record section governs them:
+each record has exactly one skill allowed to append to it, and `wins.md`
+has an entry schema. This run writes each record as the two header lines,
+dated the day of this run, and never touches it again.
 
 ## Rules
 
@@ -123,9 +124,9 @@ contract says instead:
    Anywhere the checker cannot run, verify by hand against
    `references/file-schemas.md`: required fields, id formats, the skill
    roster, uniqueness, enums, dates, and that every `person:` in
-   `personas.md` resolves to a `people.md` id. The checker covers the six
-   contract files; read the three records back yourself and confirm each
-   holds exactly the two header lines with today's date.
+   `personas.md` resolves to a `people.md` id. The checker covers all nine
+   files: the six contract files in full, `wins.md` against its entry
+   schema, and the other two records by their header lines.
 3. Only when the staged set verifies clean, move the files into place one at
    a time, then verify the live set the same way.
 4. If anything fails mid-replacement, report which files are new and which
@@ -145,8 +146,9 @@ ready-to-paste text:
 - **One scheduled task per schedule-default skill they have installed**, each
   with a name, a frequency, and a one-line description. The defaults:
   `good-morning` daily before their working hours start, `follow-ups` daily
-  at end of day, `why-we-decided` weekly, `time-spent` weekly. The unnamed
-  inbox skill gets no task, because it has no name yet.
+  at end of day, `why-we-decided` weekly, `time-spent` weekly, `wins` weekly
+  at the end of the week, `give-me-feedback` monthly. The unnamed inbox
+  skill gets no task, because it has no name yet.
 
 Offer to run `good-morning` if it is installed, so the last thing that
 happens is it working. If nothing can run at the end, say so plainly. That

@@ -11,9 +11,14 @@ no-duplicate-keys rule is stated rather than implied. Amended again
 exemptions now cover numbers, dates and amounts; `personas.md` carries a
 setup-written privacy line, because the file is a candid read of named
 colleagues; and `person:` resolution is verified by `setup` and `check`,
-never judged by consumers that do not read `people.md`. This copy is what
-the installed plugin reads. If the two ever disagree beyond those listed
-changes, say so rather than silently preferring either.
+never judged by consumers that do not read `people.md`. Amended a third
+time 2026-08-25 when `growth` was scoped against this document: the three
+record files gain their own section and `wins.md` its entry schema, because
+the shipped `setup` was already creating them with no contract behind them;
+the consumer table now carries the four growth skills; the work-calendar
+example lists `time-spent`; and `w-` joins the id prefixes. This copy is
+what the installed plugin reads. If the two ever disagree beyond those
+listed changes, say so rather than silently preferring either.
 
 `setup` writes these. Other plugins read them.
 
@@ -22,6 +27,8 @@ An earlier version said "nothing else writes them", which contradicted the whole
 point of markdown files a person owns. The consequence lands on consumers: any
 invariant a skill relies on, such as no duplicate handles, is re-checked when
 the file is used, not assumed because `setup` checked it once at write time.
+The three record files carry the one exception to the only-writer rule, and
+their own section below defines it.
 
 ---
 
@@ -394,7 +401,7 @@ last confirmed: 2026-08-24
 id: s-work-calendar
 kind: calendar
 account: sarah@acme.com
-required for: [good-morning, catch-me-up, prep-me]
+required for: [good-morning, catch-me-up, prep-me, time-spent]
 look back: 0 days
 look ahead: 1 day
 read: events, attendees, attachments, agenda text
@@ -497,18 +504,84 @@ range requested, whether paging finished, any error.
 
 ---
 
+## The three record files
+
+The nine files are the six contract files above plus three records:
+`decisions.md`, `wins.md`, `what-ive-tried.md`. `setup` creates each with
+only the two header lines and never touches it again.
+
+**A record is an append-only journal.** A new entry goes at the end. Nobody,
+person or skill, edits or deletes an old entry; a correction is a new entry
+that says so. This is the one exception to "`setup` is the only automated
+writer": **each record has exactly one automated writer, the skill named
+here, and it appends only entries the person has seen and confirmed.**
+
+| Record | Automated writer |
+|---|---|
+| `wins.md` | `wins` |
+| `decisions.md` | none yet |
+| `what-ive-tried.md` | none yet |
+
+A record whose writer is "none yet" gets one when the plugin that owns it is
+scoped and this table is amended. Until then no skill appends to it.
+
+Records follow the global recognition rules: entries begin at `id:`, fields
+are `key: value` lines, uniqueness is file-wide, and `last confirmed` is
+required per entry. For an append-only record, `last confirmed` is the date
+the entry was written down and is never updated afterwards.
+
+### `wins.md`
+
+```markdown
+schema: 1
+last confirmed: 2026-08-24
+
+## Closed the Meridian renewal
+id: w-meridian-renewal-early
+date: 2026-08-28
+win: Closed the Meridian renewal two weeks early, at full price
+person: p-kate-lin
+last confirmed: 2026-08-28
+```
+
+**Required per entry:** `id`, `date`, `win`, `last confirmed`.
+
+- **Ids match `w-` plus lowercase letters, digits and hyphens.** Never reused.
+- **`date` is when it went well**, which is not always the day it was written
+  down; `last confirmed` covers the writing down.
+- **`win` is one line**, the thing itself, in the person's words once they
+  have confirmed it.
+- **`person` is optional** and follows the `personas.md` rule: a present
+  `person` must resolve to a `people.md` id or that entry is malformed, and
+  a consumer that does not read `people.md` treats the link as unverified.
+- **Semantically empty, the header and no entries, is valid** and is what a
+  fresh install holds. A consumer using a thin record says it is thin rather
+  than drawing quiet conclusions from two entries.
+
+`decisions.md` and `what-ive-tried.md` have no entry schema yet; they get
+one when their writers are named. Until then a valid one holds exactly the
+two header lines, plus anything a person wrote by hand.
+
+---
+
 ## Which skill stops without which file
 
 Uses the roster ids. Anything not listed does not read the file.
 
 | File | Hard stop for | Optional for |
 |---|---|---|
-| `about-me.md` | `going-away`, `inbox` | `good-morning`, `catch-me-up`, `best-in-class`, `give-me-feedback`, `teach-me` |
+| `about-me.md` | `going-away`, `inbox` | `good-morning`, `catch-me-up`, `best-in-class`, `give-me-feedback`, `teach-me`, `time-spent`, `wins` |
 | `people.md` | `good-morning`, `catch-me-up`, `going-away`, `follow-ups` | `prioritize`, `wins` |
-| `priorities.md` | `time-spent`, `prioritize` | `loose-ends`, `inbox` |
+| `priorities.md` | `time-spent`, `prioritize` | `loose-ends`, `inbox`, `give-me-feedback` |
 | `voice.md` | `sound-like-me` | `slop-check`, `say-it-simply`, `review-as`, `going-away` |
 | `personas.md` | `review-as`, `run-it-past` | nothing |
-| `sources.md` | `good-morning`, `catch-me-up`, `loose-ends`, `inbox`, `prep-me`, `follow-ups`, `going-away` | nothing |
+| `sources.md` | `good-morning`, `catch-me-up`, `loose-ends`, `inbox`, `prep-me`, `follow-ups`, `going-away`, `time-spent` | `wins`, `give-me-feedback` |
+| `wins.md` | `wins` | nothing |
+
+The growth skills read connectors only through `sources.md`, like everything
+else: `time-spent` stops without a readable source configuration because a
+week it cannot see is a comparison it cannot make, and its `about-me.md`
+read is for the timezone the source windows are defined in.
 
 **Optional means it runs and says what it lost, never a silent default.** The
 `voice.md` optional list is the named prose-producing skills; an earlier
@@ -528,7 +601,7 @@ version said "anything producing prose", which no builder could enumerate.
   own additions survive.
 - Success is reported only after the live set verifies.
 
-## Rules for all six
+## Rules for all nine
 
 - A missing hard-stop file stops that skill, by name. No defaults, no output.
 - A file that will not be read as its shape demands is **malformed**, never
@@ -538,8 +611,8 @@ version said "anything producing prose", which no builder could enumerate.
 - **A required field missing or blank malforms that entry, not the file**:
   the entry is skipped and named, and the other entries stay usable. A
   blank value and an absent key are the same state.
-- Ids: `p-` people, `s-` sources, `pr-` priorities, `pe-` personas. Stable,
-  never reused.
+- Ids: `p-` people, `s-` sources, `pr-` priorities, `pe-` personas, `w-`
+  wins. Stable, never reused.
 
 ---
 

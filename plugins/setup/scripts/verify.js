@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Verify a directory holding the six shared files against the contract in
+// Verify a directory holding the nine shared files (six contract files and
+// three records) against the contract in
 // skills/install/references/file-schemas.md.
 //
 //   node verify.js <directory>
@@ -39,6 +40,7 @@ const KNOWN = {
   priorities: ['rank', 'since', 'include', 'exclude', 'last confirmed'],
   personas: ['person', 'cares about', 'pushes back on', 'reads', 'last confirmed'],
   sources: ['kind', 'account', 'required for', 'look back', 'look ahead', 'read', 'skip', 'except', 'last confirmed'],
+  wins: ['date', 'win', 'person', 'last confirmed'],
 };
 const LIST_KEYS = {
   aboutMe: ['my handles'],
@@ -48,6 +50,7 @@ const LIST_KEYS = {
   priorities: ['include', 'exclude'],
   personas: [],
   sources: ['required for'],
+  wins: [],
 };
 
 // ---------------------------------------------------------------- reporting
@@ -653,6 +656,47 @@ function checkSources(file, lines) {
   }
 }
 
+// The one record with an entry schema. Semantically empty is the newborn
+// state every install produces, so unlike the entry-bearing contract files
+// it is not warned about; consumers call a thin record thin instead.
+function checkWins(file, lines, peopleIds) {
+  const { header, entries } = splitEntries(lines);
+  const reported = new Set();
+  checkEntryFileHeader(file, header, reported);
+  const seenIds = new Set();
+  for (const entry of entries) {
+    const { fields, unrecognised } = collectFields(entry.lines);
+    const id = entry.id;
+    checkId(file, id, 'w', seenIds);
+    checkDuplicateFields(file, id, fields);
+    checkScalarFields(file, id, fields, 'wins');
+    checkUnrecognisedLines(file, id, unrecognised);
+    requireFields(file, id, fields, ['date', 'win']);
+    checkEntryConfirmed(file, id, fields);
+    checkUnknownFields(file, fields, KNOWN.wins, reported);
+
+    const date = getOne(fields, 'date');
+    if (date !== null && date.value !== '') {
+      checkDate(file, `${id} date`, date.value, { stale: false });
+    }
+    const person = getOne(fields, 'person');
+    if (person !== null) {
+      if (peopleIds === null) {
+        report(file, 'error', `${id}: person "${person.value}" cannot be checked because people.md is missing or unreadable`);
+      } else if (!peopleIds.includes(person.value)) {
+        report(file, 'error', `${id}: person "${person.value}" does not resolve to a people.md id; only an absent field means deliberately unlinked`);
+      }
+    }
+  }
+}
+
+// The two records with no entry schema yet: only the two header lines are
+// judged. Everything after them is the person's own, kept and not read.
+function checkRecordHeader(file, lines) {
+  const { fields } = collectFields(lines.slice(0, 2));
+  checkHeader(file, lines, fields);
+}
+
 // -------------------------------------------------------------------- main
 
 function main(argv) {
@@ -703,12 +747,20 @@ function main(argv) {
   const sources = read('sources.md');
   if (sources) checkSources('sources.md', sources);
 
+  const wins = read('wins.md');
+  if (wins) checkWins('wins.md', wins, peopleIds);
+
+  for (const name of ['decisions.md', 'what-ive-tried.md']) {
+    const record = read(name);
+    if (record) checkRecordHeader(name, record);
+  }
+
   const errors = findings.filter((f) => f.level === 'error');
   const warnings = findings.filter((f) => f.level === 'warning');
   for (const f of findings) {
     console.log(`${f.file}: ${f.level}: ${f.message}`);
   }
-  console.log(`${errors.length} error${errors.length === 1 ? '' : 's'}, ${warnings.length} warning${warnings.length === 1 ? '' : 's'} across the six files.`);
+  console.log(`${errors.length} error${errors.length === 1 ? '' : 's'}, ${warnings.length} warning${warnings.length === 1 ? '' : 's'} across the nine files.`);
   return errors.length > 0 ? 1 : 0;
 }
 
