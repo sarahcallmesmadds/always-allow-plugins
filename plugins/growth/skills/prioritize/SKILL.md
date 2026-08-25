@@ -1,6 +1,6 @@
 ---
 name: prioritize
-description: Rank a set of things against the user's confirmed priorities. Works on the coming week, a pasted list, or one new request ("should I take this on?"). Use when the user says "prioritize this", "rank these", "what should I do first", "should I say yes to this", "where does this fit", or accepts the offer time-spent makes at the end of its weekly run. Never writes anything and never invents a priority.
+description: Rank a set of things against the user's confirmed priorities. Works on the coming week, a pasted list, or one new request ("should I take this on?"). Needs priorities the user has confirmed; without them it stops and offers to set them up. Use when the user says "prioritize this", "rank these", "what should I do first", "should I say yes to this", "where does this fit", or accepts the offer time-spent makes at the end of its weekly run. Never writes anything and never invents a priority.
 ---
 
 # prioritize
@@ -8,15 +8,22 @@ description: Rank a set of things against the user's confirmed priorities. Works
 Rank what is in front of you against what you said mattered, and show the
 work.
 
-The standard is `priorities.md` at the top level of the project folder, as
-the contract defines it
-(`../../../setup/skills/install/references/file-schemas.md`). It is the
-hard stop: missing, unreadable, or holding no entries each stop this
-skill, named apart but in the user's language: "you haven't confirmed any
-priorities, so there's nothing to rank against. Want to set them up?"
-`people.md` is optional and supplies wording only: an ask from an entry
-there can be named by relationship ("from your manager"), never weighted
-by it.
+The contract is `../../../setup/skills/install/references/file-schemas.md`.
+If it cannot be opened, say so and do only what this text itself
+specifies, nothing more. `priorities.md` is the hard stop; `people.md` is
+optional and supplies wording only: an ask from an entry there can be
+named by relationship ("from your manager"), never weighted by it.
+
+## Priorities file states, told apart, spoken plainly
+
+- **Missing:** stop; say where you looked, offer setup.
+- **Malformed (will not read per its shape):** stop; name what is wrong
+  in plain words, never the contract's vocabulary.
+- **Semantically empty:** stop; "you haven't confirmed any priorities, so
+  there's nothing to rank against. Want to set them up?"
+- **Unknown schema version:** stop; "this file says it's a newer version
+  than I know how to read."
+- **One malformed entry:** skip it, name it, rank against the rest.
 
 ## What it ranks
 
@@ -28,21 +35,25 @@ by it.
 
 The invocation is the ask. When nothing was handed over, ask for the list
 in one line; never scrape one together from sources this skill has no
-contract to read.
+contract to read. A direct ranking has no source window and does not
+claim one.
 
 ## The ranking
 
-1. Match each item against every priority's `include` and `exclude` by the
-   contract's rules: lowercased, punctuation to spaces, whole words, quoted
-   phrases in order, **no inflections**, and an entry's `exclude` blocks
-   that entry only. Every placement names the term that made it.
+1. Match each item against every priority's `include` and `exclude` by
+   the contract's rules: lowercased, punctuation to spaces, whole words,
+   quoted phrases in order, **no inflections**. **An entry's `exclude`
+   blocks that entry only**; when include and exclude both match within
+   one entry, the item is excluded there and the output records that it
+   was. Every placement names the term that made it.
 2. An item matching several priorities takes the highest rank; ties break
-   by id, alphabetically. An item matching nothing goes in its own section
-   at the bottom, plainly labelled, never forced under the nearest
-   priority.
-3. Output order is priority rank, then the unmatched section. For one
-   request: where it landed, the term, and what currently ranked above it
-   would have to give way.
+   by id, alphabetically. An item matching nothing goes in its own
+   section at the bottom, plainly labelled, never forced under the
+   nearest priority.
+3. Output order is fixed: priorities in rank order, items under each in
+   the order they were handed over, then the unmatched section in
+   handed-over order. For one request: where it landed, the term, and
+   what currently ranked above it would have to give way.
 4. When a placement looks wrong, the terms are the likeliest cause; say
    which term to add or exclude to fix it, so the correction lands in
    `priorities.md` where it holds, not in this one answer.

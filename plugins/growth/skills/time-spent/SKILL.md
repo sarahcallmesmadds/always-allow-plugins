@@ -1,92 +1,109 @@
 ---
 name: time-spent
-description: Compare where the week actually went against the user's ranked priorities and say what to change. Runs weekly on a schedule by default. Use when the user says "where did my week go", "time spent", "did I work on what matters", "was this week worth it", "run my weekly review", or a scheduled weekly task fires. Reads the calendar only through the configured sources. Never writes anything, never sends anything, never produces a plain list of what happened.
+description: Compare where the week actually went against the user's ranked priorities and say what to change. Owns every bare weekly-review ask. Use when the user says "where did my week go", "how was my week", "time spent", "did I work on what matters", "was this week worth it", "run my weekly review", or the weekly task fires. Designed to run from the weekly scheduled task setup hands over; it cannot create or check that task. Reads the calendar only through the configured sources. Never writes anything, never sends anything, never produces a plain list of what happened.
 ---
 
 # time-spent
 
 Where the week went, held against what you said mattered. The output is a
-comparison, never a diary.
+comparison, never a diary. A bare "how was my week?" belongs here;
+`give-me-feedback` takes over only when a project, dimension or standard is
+named.
 
-The priorities are `priorities.md` and the source configuration is
-`sources.md`, both at the top level of the project folder, as the contract
-defines them (`../../../setup/skills/install/references/file-schemas.md`).
-Both are hard stops: without priorities there is no standard, and without a
-readable calendar source there is no week. `about-me.md` is optional and
-supplies the timezone the windows are read in; without it, say once that
-UTC is being assumed.
+The contract is `../../../setup/skills/install/references/file-schemas.md`.
+If it cannot be opened, say so and do only what this text itself specifies,
+nothing more. `priorities.md` and `sources.md` are hard stops; `about-me.md`
+is optional and supplies the timezone, and without it say once that UTC is
+assumed.
 
-## When it stops
+## File states, told apart, spoken plainly
 
-Missing, unreadable, or empty-of-entries `priorities.md` or `sources.md`
-each stop this skill, named apart but **in the user's language, never the
-contract's**: "you haven't confirmed any priorities yet, so there's nothing
-to compare your week against. Want to set them up? I'll propose them from
-what you've actually been doing." A sources file with no calendar entry
-stops it the same way, naming what is missing. Never invent a priority and
-never grade a week against a guess.
+| State | `priorities.md` / `sources.md` | `about-me.md` |
+|---|---|---|
+| Missing | Stop. Say where you looked, offer setup | Continue, UTC assumed, said once |
+| Malformed (file will not read per its shape) | Stop. Name what is wrong in plain words, never the word "malformed" | Continue, name the loss |
+| Semantically empty (header, no entries) | Stop: "you haven't confirmed any priorities yet" / "no sources are configured" | n/a |
+| Unknown schema version | Stop: "this file says it's a newer version than I know how to read" | Continue, name the loss |
+
+**A malformed entry is skipped and named; the file's other entries stay
+usable.** Only a file that will not read at all stops the run. Never invent
+a priority and never grade a week against a guess.
+
+## The week, exactly
+
+The week is the 7 calendar dates ending today, in the configured timezone.
+For each source, intersect that with its own window: reading past a
+source's `look back` is not allowed, so a calendar set to `look back: 0
+days` contributes one date, the output prints the exact dates each source
+covered, and the fix is named (raise `look back` on that entry). Sources
+covering different spans are never merged as if equal; each comparison
+names the span it rests on.
 
 ## The read
 
-1. Find the calendar entries in `sources.md`. Read each through its
-   connector, checking the account the connector reports against the
-   entry's `account`; a mismatch is a configuration failure reported before
-   anything else, not a read.
-2. **The week is up to 7 days back, capped by the source's `look back`.**
-   Reading past the configured window is not allowed, so a calendar set to
-   `look back: 0 days` gives one day, and the output says so and names the
-   fix: raise `look back` on that source entry. Never quietly widen a
-   window and never call one day a week.
-3. Report each source in the contract's status terms, translated to plain
-   words: read fully, empty, could not verify, partial, refused, could not
-   reach, unreadable. A required source in any state but the first two puts
-   that fact at the top and the output is never called complete.
-4. Mail and chat sources are outside this skill's reach in v1; if they are
-   configured, say once that only the calendar was compared.
+1. Calendar entries in `sources.md` are this skill's reach. A **required**
+   source (this skill in its `required for`) whose kind it cannot handle
+   stops the run before any reading. Mail, chat and notes kinds are named
+   once as outside reach.
+2. Before reading a source, compare the identity the connector reports
+   against the entry's `account`. A mismatch, or no identity to compare,
+   is a configuration failure: the run stops and says so, outside the
+   read statuses.
+3. Report every source read with the contract's status label and a plain
+   phrase beside it: `ok` (checked successfully), `empty`,
+   `empty-unverified` (nothing came back and the read could not be
+   confirmed), `partial` (stopped early; data then a failure is partial,
+   not unreachable), `unauthorized`, `unreachable`, `malformed`. Name
+   connector, range and whether paging finished. A required source in any
+   state but `ok` or `empty` goes first and the output is never called
+   complete.
 
 ## The comparison
 
-1. Match event titles against each priority's `include` and `exclude`
-   terms by the contract's rules: lowercased, punctuation to spaces, whole
-   words, quoted phrases in order, **no inflections**. Only titles are
-   searched. Every assignment names the term that made it.
+1. Match event titles against each priority's `include` and `exclude` by
+   the contract's rules: lowercased, punctuation to spaces, whole words,
+   quoted phrases in order, **no inflections**, titles only. **An entry's
+   `exclude` blocks that entry only**, and when include and exclude both
+   match within one entry the item is excluded there and the output
+   records that it was. Every assignment names its term.
 2. An event matching several priorities belongs to the highest ranked;
-   ties break by id, alphabetically. Use only the part of the week on or
-   after each priority's `since`, and say when that trimmed anything.
-3. Time matching no priority is its own bucket, named honestly: "unmatched,
-   which is not the same as wasted".
-4. Open with coverage: which sources, what window, what status. Then the
-   comparisons, largest gap first:
-   - hours per priority against its rank, where the mismatch is the point:
-     "Renewals is rank 1 and got 90 minutes; hiring is rank 2 and got nine
-     hours."
-   - a rank-1 priority with zero matched time this week, with its `since`
-     date: standing first since July with nothing on the calendar is a
-     finding.
-   - the unmatched bucket, with its biggest recurring blocks named.
-5. End with at most three changes worth making, each tied to one
-   comparison above, then offer `prioritize` on the coming week. **This
-   offer is `prioritize`'s scheduled route**; make it every run.
+   ties break by id, alphabetically. Overlapping events count their
+   overlapped time once, toward the higher-ranked match; all-day events
+   count zero hours and are listed separately. Use only the part of the
+   week on or after each priority's `since`, and say when that trimmed
+   anything.
+3. Output, in this order every run: the covered dates per source; each
+   priority in rank order with matched hours and terms; the two fixed
+   callouts, the highest-ranked priority with zero matched hours (if any)
+   and any lower-ranked priority with more hours than rank 1 (if any);
+   the unmatched bucket ("unmatched, which is not the same as wasted"),
+   naming any block recurring on two or more distinct dates under the
+   same normalised title.
+4. End with at most three changes, each tied to one comparison above, in
+   the rank order of the priorities they concern, then offer `prioritize`
+   on the coming week. **That offer is `prioritize`'s scheduled route**;
+   make it every run.
 
 ## The register
 
-A claim the window cannot support is not made. Six days of data is called
-six days. Titles-only matching is crude and the output says so the first
-time a match looks wrong ("matched on the word 'renewal'; if that's
-mis-filed, add the term to exclude"). If every priority matched nothing,
-the likeliest cause is terms, not the week; say that instead of grading.
+A claim the covered dates cannot support is not made; six days is called
+six days. Title matching is crude and the output says so the first time a
+match looks wrong ("matched on the word 'renewal'; if that's mis-filed,
+add the term to exclude"). If every priority matched nothing, the likelier
+cause is terms, not the week; say that instead of grading.
 
 ## What it does not do
 
 - Write to any file.
-- Read mail or chat, or anything except through `sources.md`.
+- Read mail, chat or notes, or anything except through `sources.md`.
 - Produce a list of events. Anything without a comparison attached is cut.
-- Judge a priority's worth. It compares time against rank; changing the
-  ranks is the person's job, and `prioritize`'s to propose.
+- Judge a priority's worth. It compares time against rank; changing ranks
+  is the person's job, and `prioritize`'s to propose.
 
 ## The honest limit
 
 This is title matching against a calendar. A week of unlabelled focus
 blocks reads as unmatched, and a misleading title reads as work on a
-priority it merely mentioned. The remedy is naming terms and windows in
-every output so the person can correct the inputs, not confidence.
+priority it merely mentioned. The remedy is naming terms, dates and
+windows in every output so the person can correct the inputs, not
+confidence.
