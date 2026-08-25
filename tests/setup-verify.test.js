@@ -103,6 +103,7 @@ const ERROR_CASES = [
   ['leading-blank', 'priorities.md: error:', 'starts with "schema:" then "last confirmed:"'],
   ['unindented-prefer-to', 'voice.md: error:', 'has no to: line'],
   ['unrecognised-line', 'priorities.md: error:', 'line not recognised as a field or an indented dash item'],
+  ['scalar-inline-list', 'sources.md: error:', '"account" takes a single value, not an inline list'],
 ];
 
 for (const [caseName, filePrefix, message] of ERROR_CASES) {
@@ -124,10 +125,41 @@ check('an unknown field in two entries warns exactly once and does not fail the 
   assert.ok(lines[0].startsWith('priorities.md: warning:'), lines[0]);
 });
 
-check('an unknown underscore key in a file header warns and does not fail the set', () => {
+check('an unknown key in header and entry warns exactly once, file-wide', () => {
   const { code, out } = run([assemble('unknown-field-header')]);
   assert.strictEqual(code, 0, `exit ${code}\n${out}`);
-  assert.ok(out.includes('priorities.md: warning: unknown field "exported_by"'), out);
+  const lines = out.split('\n').filter((l) => l.includes('unknown field "exported_by"'));
+  assert.strictEqual(lines.length, 1, `expected exactly one report, got ${lines.length}:\n${out}`);
+  assert.ok(lines[0].startsWith('priorities.md: warning:'), lines[0]);
+});
+
+check('schema inside an entry is reported as an unknown field there', () => {
+  const { code, out } = run([assemble('schema-in-entry')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  assert.ok(out.includes('people.md: warning: unknown field "schema"'), out);
+});
+
+check('an empty file with a malformed header is malformed, not semantically empty', () => {
+  const { code, out } = run([assemble('empty-malformed')]);
+  assert.strictEqual(code, 1, `exit ${code}\n${out}`);
+  assert.ok(out.includes('people.md: error:'), out);
+  const empty = out.split('\n').find((l) => l.startsWith('people.md:') && l.includes('semantically empty'));
+  assert.ok(!empty, `malformed empty file still called semantically empty:\n${out}`);
+});
+
+check('a well-formed empty file is semantically empty, valid, and says so', () => {
+  const { code, out } = run([assemble('empty-valid')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  const line = out.split('\n').find((l) => l.startsWith('personas.md: warning:') && l.includes('semantically empty'));
+  assert.ok(line, `no semantically-empty warning in:\n${out}`);
+});
+
+check('a sentence merely mentioning the hand-edit instruction does not satisfy it', () => {
+  const { code, out } = run([assemble('voice-buried-instruction')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  const line = out.split('\n').find((l) => l.startsWith('voice.md: warning:')
+    && l.includes('hand-edit instruction'));
+  assert.ok(line, `no hand-edit instruction warning in:\n${out}`);
 });
 
 check('a voice file missing the hand-edit instruction warns and does not fail the set', () => {
@@ -158,10 +190,11 @@ check('a missing file is an error naming the file', () => {
 
 // ------------------------------------------------------------------- the CLI
 
-check('an unknown option is refused before any input is read', () => {
-  const { code, out } = run(['--fix', assemble(null)]);
+check('an unknown option is refused before the directory is even looked at', () => {
+  const { code, out } = run(['--fix', path.join(os.tmpdir(), 'aa-verify-never-made')]);
   assert.strictEqual(code, 2, `exit ${code}\n${out}`);
   assert.ok(out.includes('unknown option'), out);
+  assert.ok(!out.includes('is not a directory'), `directory was checked before the option was refused:\n${out}`);
 });
 
 check('no argument is refused with usage', () => {

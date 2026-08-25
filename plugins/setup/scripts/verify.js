@@ -61,14 +61,15 @@ function report(file, level, message) {
 // ------------------------------------------------------------------ parsing
 
 // A field is a `key: value` line. The key runs to the first colon, the value
-// to the end of the line. The key charset is deliberately broad so that a
-// typo like `exclude_typo:` parses as a field and gets reported as unknown
-// instead of vanishing. A handle item like `email:x` has no space after the
-// colon and is never a field.
+// to the end of the line, and the colon is followed by whitespace or ends the
+// line. The key is any text without a colon, so a typo like `exclude_typo:`
+// or `region.eu:` parses as a field and gets reported as unknown instead of
+// vanishing. A handle item like `email:x` has no space after the colon and is
+// never a field.
 function parseField(line) {
-  const m = line.match(/^([A-Za-z0-9_][A-Za-z0-9_ '-]*?):(?:\s+(.*))?$/);
+  const m = line.match(/^([^:\s][^:]*?):(?:\s+(.*))?$/);
   if (!m) return null;
-  return { key: m[1], value: (m[2] || '').trim() };
+  return { key: m[1].trim(), value: (m[2] || '').trim() };
 }
 
 // The contract's list form is indented dashes under the key. An unindented
@@ -221,8 +222,9 @@ function checkUnrecognisedLines(file, where, unrecognised) {
 }
 
 // A known field outside the context's list-valued keys takes a single value;
-// dash items under it would be silently attached data. An unknown field's
-// shape is unknowable, so it is kept and reported instead, never judged.
+// dash items or an inline list under it would be silently attached data. An
+// unknown field's shape is unknowable, so it is kept and reported instead,
+// never judged.
 function checkScalarFields(file, where, fields, context) {
   for (const f of fields) {
     if (f.key === 'note') continue;
@@ -230,8 +232,14 @@ function checkScalarFields(file, where, fields, context) {
     if (LIST_KEYS[context].includes(f.key)) continue;
     if (f.list !== null && f.list.length > 0) {
       report(file, 'error', `${where}: "${f.key}" takes a single value, not dash items`);
+    } else if (/^\[.*\]$/.test(f.value)) {
+      report(file, 'error', `${where}: "${f.key}" takes a single value, not an inline list`);
     }
   }
+}
+
+function fileHasErrors(file) {
+  return findings.some((f) => f.file === file && f.level === 'error');
 }
 
 function checkId(file, id, prefix, seen) {
@@ -336,14 +344,29 @@ function validateList(file, where, field) {
 // -------------------------------------------------------------- file checks
 
 function checkAboutMe(file, lines) {
-  // Fields live above the first heading; everything after is prose.
-  const firstHeading = lines.findIndex((l) => /^#/.test(l));
-  const top = firstHeading === -1 ? lines : lines.slice(0, firstHeading);
-  const { fields, unrecognised } = collectFields(top);
+  // Fields live in one block at the top; the rest of the file is prose. The
+  // block ends at the first heading OR the first line that reads as neither
+  // field, dash item nor blank, whichever comes first, so deleting a
+  // decorative heading does not turn prose into errors.
+  let boundary = lines.length;
+  let open = false;
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (/^#/.test(line)) { boundary = i; break; }
+    if (line.trim() === '') { open = false; continue; }
+    if (isDashItem(line)) {
+      if (open) continue;
+      boundary = i; break;
+    }
+    const f = parseField(line);
+    if (f) { open = f.value === ''; continue; }
+    boundary = i; break;
+  }
+  const top = lines.slice(0, boundary);
+  const { fields } = collectFields(top);
   checkHeader(file, top, fields);
   checkDuplicateFields(file, 'about-me', fields);
   checkScalarFields(file, 'about-me', fields, 'aboutMe');
-  checkUnrecognisedLines(file, 'about-me', unrecognised);
   requireFields(file, 'about-me', fields, ['name', 'role', 'timezone']);
   checkUnknownFields(file, fields, KNOWN.aboutMe, new Set());
 
@@ -370,21 +393,23 @@ function checkAboutMe(file, lines) {
   }
 }
 
-function checkEntryFileHeader(file, header) {
+// `reported` is the file-wide once-per-key set, shared with the entries so
+// the same unknown key is never reported twice in one file.
+function checkEntryFileHeader(file, header, reported) {
   const { fields, unrecognised } = collectFields(header);
   checkHeader(file, header, fields);
   checkDuplicateFields(file, 'file header', fields);
   checkScalarFields(file, 'file header', fields, 'header');
   checkUnrecognisedLines(file, 'file header', unrecognised);
-  checkUnknownFields(file, fields, KNOWN.header, new Set());
+  checkUnknownFields(file, fields, KNOWN.header, reported);
 }
 
 function checkPeople(file, lines) {
   const { header, entries } = splitEntries(lines);
-  checkEntryFileHeader(file, header);
+  const reported = new Set();
+  checkEntryFileHeader(file, header, reported);
   const seenIds = new Set();
   const seenHandles = new Map();
-  const reported = new Set();
   for (const entry of entries) {
     const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
@@ -394,7 +419,7 @@ function checkPeople(file, lines) {
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['kind', 'handles']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.people], reported);
+    checkUnknownFields(file, fields, KNOWN.people, reported);
 
     const kind = getOne(fields, 'kind');
     if (kind !== null && kind.value !== 'person' && kind.value !== 'shared') {
@@ -416,7 +441,7 @@ function checkPeople(file, lines) {
       }
     }
   }
-  if (entries.length === 0) {
+  if (entries.length === 0 && !fileHasErrors(file)) {
     report(file, 'warning', 'semantically empty: header and no entries, valid, nothing confirmed');
   }
   return { ids: [...seenIds] };
@@ -424,9 +449,9 @@ function checkPeople(file, lines) {
 
 function checkPriorities(file, lines) {
   const { header, entries } = splitEntries(lines);
-  checkEntryFileHeader(file, header);
-  const seenIds = new Set();
   const reported = new Set();
+  checkEntryFileHeader(file, header, reported);
+  const seenIds = new Set();
   for (const entry of entries) {
     const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
@@ -436,7 +461,7 @@ function checkPriorities(file, lines) {
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['rank', 'since', 'include']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.priorities], reported);
+    checkUnknownFields(file, fields, KNOWN.priorities, reported);
 
     const rank = getOne(fields, 'rank');
     if (rank !== null && rank.value !== '' && !/^-?\d+$/.test(rank.value)) {
@@ -452,7 +477,7 @@ function checkPriorities(file, lines) {
     }
     validateList(file, id, getOne(fields, 'exclude'));
   }
-  if (entries.length === 0) {
+  if (entries.length === 0 && !fileHasErrors(file)) {
     report(file, 'warning', 'semantically empty: header and no entries, valid, nothing confirmed');
   }
 }
@@ -465,9 +490,15 @@ function checkVoice(file, lines) {
     if (/^#/.test(line)) break;
     top.push(line);
   }
-  // The top block holds the prose instruction setup writes, so unrecognised
-  // lines are not reported here.
-  const { fields } = collectFields(top);
+  // The top block holds the prose instruction setup writes. Its lines are
+  // recognised and excluded from field collection, so the instruction's own
+  // colon does not read as an unknown field.
+  const INSTRUCTION = 'If you edit this file by hand, set confidence: corrected';
+  const instructionAt = top.findIndex((l) => l.trim().startsWith(INSTRUCTION));
+  const fieldLines = instructionAt === -1
+    ? top
+    : top.filter((l, i) => i !== instructionAt && i !== instructionAt + 1);
+  const { fields } = collectFields(fieldLines);
   checkHeader(file, top, fields);
   checkDuplicateFields(file, 'voice header', fields);
   checkUnknownFields(file, fields, KNOWN.voiceHeader, new Set());
@@ -479,8 +510,8 @@ function checkVoice(file, lines) {
     report(file, 'error', `confidence "${confidence.value}" unrecognised; malformed, not silently accepted. It is corrected, accepted or absent`);
   }
 
-  if (!top.some((l) => l.includes('set confidence: corrected'))) {
-    report(file, 'warning', 'the hand-edit instruction setup writes at the top ("If you edit this file by hand, set confidence: corrected") is missing');
+  if (instructionAt === -1) {
+    report(file, 'warning', `the hand-edit instruction setup writes at the top ("${INSTRUCTION}") is missing; a line merely mentioning it does not count`);
   }
 
   const headings = lines.filter((l) => /^##\s/.test(l)).map((l) => l.replace(/^##\s+/, '').trim());
@@ -530,9 +561,9 @@ function checkVoice(file, lines) {
 
 function checkPersonas(file, lines, peopleIds) {
   const { header, entries } = splitEntries(lines);
-  checkEntryFileHeader(file, header);
-  const seenIds = new Set();
   const reported = new Set();
+  checkEntryFileHeader(file, header, reported);
+  const seenIds = new Set();
   for (const entry of entries) {
     const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
@@ -542,7 +573,7 @@ function checkPersonas(file, lines, peopleIds) {
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['cares about', 'pushes back on', 'reads']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.personas], reported);
+    checkUnknownFields(file, fields, KNOWN.personas, reported);
 
     const person = getOne(fields, 'person');
     if (person !== null) {
@@ -553,16 +584,16 @@ function checkPersonas(file, lines, peopleIds) {
       }
     }
   }
-  if (entries.length === 0) {
+  if (entries.length === 0 && !fileHasErrors(file)) {
     report(file, 'warning', 'semantically empty: header and no entries, valid; hard-stop consumers stop and say "no personas defined"');
   }
 }
 
 function checkSources(file, lines) {
   const { header, entries } = splitEntries(lines);
-  checkEntryFileHeader(file, header);
-  const seenIds = new Set();
   const reported = new Set();
+  checkEntryFileHeader(file, header, reported);
+  const seenIds = new Set();
   for (const entry of entries) {
     const { fields, unrecognised } = collectFields(entry.lines);
     const id = entry.id;
@@ -572,7 +603,7 @@ function checkSources(file, lines) {
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['kind', 'account', 'required for']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.sources], reported);
+    checkUnknownFields(file, fields, KNOWN.sources, reported);
 
     const kind = getOne(fields, 'kind');
     if (kind !== null && !['calendar', 'mail', 'chat', 'notes'].includes(kind.value)) {
@@ -606,7 +637,7 @@ function checkSources(file, lines) {
       report(file, 'error', `${id}: a calendar source needs look ahead; a backward-only read misses today's 2pm meeting`);
     }
   }
-  if (entries.length === 0) {
+  if (entries.length === 0 && !fileHasErrors(file)) {
     report(file, 'warning', 'semantically empty: valid, and hard-stop consumers stop on it too, saying "no sources configured"; never a quiet day');
   }
 }
