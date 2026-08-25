@@ -31,7 +31,7 @@ function check(what, fn) {
 
 // The plans set these budgets (setup plan revision 9; writing plan revision
 // 1, where the two shipped reference skills "should not grow" past their
-// measured 156 and 136).
+// measured 156 and 136; growth plan revision 2, under 200 each).
 const BUDGETS = [
   ['setup', 'install', 250],
   ['setup', 'check', 150],
@@ -39,6 +39,10 @@ const BUDGETS = [
   ['writing', 'review-as', 150],
   ['writing', 'slop-check', 157],
   ['writing', 'say-it-simply', 137],
+  ['growth', 'time-spent', 200],
+  ['growth', 'prioritize', 200],
+  ['growth', 'wins', 200],
+  ['growth', 'give-me-feedback', 200],
 ];
 
 for (const [plugin, skill, budget] of BUDGETS) {
@@ -70,6 +74,19 @@ check('the roster in verify.js matches the roster in the contract', () => {
   const extra = [...fromScript].filter((s) => !fromContract.has(s));
   assert.ok(missing.length === 0 && extra.length === 0,
     `contract-but-not-script: [${missing}] script-but-not-contract: [${extra}]`);
+});
+
+check('every marketplace entry matches its plugin.json on version and description', () => {
+  const market = JSON.parse(fs.readFileSync(path.join(ROOT, '.claude-plugin', 'marketplace.json'), 'utf8'));
+  for (const entry of market.plugins) {
+    const own = JSON.parse(fs.readFileSync(
+      path.join(ROOT, 'plugins', entry.name, '.claude-plugin', 'plugin.json'), 'utf8',
+    ));
+    assert.strictEqual(own.version, entry.version,
+      `${entry.name}: plugin.json ${own.version} vs marketplace ${entry.version}`);
+    assert.strictEqual(own.description, entry.description,
+      `${entry.name}: descriptions differ between plugin.json and marketplace.json`);
+  }
 });
 
 check('check points at the same contract file install carries', () => {

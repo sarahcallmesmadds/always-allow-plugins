@@ -16,13 +16,17 @@ Two rules govern every skill here:
 | Plugin | Skills | State |
 |---|---|---|
 | `setup` | `install`, `check` | Built. The verifier is fixture-tested; three review rounds answered |
-| `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` | Built. One plan review round settled at build |
+| `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` | Built. Four review rounds, the last one eight live executions |
+| `growth` | `time-spent`, `prioritize`, `wins`, `give-me-feedback` | Built against the amended contract after its Codex round; not yet live-tested |
 
-Five more plugins are planned (`daily-hq`, `meetings`, `growth`, `learning`,
+Four more plugins are planned (`daily-hq`, `meetings`, `learning`,
 `decisions`); their plans live outside this repo until they are built.
 
-This repo is not yet published, so there is no install command to give you
-yet.
+Install:
+
+```
+/plugin marketplace add sarahcallmesmadds/always-allow-plugins
+```
 
 ## Where everything gets written
 
