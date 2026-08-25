@@ -18,9 +18,14 @@ better at", and the timezone. `priorities.md` supplies what mattered.
 `sources.md` supplies the evidence.
 
 For each optional file: missing means the loss is named once; a file that
-will not read per its shape, or claims a schema version this text does
-not know, is skipped with the loss named, never half-read; a malformed
-entry is skipped by name while the rest stays usable.
+will not read per its shape (malformed, said with the plain reason), or
+claims a schema version this text does not know, is set aside whole with
+the loss named, never half-read; semantically empty means it has nothing
+to offer, said once; a malformed entry is skipped by name while the rest
+stays usable. Restated for runs where the contract cannot be opened: an
+entry older than 90 days by its own `last confirmed` is called stale
+once, and a field key this text does not name is kept and reported once
+per file, never dropped.
 
 ## Picking the standard
 
@@ -40,12 +45,15 @@ unstated standard is opinion, and this skill does not deal in it.
 
 1. Before reading a source, compare the identity the connector reports
    against its `account`; a mismatch, or no identity, is a configuration
-   failure: stop and say so, outside the read statuses. Report each
-   source read with the contract's status label and a plain phrase: `ok`
-   (checked successfully), `empty`, `empty-unverified`, `partial` (data
-   then a failure is partial, not unreachable), `unauthorized`,
-   `unreachable`, `malformed`. Open with coverage: which sources, the
-   exact dates each covered within its window, what was not checked.
+   failure: stop and say so, outside the read statuses. The same goes for
+   a source naming this skill in its `required for` whose kind it cannot
+   handle, stopped before reading. Report each source read with the
+   contract's status label and a plain phrase: `ok` (checked
+   successfully), `empty`, `empty-unverified`, `partial` (data then a
+   failure is partial, not unreachable), `unauthorized`, `unreachable`,
+   `malformed`, naming connector, range, whether paging finished, and any
+   error. Open with coverage: which sources, the exact dates each covered
+   within its window, what was not checked.
    **A claim the covered dates cannot support is not made.** Two days of
    chat is two days of chat.
 2. Look for evidence that bears on the standard, cited: on delegating,

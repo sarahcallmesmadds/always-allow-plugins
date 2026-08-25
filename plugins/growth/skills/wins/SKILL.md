@@ -13,8 +13,16 @@ per the contract
 (`../../../setup/skills/install/references/file-schemas.md`). If the
 contract cannot be opened, say so and do only what this text itself
 specifies, nothing more. `people.md`, `sources.md` and `about-me.md`
-(timezone) are optional; each one absent is named once as a loss, not a
-stop.
+(timezone) are optional: one that is absent, will not read per its shape
+(malformed, said with the plain reason), or claims a schema version this
+text does not know is set aside whole with the loss named once, never
+half-read; semantically empty means it has nothing to offer, said once. A
+malformed entry inside an otherwise readable optional file is skipped by
+name and the rest used. Restated for runs where the contract cannot be
+opened: an entry older than 90 days by its own `last confirmed` is called
+stale once, and a field key this text does not name is kept and reported
+once per file, never dropped, because a typo like `exlude:` must not
+vanish.
 
 ## Record states, told apart, spoken plainly
 
@@ -30,13 +38,17 @@ stop.
 
 ## Finding the candidates
 
-1. On the weekly run, read the configured sources. Before reading one,
-   compare the identity the connector reports against the entry's
-   `account`; a mismatch, or no identity, is a configuration failure that
-   stops the run and says so. Report each source with the contract's
-   status label and a plain phrase: `ok` (checked successfully), `empty`,
+1. **A source-based run opens with coverage, before any candidate**: the
+   sources, the exact dates each covered, and their statuses. Before
+   reading a source, compare the identity the connector reports against
+   the entry's `account`; a mismatch, or no identity, is a configuration
+   failure that stops the run and says so, and so is a source naming this
+   skill in its `required for` whose kind it cannot handle, stopped
+   before reading. Report each source with the contract's status label
+   and a plain phrase: `ok` (checked successfully), `empty`,
    `empty-unverified`, `partial` (data then a failure is partial, not
-   unreachable), `unauthorized`, `unreachable`, `malformed`. The span
+   unreachable), `unauthorized`, `unreachable`, `malformed`, naming
+   connector, range, whether paging finished, and any error. The span
    read is the 7 dates ending today in the configured timezone,
    intersected per source with its `look back`, the actual dates printed.
 2. Look for evidence, not adjectives: the thing that closed early, the
@@ -61,14 +73,16 @@ stop.
    id slugged from the win, `date` when it went well, `win` on one line,
    `person` only when confirmed against `people.md`, `last confirmed`
    today.
-3. **The write is one uninterrupted pass**: re-read the whole file,
-   validate it, settle the id against exactly what was just read (a taken
-   id gets `-2`, then `-3`, chosen here and nowhere else), append at the
-   end, then immediately re-read and confirm the file still reads clean
-   and holds the new entry exactly once. If that last check fails, show
-   what the file now holds and the entry text for safe keeping, and do
-   not retry silently. Nothing between the re-read and the append but the
-   append.
+3. **The write is one tight pass, and nothing here can lock a file**:
+   re-read the whole file, validate it, settle the id against exactly
+   what was just read (a taken id gets `-2`, then `-3`, chosen here and
+   nowhere else), then **append only the new entry block at the end,
+   never rewriting the rest of the file**, so a racing hand edit
+   elsewhere in it is not overwritten. Immediately re-read and confirm
+   the file still reads clean and holds the new entry exactly once. A
+   race cannot be prevented from here, only caught, which is what the
+   after-check is for: if it fails, show what the file now holds and the
+   entry text for safe keeping, and do not retry silently.
 4. **Never edit or delete an old entry**; a correction is a new entry
    saying so. Where a file cannot be written from here, hand the entry
    back as a paste block, but only after that same fresh re-read came

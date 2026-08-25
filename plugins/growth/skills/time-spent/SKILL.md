@@ -21,13 +21,17 @@ assumed.
 | State | `priorities.md` / `sources.md` | `about-me.md` |
 |---|---|---|
 | Missing | Stop. Say where you looked, offer setup | Continue, UTC assumed, said once |
-| Malformed (file will not read per its shape) | Stop. Name what is wrong in plain words, never the word "malformed" | Continue, name the loss |
+| Malformed (file will not read per its shape) | Stop. Name the state and the plain reason together: "malformed: two entries share the same id" | Continue, name the loss |
 | Semantically empty (header, no entries) | Stop: "you haven't confirmed any priorities yet" / "no sources are configured" | n/a |
 | Unknown schema version | Stop: "this file says it's a newer version than I know how to read" | Continue, name the loss |
 
 **A malformed entry is skipped and named; the file's other entries stay
 usable.** Only a file that will not read at all stops the run. Never invent
-a priority and never grade a week against a guess.
+a priority and never grade a week against a guess. Restated for runs where
+the contract cannot be opened: an entry older than 90 days by its own
+`last confirmed` is called stale once, and a field key this text does not
+name is kept and reported once per file, never dropped, because a typo
+like `exlude:` must not vanish.
 
 ## The week, exactly
 

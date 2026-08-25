@@ -12,13 +12,22 @@ The contract is `../../../setup/skills/install/references/file-schemas.md`.
 If it cannot be opened, say so and do only what this text itself
 specifies, nothing more. `priorities.md` is the hard stop; `people.md` is
 optional and supplies wording only: an ask from an entry there can be
-named by relationship ("from your manager"), never weighted by it.
+named by relationship ("from your manager"), never weighted by it. A
+`people.md` that is missing, will not read per its shape (malformed, said
+with the plain reason), claims a schema version this text does not know,
+or is empty, is set aside whole with the loss named once, and a malformed
+entry in an otherwise readable one is skipped by name. Restated for runs
+where the contract cannot be opened: an entry older than 90 days by its
+own `last confirmed` is called stale once, and a field key this text does
+not name is kept and reported once per file, never dropped, because a
+typo like `exlude:` must not vanish.
 
 ## Priorities file states, told apart, spoken plainly
 
 - **Missing:** stop; say where you looked, offer setup.
-- **Malformed (will not read per its shape):** stop; name what is wrong
-  in plain words, never the contract's vocabulary.
+- **Malformed (will not read per its shape):** stop; name the state and
+  the plain reason together: "your priorities file is malformed: two
+  entries share the same id."
 - **Semantically empty:** stop; "you haven't confirmed any priorities, so
   there's nothing to rank against. Want to set them up?"
 - **Unknown schema version:** stop; "this file says it's a newer version
