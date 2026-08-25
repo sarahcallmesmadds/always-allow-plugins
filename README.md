@@ -15,7 +15,7 @@ Two rules govern every skill here:
 
 | Plugin | Skills | State |
 |---|---|---|
-| `setup` | `install` | Built, verified against fixtures. `check` not yet built |
+| `setup` | `install`, `check` | Built. The verifier is fixture-tested; three review rounds answered |
 
 Six more plugins are planned (`daily-hq`, `meetings`, `growth`, `learning`,
 `writing`, `decisions`); their plans live outside this repo until they are

@@ -11,7 +11,7 @@
     {
       "name": "setup",
       "source": "./plugins/setup",
-      "description": "Runs once. Gets you from \"I installed this\" to \"it knows who I am, and something runs tomorrow morning without me.\" Finds what it can, asks only what it cannot, shows you the whole suggestion, and writes the files every other skill reads.",
+      "description": "Runs once. Gets you from \"I installed this\" to \"it knows who I am, and something runs tomorrow morning without me.\" Finds what it can, asks only what it cannot, shows you the whole suggestion, and writes the files every other skill reads. Its check skill tells you at any time which skills can run and which are blocked by which file.",
       "version": "0.1.0",
       "author": {
         "name": "Sarah Madden"
