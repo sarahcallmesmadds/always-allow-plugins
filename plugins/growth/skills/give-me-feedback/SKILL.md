@@ -31,11 +31,13 @@ only version this text knows. Every file opens with `schema:` then
 `last confirmed:` as its first two lines, and any `last confirmed`,
 file-level or entry-level, older than 90 days is called stale once. An
 entry runs from one `id:` line to the next. Keys this text knows:
-priorities entries carry `id`, `rank`, `since`, `include`, `exclude`,
-`last confirmed`; sources entries carry `id`, `kind`, `account`,
-`required for`, `look back`, `look ahead`, `read`, `skip`, `except`,
-`last confirmed`; `about-me.md` carries `name`, `role`, `company`,
-`timezone`, `working hours`, `my handles`. `note:` is the person's own
+priorities entries require `id`, `rank`, `since`, `include`,
+`last confirmed` and may carry `exclude`; sources entries require `id`,
+`kind`, `account`, `required for`, `last confirmed` and at least one of
+`look back` / `look ahead` (a calendar source needs `look ahead`), and
+may carry `read`, `skip`, `except`; `about-me.md` requires `name`,
+`role`, `timezone` and may carry `company`, `working hours`,
+`my handles`. `note:` is the person's own
 space and is never reported; any other unknown key is kept and reported
 once per file. A required key missing or blank malforms that entry, not
 the file.

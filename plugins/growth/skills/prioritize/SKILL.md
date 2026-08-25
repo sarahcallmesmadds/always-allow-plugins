@@ -71,9 +71,10 @@ only version this text knows. Every file opens with `schema:` then
 `last confirmed:` as its first two lines, and any `last confirmed`,
 file-level or entry-level, older than 90 days is called stale once. An
 entry runs from one `id:` line to the next. Keys this text knows:
-priorities entries carry `id`, `rank`, `since`, `include`, `exclude`,
-`last confirmed`; people entries carry `id`, `kind`, `relationship`,
-`handles`, `last confirmed`. `note:` is the person's own space and is
+priorities entries require `id`, `rank`, `since`, `include`,
+`last confirmed` and may carry `exclude`; people entries require `id`,
+`kind`, `handles`, `last confirmed` and may carry `relationship`.
+`note:` is the person's own space and is
 never reported; any other unknown key is kept and reported once per
 file, because a typo like `exlude:` must not vanish. A required key
 missing or blank malforms that entry, not the file.
