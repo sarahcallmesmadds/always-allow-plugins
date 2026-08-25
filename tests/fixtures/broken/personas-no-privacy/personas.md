@@ -1,8 +1,6 @@
 schema: 1
 last confirmed: 2026-08-25
 
-These entries are your private read of real people; review them before
-sharing this project.
 
 ## Priya, my manager
 id: pe-priya

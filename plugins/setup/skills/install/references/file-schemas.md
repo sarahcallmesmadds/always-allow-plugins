@@ -6,9 +6,14 @@ review rounds caught: the priorities, personas and sources examples and
 required-field lists now carry the per-entry `last confirmed` the global rule
 already required, the window form names its singular, the voice example
 carries the instruction line the rules already required, and the
-no-duplicate-keys rule is stated rather than implied. This copy is what the
-installed plugin reads. If the two ever disagree beyond those corrections,
-say so rather than silently preferring either.
+no-duplicate-keys rule is stated rather than implied. Amended again
+2026-08-25 after a five-persona review of the writing plugin: the `Never`
+exemptions now cover numbers, dates and amounts; `personas.md` carries a
+setup-written privacy line, because the file is a candid read of named
+colleagues; and `person:` resolution is verified by `setup` and `check`,
+never judged by consumers that do not read `people.md`. This copy is what
+the installed plugin reads. If the two ever disagree beyond those listed
+changes, say so rather than silently preferring either.
 
 `setup` writes these. Other plugins read them.
 
@@ -45,7 +50,10 @@ made unambiguous by design.
   is the key `relationship` with everything after the first colon as its value.
 - **A key other than `note:` appears at most once per entry, and once in the
   header.** A duplicated key is malformed, because two values for one field
-  would have every consumer silently picking one.
+  would have every consumer silently picking one. **This rule does not reach
+  inside `voice.md`'s three sections**: `Prefer` repeats `from:`/`to:` by
+  design, and lines inside `Never` and `How I sound` are list items and
+  prose, never fields.
 - **A list is either bracketed inline on one line, `[a, b]`, or indented dashes
   under the key.** An inline list does not wrap; anything long uses dashes.
 - **Unknown fields are kept, and reported once.** A consumer meeting a key it
@@ -73,6 +81,16 @@ entry, because hand edits happen and nothing else catches them.
 **`last confirmed` is required on every entry in every entry-bearing file**,
 not only in `people.md`. The file-level date covers the header; each entry is
 judged by its own.
+
+## Where the files live
+
+**The nine files live at the top level of the project's folder**: the
+Cowork project folder, or in Claude Code the folder `setup` wrote them
+into. No searching parent or sibling folders. A skill that cannot find a
+file says where it looked before offering to run `setup`, because offering
+setup against the wrong folder creates a second, conflicting set. A skill
+that cannot read this contract itself says so and proceeds only on the
+rules restated in its own text, nothing more.
 
 ## Every file starts with this
 
@@ -308,9 +326,21 @@ malformed, and the file says so in a comment `setup` writes at the top.
   A guessed rule may act, and it acts visibly, so a wrong guess gets corrected
   instead of silently rewriting a contractual phrase forever. Under
   `corrected`, rules apply without narration.
-- **`Never` is hard, with two exemptions: quoted material and proper nouns are
-  never altered**, and the consumer says when it left one.
-- **`Prefer` is a `from:`/`to:` list, not a table.**
+- **`Never` is hard, with these exemptions: quoted material, proper nouns,
+  numbers, dates and amounts are never altered**, and the consumer says
+  when it left one. **The protection is the value, not the form**: writing
+  "twelve" as "12" on the guide's own instruction changes no value and is
+  allowed; changing what a number, date or amount says never is.
+- **`Prefer` is a `from:`/`to:` list, not a table.** Matching uses the
+  priorities rules: lowercased, punctuation to space, whole words, phrases
+  in order, and **inflections are not handled**: `from: reconcile` does not
+  match "reconciled". `Never` beats `Prefer`: a `to:` value that breaks a
+  `Never` entry is a conflict the consumer reports and does not apply.
+- **For a consumer that reports rather than rewrites**, the exemptions
+  above also govern counting, plus one more: a sentence citing or restating
+  a rule is not a violation of it.
+- **`voice.md` has no entries; its `last confirmed` is the file-level date**
+  and staleness is judged on that.
 
 ---
 
@@ -321,6 +351,9 @@ Read by `review-as` and `run-it-past`. Not read by anything in `daily-hq`.
 ```markdown
 schema: 1
 last confirmed: 2026-08-24
+
+These entries are your private read of real people; review them before
+sharing this project.
 
 ## Kate, my manager
 id: pe-kate
@@ -335,8 +368,14 @@ last confirmed: 2026-08-24
 `last confirmed`. **`person` is optional.**
 
 - **A present `person` must resolve to a `people.md` id, or the file is
-  malformed.** Only an absent field means deliberately unlinked.
+  malformed.** Only an absent field means deliberately unlinked. `setup`
+  verifies this when it writes and `check` re-verifies it; a consumer that
+  does not read `people.md` treats the link as unverified, mentions that
+  only when asked, and never judges the file by it.
 - **One persona is valid.** Two or three is guidance.
+- **The privacy line at the top is written by `setup`**, mirroring the
+  voice.md instruction comment, because sharing the project shares this
+  file and the file is the person's candid read of named colleagues.
 - A persona with a blank `pushes back on` is not useful, and `setup` says so
   rather than writing one.
 - **Semantically empty stops the hard-stop consumers**: `review-as` with no
@@ -493,8 +532,12 @@ version said "anything producing prose", which no builder could enumerate.
 
 - A missing hard-stop file stops that skill, by name. No defaults, no output.
 - A file that will not be read as its shape demands is **malformed**, never
-  empty. Missing, malformed and semantically empty are three states with three
-  meanings.
+  empty. Missing, malformed, semantically empty and unknown-version are four
+  states with four meanings, each named as itself and none folded into
+  another.
+- **A required field missing or blank malforms that entry, not the file**:
+  the entry is skipped and named, and the other entries stay usable. A
+  blank value and an absent key are the same state.
 - Ids: `p-` people, `s-` sources, `pr-` priorities, `pe-` personas. Stable,
   never reused.
 

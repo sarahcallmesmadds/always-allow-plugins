@@ -154,6 +154,14 @@ check('a well-formed empty file is semantically empty, valid, and says so', () =
   assert.ok(line, `no semantically-empty warning in:\n${out}`);
 });
 
+check('a personas file missing the privacy line warns and does not fail the set', () => {
+  const { code, out } = run([assemble('personas-no-privacy')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  const line = out.split('\n').find((l) => l.startsWith('personas.md: warning:')
+    && l.includes('privacy line'));
+  assert.ok(line, `no privacy-line warning in:\n${out}`);
+});
+
 check('a sentence merely mentioning the hand-edit instruction does not satisfy it', () => {
   const { code, out } = run([assemble('voice-buried-instruction')]);
   assert.strictEqual(code, 0, `exit ${code}\n${out}`);

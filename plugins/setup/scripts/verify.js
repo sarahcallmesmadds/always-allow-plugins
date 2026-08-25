@@ -561,8 +561,19 @@ function checkVoice(file, lines) {
 
 function checkPersonas(file, lines, peopleIds) {
   const { header, entries } = splitEntries(lines);
+  // The privacy line setup writes is prose the contract requires, so it is
+  // recognised and excluded from header parsing, like voice.md's
+  // instruction line.
+  const PRIVACY = 'These entries are your private read of real people';
+  const privacyAt = header.findIndex((l) => l.trim().startsWith(PRIVACY));
+  const headerLines = privacyAt === -1
+    ? header
+    : header.filter((l, i) => i !== privacyAt && i !== privacyAt + 1);
   const reported = new Set();
-  checkEntryFileHeader(file, header, reported);
+  checkEntryFileHeader(file, headerLines, reported);
+  if (privacyAt === -1) {
+    report(file, 'warning', `the privacy line setup writes at the top ("${PRIVACY}...") is missing`);
+  }
   const seenIds = new Set();
   for (const entry of entries) {
     const { fields, unrecognised } = collectFields(entry.lines);
