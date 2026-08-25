@@ -45,7 +45,8 @@ claim one.
    quoted phrases in order, **no inflections**. **An entry's `exclude`
    blocks that entry only**; when include and exclude both match within
    one entry, the item is excluded there and the output records that it
-   was. Every placement names the term that made it.
+   was. Every placement names the term that made it, and when several
+   terms in the same entry match, every one of them.
 2. An item matching several priorities takes the highest rank; ties break
    by id, alphabetically. An item matching nothing goes in its own
    section at the bottom, plainly labelled, never forced under the

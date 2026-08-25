@@ -65,7 +65,8 @@ names the span it rests on.
    quoted phrases in order, **no inflections**, titles only. **An entry's
    `exclude` blocks that entry only**, and when include and exclude both
    match within one entry the item is excluded there and the output
-   records that it was. Every assignment names its term.
+   records that it was. Every assignment names its term, and when several
+   terms in the same entry match, every one of them.
 2. An event matching several priorities belongs to the highest ranked;
    ties break by id, alphabetically. Overlapping events count their
    overlapped time once, toward the higher-ranked match; all-day events
