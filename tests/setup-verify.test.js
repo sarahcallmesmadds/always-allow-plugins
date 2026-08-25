@@ -99,6 +99,10 @@ const ERROR_CASES = [
   ['prefer-orphan-line', 'voice.md: error:', 'not a from:/to: pair'],
   ['duplicate-voice-heading', 'voice.md: error:', '"## Never" appears 2 times'],
   ['blank-pushes-back', 'personas.md: error:', 'required field "pushes back on" is blank'],
+  ['scalar-with-dashes', 'sources.md: error:', '"account" takes a single value, not dash items'],
+  ['leading-blank', 'priorities.md: error:', 'starts with "schema:" then "last confirmed:"'],
+  ['unindented-prefer-to', 'voice.md: error:', 'has no to: line'],
+  ['unrecognised-line', 'priorities.md: error:', 'line not recognised as a field or an indented dash item'],
 ];
 
 for (const [caseName, filePrefix, message] of ERROR_CASES) {
@@ -118,6 +122,20 @@ check('an unknown field in two entries warns exactly once and does not fail the 
   const lines = out.split('\n').filter((l) => l.includes('unknown field "exlude"'));
   assert.strictEqual(lines.length, 1, `expected exactly one report, got ${lines.length}:\n${out}`);
   assert.ok(lines[0].startsWith('priorities.md: warning:'), lines[0]);
+});
+
+check('an unknown underscore key in a file header warns and does not fail the set', () => {
+  const { code, out } = run([assemble('unknown-field-header')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  assert.ok(out.includes('priorities.md: warning: unknown field "exported_by"'), out);
+});
+
+check('a voice file missing the hand-edit instruction warns and does not fail the set', () => {
+  const { code, out } = run([assemble('voice-no-instruction')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  const line = out.split('\n').find((l) => l.startsWith('voice.md: warning:')
+    && l.includes('hand-edit instruction'));
+  assert.ok(line, `no hand-edit instruction warning in:\n${out}`);
 });
 
 check('a stale entry warns naming the entry and does not fail the set', () => {

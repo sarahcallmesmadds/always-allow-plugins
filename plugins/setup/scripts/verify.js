@@ -28,6 +28,28 @@ const ROSTER = [
 
 const STALE_DAYS = 90;
 
+// The known fields per context, and which of them are list-valued. Defined
+// once so the unknown-field report and the scalar-shape check cannot drift
+// apart.
+const KNOWN = {
+  aboutMe: ['schema', 'last confirmed', 'name', 'role', 'company', 'timezone', 'working hours', 'my handles'],
+  header: ['schema', 'last confirmed'],
+  voiceHeader: ['schema', 'last confirmed', 'confidence'],
+  people: ['kind', 'relationship', 'handles', 'last confirmed'],
+  priorities: ['rank', 'since', 'include', 'exclude', 'last confirmed'],
+  personas: ['person', 'cares about', 'pushes back on', 'reads', 'last confirmed'],
+  sources: ['kind', 'account', 'required for', 'look back', 'look ahead', 'read', 'skip', 'except', 'last confirmed'],
+};
+const LIST_KEYS = {
+  aboutMe: ['my handles'],
+  header: [],
+  voiceHeader: [],
+  people: ['handles'],
+  priorities: ['include', 'exclude'],
+  personas: [],
+  sources: ['required for'],
+};
+
 // ---------------------------------------------------------------- reporting
 
 const findings = [];
@@ -150,8 +172,10 @@ function checkDate(file, where, value, { stale = true } = {}) {
 // as its first two non-blank lines. Missing, malformed and unknown-version
 // are three different messages.
 function checkHeader(file, lines, fields) {
-  const firstTwo = lines.filter((l) => l.trim() !== '').slice(0, 2)
-    .map((l) => parseField(l));
+  // The very first two lines, not the first two non-blank ones: the contract
+  // tells scripts to accept exactly the written syntax, and the written
+  // syntax opens the file with the header.
+  const firstTwo = [lines[0] || '', lines[1] || ''].map((l) => parseField(l));
   if (!firstTwo[0] || firstTwo[0].key !== 'schema'
     || !firstTwo[1] || firstTwo[1].key !== 'last confirmed') {
     report(file, 'error', 'every file starts with "schema:" then "last confirmed:" as its first two lines');
@@ -188,9 +212,25 @@ function checkDuplicateFields(file, where, fields) {
   }
 }
 
+// A line that reads as nothing is data lost, and a file that will not be
+// read as its shape demands is malformed, never quietly narrower.
 function checkUnrecognisedLines(file, where, unrecognised) {
   for (const line of unrecognised) {
-    report(file, 'warning', `${where}: line not recognised as a field or an indented dash item: "${line}"`);
+    report(file, 'error', `${where}: line not recognised as a field or an indented dash item: "${line}"`);
+  }
+}
+
+// A known field outside the context's list-valued keys takes a single value;
+// dash items under it would be silently attached data. An unknown field's
+// shape is unknowable, so it is kept and reported instead, never judged.
+function checkScalarFields(file, where, fields, context) {
+  for (const f of fields) {
+    if (f.key === 'note') continue;
+    if (!KNOWN[context].includes(f.key)) continue;
+    if (LIST_KEYS[context].includes(f.key)) continue;
+    if (f.list !== null && f.list.length > 0) {
+      report(file, 'error', `${where}: "${f.key}" takes a single value, not dash items`);
+    }
   }
 }
 
@@ -302,11 +342,10 @@ function checkAboutMe(file, lines) {
   const { fields, unrecognised } = collectFields(top);
   checkHeader(file, top, fields);
   checkDuplicateFields(file, 'about-me', fields);
+  checkScalarFields(file, 'about-me', fields, 'aboutMe');
   checkUnrecognisedLines(file, 'about-me', unrecognised);
   requireFields(file, 'about-me', fields, ['name', 'role', 'timezone']);
-  checkUnknownFields(file, fields,
-    ['schema', 'last confirmed', 'name', 'role', 'company', 'timezone', 'working hours', 'my handles'],
-    new Set());
+  checkUnknownFields(file, fields, KNOWN.aboutMe, new Set());
 
   const tz = getOne(fields, 'timezone');
   if (tz !== null && tz.value !== '') {
@@ -335,8 +374,9 @@ function checkEntryFileHeader(file, header) {
   const { fields, unrecognised } = collectFields(header);
   checkHeader(file, header, fields);
   checkDuplicateFields(file, 'file header', fields);
+  checkScalarFields(file, 'file header', fields, 'header');
   checkUnrecognisedLines(file, 'file header', unrecognised);
-  checkUnknownFields(file, fields, ['schema', 'last confirmed'], new Set());
+  checkUnknownFields(file, fields, KNOWN.header, new Set());
 }
 
 function checkPeople(file, lines) {
@@ -350,11 +390,11 @@ function checkPeople(file, lines) {
     const id = entry.id;
     checkId(file, id, 'p', seenIds);
     checkDuplicateFields(file, id, fields);
+    checkScalarFields(file, id, fields, 'people');
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['kind', 'handles']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields,
-      ['kind', 'relationship', 'handles', 'last confirmed'], reported);
+    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.people], reported);
 
     const kind = getOne(fields, 'kind');
     if (kind !== null && kind.value !== 'person' && kind.value !== 'shared') {
@@ -392,11 +432,11 @@ function checkPriorities(file, lines) {
     const id = entry.id;
     checkId(file, id, 'pr', seenIds);
     checkDuplicateFields(file, id, fields);
+    checkScalarFields(file, id, fields, 'priorities');
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['rank', 'since', 'include']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields,
-      ['rank', 'since', 'include', 'exclude', 'last confirmed'], reported);
+    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.priorities], reported);
 
     const rank = getOne(fields, 'rank');
     if (rank !== null && rank.value !== '' && !/^-?\d+$/.test(rank.value)) {
@@ -430,7 +470,7 @@ function checkVoice(file, lines) {
   const { fields } = collectFields(top);
   checkHeader(file, top, fields);
   checkDuplicateFields(file, 'voice header', fields);
-  checkUnknownFields(file, fields, ['schema', 'last confirmed', 'confidence'], new Set());
+  checkUnknownFields(file, fields, KNOWN.voiceHeader, new Set());
 
   const confidence = getOne(fields, 'confidence');
   if (confidence === null) {
@@ -475,8 +515,8 @@ function checkVoice(file, lines) {
         if (from[1].trim() === '') {
           report(file, 'error', 'Prefer item has a blank from:');
         }
-        const next = (section[i + 1] || '').trim();
-        if (!/^to:\s+\S/.test(next)) {
+        const next = section[i + 1] || '';
+        if (!/^\s+to:\s+\S/.test(next)) {
           report(file, 'error', `Prefer item "from: ${from[1]}" has no to: line; Prefer is a from:/to: list`);
         } else {
           i += 1;
@@ -498,11 +538,11 @@ function checkPersonas(file, lines, peopleIds) {
     const id = entry.id;
     checkId(file, id, 'pe', seenIds);
     checkDuplicateFields(file, id, fields);
+    checkScalarFields(file, id, fields, 'personas');
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['cares about', 'pushes back on', 'reads']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields,
-      ['person', 'cares about', 'pushes back on', 'reads', 'last confirmed'], reported);
+    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.personas], reported);
 
     const person = getOne(fields, 'person');
     if (person !== null) {
@@ -528,11 +568,11 @@ function checkSources(file, lines) {
     const id = entry.id;
     checkId(file, id, 's', seenIds);
     checkDuplicateFields(file, id, fields);
+    checkScalarFields(file, id, fields, 'sources');
     checkUnrecognisedLines(file, id, unrecognised);
     requireFields(file, id, fields, ['kind', 'account', 'required for']);
     checkEntryConfirmed(file, id, fields);
-    checkUnknownFields(file, fields,
-      ['kind', 'account', 'required for', 'look back', 'look ahead', 'read', 'skip', 'except', 'last confirmed'], reported);
+    checkUnknownFields(file, fields, [...KNOWN.header, ...KNOWN.sources], reported);
 
     const kind = getOne(fields, 'kind');
     if (kind !== null && !['calendar', 'mail', 'chat', 'notes'].includes(kind.value)) {

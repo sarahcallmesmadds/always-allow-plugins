@@ -1,13 +1,14 @@
 # The shared files
 
 Copied from `~/.planning/SCHEMAS-always-allow-shared-files.md` on 2026-08-25,
-when the first skill was built against it, with three build-time corrections
-a review caught: the priorities, personas and sources examples now carry the
-per-entry `last confirmed` the rules already required, the window form names
-its singular, and the voice example carries the instruction line the rules
-already required. This copy is what the installed plugin reads. If the two
-ever disagree beyond those corrections, say so rather than silently
-preferring either.
+when the first skill was built against it, with build-time corrections two
+review rounds caught: the priorities, personas and sources examples and
+required-field lists now carry the per-entry `last confirmed` the global rule
+already required, the window form names its singular, the voice example
+carries the instruction line the rules already required, and the
+no-duplicate-keys rule is stated rather than implied. This copy is what the
+installed plugin reads. If the two ever disagree beyond those corrections,
+say so rather than silently preferring either.
 
 `setup` writes these. Other plugins read them.
 
@@ -42,6 +43,9 @@ made unambiguous by design.
 - **A field is a `key: value` line. The value runs to the end of the line**, so
   a value may contain colons and commas: `relationship: manager: North America`
   is the key `relationship` with everything after the first colon as its value.
+- **A key other than `note:` appears at most once per entry, and once in the
+  header.** A duplicated key is malformed, because two values for one field
+  would have every consumer silently picking one.
 - **A list is either bracketed inline on one line, `[a, b]`, or indented dashes
   under the key.** An inline list does not wrap; anything long uses dashes.
 - **Unknown fields are kept, and reported once.** A consumer meeting a key it
@@ -217,7 +221,7 @@ include:
 last confirmed: 2026-08-24
 ```
 
-**Required per entry:** `id`, `rank`, `since`, `include`.
+**Required per entry:** `id`, `rank`, `since`, `include`, `last confirmed`.
 
 **How matching works, exactly:**
 
@@ -327,8 +331,8 @@ reads: the first paragraph and the last line
 last confirmed: 2026-08-24
 ```
 
-**Required per entry:** `id`, `cares about`, `pushes back on`, `reads`.
-**`person` is optional.**
+**Required per entry:** `id`, `cares about`, `pushes back on`, `reads`,
+`last confirmed`. **`person` is optional.**
 
 - **A present `person` must resolve to a `people.md` id, or the file is
   malformed.** Only an absent field means deliberately unlinked.
@@ -380,8 +384,8 @@ except: ignore the deal rows Sarah owns for admin reasons
 last confirmed: 2026-08-24
 ```
 
-**Required per entry:** `id`, `kind`, `account`, `required for`, and at least
-one of `look back` / `look ahead`.
+**Required per entry:** `id`, `kind`, `account`, `required for`,
+`last confirmed`, and at least one of `look back` / `look ahead`.
 
 - **`account` binds the source to a real one**, because a person with two mail
   accounts has no other way to say which. **A consumer compares the identity
