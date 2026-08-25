@@ -11,18 +11,14 @@ evidence instead of a feeling.
 The record is `wins.md` and this skill is its **only automated writer**,
 per the contract
 (`../../../setup/skills/install/references/file-schemas.md`). If the
-contract cannot be opened, say so and do only what this text itself
-specifies, nothing more. `people.md`, `sources.md` and `about-me.md`
+contract cannot be opened, say so; the section "When the contract cannot
+be opened" then governs. `people.md`, `sources.md` and `about-me.md`
 (timezone) are optional: one that is absent, will not read per its shape
 (malformed, said with the plain reason), or claims a schema version this
 text does not know is set aside whole with the loss named once, never
 half-read; semantically empty means it has nothing to offer, said once. A
 malformed entry inside an otherwise readable optional file is skipped by
-name and the rest used. Restated for runs where the contract cannot be
-opened: an entry older than 90 days by its own `last confirmed` is called
-stale once, and a field key this text does not name is kept and reported
-once per file, never dropped, because a typo like `exlude:` must not
-vanish.
+name and the rest used.
 
 ## Record states, told apart, spoken plainly
 
@@ -87,6 +83,22 @@ vanish.
    saying so. Where a file cannot be written from here, hand the entry
    back as a paste block, but only after that same fresh re-read came
    back clean.
+
+## When the contract cannot be opened
+
+Say so, then run on these rules alone, nothing looser. Schema 1 is the
+only version this text knows. Every file opens with `schema:` then
+`last confirmed:` as its first two lines, and any `last confirmed`,
+file-level or entry-level, older than 90 days is called stale once. An
+entry runs from one `id:` line to the next. Keys this text knows: wins
+entries carry `id`, `date`, `win`, `person`, `last confirmed`; people
+entries carry `id`, `kind`, `relationship`, `handles`, `last confirmed`;
+sources entries carry `id`, `kind`, `account`, `required for`,
+`look back`, `look ahead`, `read`, `skip`, `except`, `last confirmed`;
+`about-me.md` carries `name`, `role`, `company`, `timezone`,
+`working hours`, `my handles`. `note:` is the person's own space and is
+never reported; any other unknown key is kept and reported once per
+file. A required key missing or blank malforms that entry, not the file.
 
 ## Reading the record back
 

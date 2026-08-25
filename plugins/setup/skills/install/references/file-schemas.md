@@ -516,6 +516,13 @@ that says so. This is the one exception to "`setup` is the only automated
 writer": **each record has exactly one automated writer, the skill named
 here, and it appends only entries the person has seen and confirmed.**
 
+**No lock over these files exists here**, in the same way true atomic
+replacement does not, and promising one anyway is the failure this document
+already names. A writer appends only its new entry block, never rewriting
+the rest, and re-reads afterwards; that detects a racing write or hand
+edit rather than preventing it, and a detected race is reported with the
+entry preserved, never silently retried.
+
 | Record | Automated writer |
 |---|---|
 | `wins.md` | `wins` |

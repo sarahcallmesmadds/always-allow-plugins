@@ -11,8 +11,8 @@ comparison, never a diary. A bare "how was my week?" belongs here;
 named.
 
 The contract is `../../../setup/skills/install/references/file-schemas.md`.
-If it cannot be opened, say so and do only what this text itself specifies,
-nothing more. `priorities.md` and `sources.md` are hard stops; `about-me.md`
+If it cannot be opened, say so; the section "When the contract cannot be
+opened" then governs. `priorities.md` and `sources.md` are hard stops; `about-me.md`
 is optional and supplies the timezone, and without it say once that UTC is
 assumed.
 
@@ -27,11 +27,23 @@ assumed.
 
 **A malformed entry is skipped and named; the file's other entries stay
 usable.** Only a file that will not read at all stops the run. Never invent
-a priority and never grade a week against a guess. Restated for runs where
-the contract cannot be opened: an entry older than 90 days by its own
-`last confirmed` is called stale once, and a field key this text does not
-name is kept and reported once per file, never dropped, because a typo
-like `exlude:` must not vanish.
+a priority and never grade a week against a guess.
+
+## When the contract cannot be opened
+
+Say so, then run on these rules alone, nothing looser. Schema 1 is the
+only version this text knows. Every file opens with `schema:` then
+`last confirmed:` as its first two lines, and any `last confirmed`,
+file-level or entry-level, older than 90 days is called stale once. An
+entry runs from one `id:` line to the next. Keys this text knows:
+priorities entries carry `id`, `rank`, `since`, `include`, `exclude`,
+`last confirmed`; sources entries carry `id`, `kind`, `account`,
+`required for`, `look back`, `look ahead`, `read`, `skip`, `except`,
+`last confirmed`; `about-me.md` carries `name`, `role`, `company`,
+`timezone`, `working hours`, `my handles`. `note:` is the person's own
+space and is never reported; any other unknown key is kept and reported
+once per file, because a typo like `exlude:` must not vanish. A required
+key missing or blank malforms that entry, not the file.
 
 ## The week, exactly
 

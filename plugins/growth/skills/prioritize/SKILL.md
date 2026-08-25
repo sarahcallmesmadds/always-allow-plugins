@@ -9,18 +9,14 @@ Rank what is in front of you against what you said mattered, and show the
 work.
 
 The contract is `../../../setup/skills/install/references/file-schemas.md`.
-If it cannot be opened, say so and do only what this text itself
-specifies, nothing more. `priorities.md` is the hard stop; `people.md` is
+If it cannot be opened, say so; the section "When the contract cannot be
+opened" then governs. `priorities.md` is the hard stop; `people.md` is
 optional and supplies wording only: an ask from an entry there can be
 named by relationship ("from your manager"), never weighted by it. A
 `people.md` that is missing, will not read per its shape (malformed, said
 with the plain reason), claims a schema version this text does not know,
 or is empty, is set aside whole with the loss named once, and a malformed
-entry in an otherwise readable one is skipped by name. Restated for runs
-where the contract cannot be opened: an entry older than 90 days by its
-own `last confirmed` is called stale once, and a field key this text does
-not name is kept and reported once per file, never dropped, because a
-typo like `exlude:` must not vanish.
+entry in an otherwise readable one is skipped by name.
 
 ## Priorities file states, told apart, spoken plainly
 
@@ -67,6 +63,20 @@ claim one.
 4. When a placement looks wrong, the terms are the likeliest cause; say
    which term to add or exclude to fix it, so the correction lands in
    `priorities.md` where it holds, not in this one answer.
+
+## When the contract cannot be opened
+
+Say so, then run on these rules alone, nothing looser. Schema 1 is the
+only version this text knows. Every file opens with `schema:` then
+`last confirmed:` as its first two lines, and any `last confirmed`,
+file-level or entry-level, older than 90 days is called stale once. An
+entry runs from one `id:` line to the next. Keys this text knows:
+priorities entries carry `id`, `rank`, `since`, `include`, `exclude`,
+`last confirmed`; people entries carry `id`, `kind`, `relationship`,
+`handles`, `last confirmed`. `note:` is the person's own space and is
+never reported; any other unknown key is kept and reported once per
+file, because a typo like `exlude:` must not vanish. A required key
+missing or blank malforms that entry, not the file.
 
 ## Someone else's projects
 
