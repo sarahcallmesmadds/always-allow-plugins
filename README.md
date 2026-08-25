@@ -16,10 +16,10 @@ Two rules govern every skill here:
 | Plugin | Skills | State |
 |---|---|---|
 | `setup` | `install`, `check` | Built. The verifier is fixture-tested; three review rounds answered |
+| `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` | Built. One plan review round settled at build |
 
-Six more plugins are planned (`daily-hq`, `meetings`, `growth`, `learning`,
-`writing`, `decisions`); their plans live outside this repo until they are
-built.
+Five more plugins are planned (`daily-hq`, `meetings`, `growth`, `learning`,
+`decisions`); their plans live outside this repo until they are built.
 
 This repo is not yet published, so there is no install command to give you
 yet.

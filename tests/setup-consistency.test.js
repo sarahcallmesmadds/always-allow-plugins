@@ -29,16 +29,21 @@ function check(what, fn) {
   }
 }
 
-// The plan set these budgets (PLAN-always-allow-setup-plugin.md revision 9):
-// install under 250 lines, check under 150.
+// The plans set these budgets (setup plan revision 9; writing plan revision
+// 1, where the two shipped reference skills "should not grow" past their
+// measured 156 and 136).
 const BUDGETS = [
-  ['install', 250],
-  ['check', 150],
+  ['setup', 'install', 250],
+  ['setup', 'check', 150],
+  ['writing', 'sound-like-me', 150],
+  ['writing', 'review-as', 150],
+  ['writing', 'slop-check', 157],
+  ['writing', 'say-it-simply', 137],
 ];
 
-for (const [skill, budget] of BUDGETS) {
-  check(`${skill} SKILL.md stays under its ${budget}-line budget`, () => {
-    const file = path.join(SETUP, 'skills', skill, 'SKILL.md');
+for (const [plugin, skill, budget] of BUDGETS) {
+  check(`${plugin}:${skill} SKILL.md stays under its ${budget}-line budget`, () => {
+    const file = path.join(ROOT, 'plugins', plugin, 'skills', skill, 'SKILL.md');
     const lines = fs.readFileSync(file, 'utf8').split('\n').length;
     assert.ok(lines < budget, `${lines} lines, budget ${budget}`);
   });

@@ -23,6 +23,23 @@
         "memory",
         "configuration"
       ]
+    },
+    {
+      "name": "writing",
+      "source": "./plugins/writing",
+      "description": "Four skills for work that already exists: put your voice back into generated text, catch the habits that mean nobody edited it, read a draft as the specific person who will push back, and reorder an answer so the reader knows what to do. Nothing here writes from scratch, sends, or publishes.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Sarah Madden"
+      },
+      "category": "productivity",
+      "tags": [
+        "writing",
+        "editing",
+        "voice",
+        "review",
+        "clarity"
+      ]
     }
   ]
 }
