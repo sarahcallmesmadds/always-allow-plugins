@@ -126,3 +126,5 @@ blocks reads as unmatched, and a misleading title reads as work on a
 priority it merely mentioned. The remedy is naming terms, dates and
 windows in every output so the person can correct the inputs, not
 confidence.
+
+Version: growth 0.1.1, 2026-08-26.

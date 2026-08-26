@@ -106,3 +106,5 @@ send it.
   that limit once.
 - The gap half is only as good as the better-at line setup collected in
   one question.
+
+Version: learning 0.2.0, 2026-08-26.

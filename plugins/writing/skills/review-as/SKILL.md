@@ -95,3 +95,5 @@ failure the shared files are designed against.
   privacy sentence governs where the review goes; inside it, the recorded
   pushback is the pushback.
 - Edit the work. It reports; the user decides what moves.
+
+Version: writing 0.1.1, 2026-08-26.

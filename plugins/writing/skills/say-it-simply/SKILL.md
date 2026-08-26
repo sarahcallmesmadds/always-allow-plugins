@@ -103,3 +103,5 @@ advice to rerun setup over a guide that exists.
 - Send or publish anything, or change a file without being asked.
 - Use a shared file silently: the contract's read-time checks apply, and
   anything skipped is named in the notice slot.
+
+Version: writing 0.1.1, 2026-08-26.

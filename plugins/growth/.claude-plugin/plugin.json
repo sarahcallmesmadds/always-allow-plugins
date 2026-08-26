@@ -1,6 +1,6 @@
 {
   "name": "growth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The one that judges how you worked, not what you produced. Compares your week against the priorities you confirmed, ranks what is in front of you against them, keeps a running record of what actually went well in your own words, and gives feedback against a standard you set. Needs the files setup writes, and time-spent needs a configured calendar; source-based runs open by naming the evidence and the dates they actually read. Nothing here writes except the wins record, and only with your yes.",
   "author": {
     "name": "Sarah Madden",

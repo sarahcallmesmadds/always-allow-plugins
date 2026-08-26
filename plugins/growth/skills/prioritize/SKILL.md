@@ -102,3 +102,5 @@ The ranking is only as good as the include terms, and word matching does
 not handle inflections: "renewals" misses `renewal`. The output names
 every matched term precisely so a bad match is visible and fixable in the
 file where the terms live.
+
+Version: growth 0.1.1, 2026-08-26.

@@ -67,3 +67,5 @@ send it.
 - Answer the reshaped ask unless asked.
 - Rewrite style or tone; that is the writing plugin's job. This skill
   changes what is asked for, not how it sounds.
+
+Version: learning 0.2.0, 2026-08-26.

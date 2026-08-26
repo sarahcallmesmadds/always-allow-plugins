@@ -31,14 +31,17 @@ function check(what, fn) {
 
 // The plans set these budgets (setup plan revision 9; writing plan revision
 // 1, where the two shipped reference skills "should not grow" past their
-// measured 156 and 136; growth plan revision 2, under 200 each).
+// measured 156 and 136; growth plan revision 2, under 200 each). The two
+// measured writing budgets are widened by exactly the two lines of the
+// version stamp every skill carries since 2026-08-26; the no-prose-growth
+// intent stands.
 const BUDGETS = [
   ['setup', 'install', 250],
   ['setup', 'check', 150],
   ['writing', 'sound-like-me', 150],
   ['writing', 'review-as', 150],
-  ['writing', 'slop-check', 157],
-  ['writing', 'say-it-simply', 137],
+  ['writing', 'slop-check', 159],
+  ['writing', 'say-it-simply', 139],
   ['growth', 'time-spent', 200],
   ['growth', 'prioritize', 200],
   ['growth', 'wins', 200],

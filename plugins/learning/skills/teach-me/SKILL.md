@@ -184,3 +184,5 @@ send it.
   is My notes, and the document says so there.
 - Discovery is a search, not a guarantee. The ledger vouches only for
   what it lists.
+
+Version: learning 0.2.0, 2026-08-26.

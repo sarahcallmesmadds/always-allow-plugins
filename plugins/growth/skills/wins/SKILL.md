@@ -130,3 +130,5 @@ Week one has an empty record and says so. The value compounds: the tenth
 week can say what the first cannot, and only if the entries are the
 user's own words rather than generated praise, which is why every entry
 passes through their hands on the way in.
+
+Version: growth 0.1.1, 2026-08-26.

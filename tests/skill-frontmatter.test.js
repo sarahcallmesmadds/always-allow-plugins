@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Frontmatter checks for every shipped skill: the properties an installer
-// depends on and nothing in a session would catch when they break.
+// Identity checks for every shipped skill: the frontmatter properties an
+// installer depends on, and the version stamp the field depends on.
+// Nothing in a session would catch either when they break.
 //
 // The angle-bracket ban exists because the Cowork installer silently drops
 // any skill whose frontmatter description contains < or >: the skill
@@ -73,6 +74,18 @@ for (const [plugin, skill, file] of skillDirs()) {
     const hits = (fields.description || '').match(/[<>][^<>]*[<>]?/g);
     assert.ok(!/[<>]/.test(fields.description || ''),
       `installers drop skills over these: ${JSON.stringify(hits)}; use [square brackets] for placeholders`);
+  });
+
+  check(`${plugin}:${skill} version stamp matches its plugin.json`, () => {
+    const lines = fs.readFileSync(file, 'utf8').trimEnd().split('\n');
+    const stamp = lines[lines.length - 1].match(/^Version: ([a-z-]+) (\d+\.\d+\.\d+), (\d{4}-\d{2}-\d{2})\.$/);
+    assert.ok(stamp, `last line is not a version stamp: ${JSON.stringify(lines[lines.length - 1])}`);
+    assert.strictEqual(stamp[1], plugin, `stamp names "${stamp[1]}", lives in "${plugin}"`);
+    const own = JSON.parse(fs.readFileSync(
+      path.join(PLUGINS, plugin, '.claude-plugin', 'plugin.json'), 'utf8',
+    ));
+    assert.strictEqual(stamp[2], own.version,
+      `stamp says ${stamp[2]}, plugin.json says ${own.version}`);
   });
 }
 

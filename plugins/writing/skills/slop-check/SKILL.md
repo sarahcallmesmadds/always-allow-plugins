@@ -123,3 +123,5 @@ It does not detect AI authorship and is never described as doing so, in
 the report body included. Plenty of people write this way and plenty of
 generated text does not. And it cannot stop anyone shipping anything; it
 reports, and the sending stays theirs.
+
+Version: writing 0.1.1, 2026-08-26.

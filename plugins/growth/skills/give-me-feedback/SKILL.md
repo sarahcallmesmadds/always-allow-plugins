@@ -115,3 +115,5 @@ A month of source windows rarely covers a month: the read is capped by
 each source's `look back`, and the output says what it actually saw. The
 questions exist because the most important evidence, what happened in the
 room, is not in any connector.
+
+Version: growth 0.1.1, 2026-08-26.

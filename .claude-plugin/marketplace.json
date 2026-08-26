@@ -12,7 +12,7 @@
       "name": "setup",
       "source": "./plugins/setup",
       "description": "Runs once. Gets you from \"I installed this\" to \"it knows who I am, and something runs tomorrow morning without me.\" Finds what it can, asks only what it cannot, shows you the whole suggestion, and writes the files every other skill reads. Its check skill tells you at any time which skills can run and which are blocked by which file.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "author": {
         "name": "Sarah Madden"
       },
@@ -28,7 +28,7 @@
       "name": "writing",
       "source": "./plugins/writing",
       "description": "Four skills for work that already exists: put your voice back into generated text, catch the habits that mean nobody edited it, read a draft as the specific person who will push back, and reorder an answer so the reader knows what to do. Nothing here writes from scratch, sends, or publishes.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Sarah Madden"
       },
@@ -45,7 +45,7 @@
       "name": "growth",
       "source": "./plugins/growth",
       "description": "The one that judges how you worked, not what you produced. Compares your week against the priorities you confirmed, ranks what is in front of you against them, keeps a running record of what actually went well in your own words, and gives feedback against a standard you set. Needs the files setup writes, and time-spent needs a configured calendar; source-based runs open by naming the evidence and the dates they actually read. Nothing here writes except the wins record, and only with your yes.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Sarah Madden"
       },
@@ -62,7 +62,7 @@
       "name": "learning",
       "source": "./plugins/learning",
       "description": "Three skills that compare you and your asks against the outside world: a cited brief on any topic, kept as a Word document and rerun on request; what strong looks like in your role right now against what you said you are working on; and the better shape for the thing you are about to ask for. The cited products need live web access and stop without it. Its triggers are lines in the project instructions, so a project set up before learning was installed has none until a skill hands over the paste.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Sarah Madden"
       },

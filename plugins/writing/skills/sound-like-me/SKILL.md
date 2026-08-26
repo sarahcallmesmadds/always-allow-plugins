@@ -96,3 +96,5 @@ about who is talking.
 This is only as good as `voice.md`. A guide waved through in nine seconds
 gives this skill a guess to work from, which is why `accepted` output is
 labelled and why confirming the guide is always offered as the way out.
+
+Version: writing 0.1.1, 2026-08-26.

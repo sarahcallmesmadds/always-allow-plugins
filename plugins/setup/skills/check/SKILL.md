@@ -108,3 +108,5 @@ that blocks a skill in the roster is led with; everything else waits at the
 bottom of the report. A person who asked "is this working" and got a page
 of warnings first will not read to the part that says the morning brief is
 broken.
+
+Version: setup 0.3.1, 2026-08-26.

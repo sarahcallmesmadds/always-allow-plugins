@@ -172,3 +172,5 @@ is a finished run, not a failed one.
   project's files. So sharing the project shares `people.md`.
 - **This skill cannot see their scheduled tasks.** They can. It hands over
   the text and they do the pasting.
+
+Version: setup 0.3.1, 2026-08-26.
