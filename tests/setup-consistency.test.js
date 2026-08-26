@@ -43,6 +43,9 @@ const BUDGETS = [
   ['growth', 'prioritize', 200],
   ['growth', 'wins', 200],
   ['growth', 'give-me-feedback', 200],
+  ['learning', 'teach-me', 200],
+  ['learning', 'best-in-class', 200],
+  ['learning', 'a-better-way', 200],
 ];
 
 for (const [plugin, skill, budget] of BUDGETS) {

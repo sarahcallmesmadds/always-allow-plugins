@@ -143,6 +143,14 @@ ready-to-paste text:
   skill to read the ones it needs before answering. In Cowork this ask is
   the whole lever; nothing can force a skill to open a file there. In Claude
   Code a hook can enforce it, and that hook is not part of this skill.
+  **With the `learning` plugin installed, the same paste carries its three
+  nudge lines**: offer `teach-me` when they ask to learn, be briefed on, or
+  stay current on a topic, or when a brief file with a `refreshed:` date
+  over 90 days old comes up; offer `best-in-class` when they ask how they
+  measure up or what to learn next; offer `a-better-way` when a sizeable
+  ask is forming. These lines are learning's only triggers, so leaving them
+  out leaves that plugin dormant, and a project set up before learning was
+  installed does not have them until a learning skill hands them over.
 - **One scheduled task per schedule-default skill they have installed**, each
   with a name, a frequency, and a one-line description. The defaults:
   `good-morning` daily before their working hours start, `follow-ups` daily

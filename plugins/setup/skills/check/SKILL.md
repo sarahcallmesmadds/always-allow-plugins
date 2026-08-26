@@ -11,8 +11,9 @@ and change nothing.
 
 The file formats are in `../install/references/file-schemas.md`. The table
 "Which skill stops without which file" in that contract is the whole basis
-for the per-skill answer, so read the contract before reporting, and never
-answer from memory.
+for the per-skill file answer, so read the contract before reporting, and
+never answer from memory. One prerequisite lives outside that table and is
+handled in step 4: the two learning skills that read the live web.
 
 ## Step 1. Find the files
 
@@ -62,6 +63,14 @@ For each skill in the roster, apply the hard-stop table:
 
 Lead the whole report with this. The person asked whether things work, not
 for a file inventory; the inventory is the evidence underneath.
+
+`teach-me` and `best-in-class` also need live web access for their cited
+product, which this check does not and cannot test: one open page proves
+nothing about the page a brief will actually need. Their file verdict is
+reported from the table like everyone else's, web access goes in
+**Not checked** by name, and the report says the skills test it themselves
+at run time and stop without it. Never convert a web tool being present,
+or one page opening, into "web access works".
 
 ## Step 5. Check the sources that can be checked from here
 

@@ -18,9 +18,11 @@ Two rules govern every skill here:
 | `setup` | `install`, `check` | Built. The verifier is fixture-tested; three review rounds answered |
 | `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` | Built. Four review rounds, the last one eight live executions |
 | `growth` | `time-spent`, `prioritize`, `wins`, `give-me-feedback` | Built against the amended contract after its Codex round; not yet live-tested |
+| `learning` | `teach-me`, `best-in-class`, `a-better-way` | Built. Two Codex plan rounds answered; needs no contract change; not yet live-tested |
 
-Four more plugins are planned (`daily-hq`, `meetings`, `learning`,
-`decisions`); their plans live outside this repo until they are built.
+Two more plugins are planned (`daily-hq`, `meetings`) and one
+(`decisions`) is parked; their plans live outside this repo until they
+are built.
 
 Install:
 

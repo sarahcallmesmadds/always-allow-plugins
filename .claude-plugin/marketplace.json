@@ -12,7 +12,7 @@
       "name": "setup",
       "source": "./plugins/setup",
       "description": "Runs once. Gets you from \"I installed this\" to \"it knows who I am, and something runs tomorrow morning without me.\" Finds what it can, asks only what it cannot, shows you the whole suggestion, and writes the files every other skill reads. Its check skill tells you at any time which skills can run and which are blocked by which file.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "Sarah Madden"
       },
@@ -56,6 +56,23 @@
         "feedback",
         "wins",
         "reflection"
+      ]
+    },
+    {
+      "name": "learning",
+      "source": "./plugins/learning",
+      "description": "Three skills that compare you and your asks against the outside world: a cited brief on any topic, kept as a file and refreshed on request; what strong looks like in your role right now against what you said you are working on; and the better shape for the thing you are about to ask for. The cited products need live web access and stop without it. Its triggers are lines in the project instructions, so a project set up before learning was installed has none until a skill hands over the paste.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Sarah Madden"
+      },
+      "category": "productivity",
+      "tags": [
+        "learning",
+        "research",
+        "briefs",
+        "role",
+        "prompting"
       ]
     }
   ]

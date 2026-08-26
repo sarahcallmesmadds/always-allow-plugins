@@ -1,0 +1,17 @@
+{
+  "name": "learning",
+  "version": "0.1.0",
+  "description": "Three skills that compare you and your asks against the outside world: a cited brief on any topic, kept as a file and refreshed on request; what strong looks like in your role right now against what you said you are working on; and the better shape for the thing you are about to ask for. The cited products need live web access and stop without it. Its triggers are lines in the project instructions, so a project set up before learning was installed has none until a skill hands over the paste.",
+  "author": {
+    "name": "Sarah Madden",
+    "url": "https://github.com/sarahcallmesmadds"
+  },
+  "license": "MIT",
+  "keywords": [
+    "learning",
+    "research",
+    "briefs",
+    "role",
+    "prompting"
+  ]
+}
