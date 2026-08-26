@@ -127,4 +127,4 @@ matching the run id; the draft is built from the pool alone, opens with
 the pool's window, refuses a pool that fails these checks, and nothing
 is ever sent.
 
-Version: daily-hq 0.1.5, 2026-08-26.
+Version: daily-hq 0.1.6, 2026-08-26.

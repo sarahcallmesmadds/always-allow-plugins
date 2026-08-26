@@ -107,4 +107,4 @@ and edits are not replies; unreadable threads are `unknown`, listed
 separately. Oldest first, fifteen shown, the rest counted per source.
 Nothing is written or sent.
 
-Version: daily-hq 0.1.5, 2026-08-26.
+Version: daily-hq 0.1.6, 2026-08-26.

@@ -1,6 +1,6 @@
 ---
 name: inbox
-description: Sorts mail and chat by what needs you. Three buckets, needs-attention first, with the reason each item is there. Use when the user says "triage my inbox", "what's in my inbox", "sort my email", "go through my messages", "what needs me", "clean this up", or a scheduled triage task fires. Reads only the sources named in sources.md, names anything it could not check, and changes no state anywhere: it never archives, never labels, never marks read, never drafts and never sends. This skill's name is a working id and may change.
+description: Sorts mail and chat by what needs you. Three buckets, needs-attention first, with the reason each item is there. Use when the user says "triage my inbox", "what's in my inbox", "sort my email", "go through my messages", "what needs me", "clean this up", or a scheduled triage task fires. Reads only the sources named in sources.md, names anything it could not check, and changes no state anywhere: it never archives, never labels, never marks read, never drafts and never sends.
 ---
 
 # inbox
@@ -106,4 +106,4 @@ attention lines each naming their reason, the three counts summing to
 the total, and no state changed anywhere: no read marks, no archive, no
 labels, nothing drafted, nothing sent.
 
-Version: daily-hq 0.1.5, 2026-08-26.
+Version: daily-hq 0.1.6, 2026-08-26.

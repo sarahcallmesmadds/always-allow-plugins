@@ -131,9 +131,9 @@ silently downgrades a required source to optional.
 `prep-me`, `teach-me`, `best-in-class`, `a-better-way`, `sound-like-me`,
 `slop-check`, `review-as`, `say-it-simply`, `why-we-decided`, `run-it-past`.
 
-**`inbox` is a working id.** The skill has no name yet. Renaming it changes
-this roster **and every `required for` list that names it**, which is why the
-rename is in the Open table rather than described as free.
+**`inbox` began as a working id and was confirmed as the skill's name on
+2026-08-26**, closing the placeholder note and Open-table row this document
+used to carry.
 
 ---
 
@@ -630,6 +630,5 @@ version said "anything producing prose", which no builder could enumerate.
 | Word matching does not handle inflections | `renewal` misses "renewals" unless both are listed |
 | `read`, `skip`, `except` are prose | Two skills can act differently; reporting what was done is mitigation |
 | No migration from schema 1 to 2 | Stopping on unknown versions is safe, not a migration |
-| The `inbox` id is a placeholder | Renaming it touches every `required for` that lists it |
 | Exact text normalisation is not pinned character by character | Unicode, apostrophes and edge punctuation can still read two ways; settled at build with test cases, not here |
 | A connector's "positive evidence" of a successful read is undefined per connector | What counts as evidence differs by connector and is recorded when each adapter is built |

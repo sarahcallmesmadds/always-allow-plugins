@@ -144,4 +144,4 @@ bottom of the report. A person who asked "is this working" and got a page
 of warnings first will not read to the part that says the morning brief is
 broken.
 
-Version: setup 0.3.2, 2026-08-26.
+Version: setup 0.3.3, 2026-08-26.

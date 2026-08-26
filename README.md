@@ -23,7 +23,6 @@ Two rules govern every skill here:
 
 One more plugin is planned (`meetings`) and one (`decisions`) is
 parked; their plans live outside this repo until they are built.
-`inbox` is a working name and may change.
 
 ## Install, and how updating actually works
 

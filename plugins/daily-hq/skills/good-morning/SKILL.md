@@ -148,4 +148,4 @@ person who is not you, not a bot, not a shared entry; reactions and
 edits are not replies; calendar and notes items carry `unknown` with the
 reason said.
 
-Version: daily-hq 0.1.5, 2026-08-26.
+Version: daily-hq 0.1.6, 2026-08-26.
