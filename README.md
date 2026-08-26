@@ -37,18 +37,20 @@ In the Claude desktop app, add this repository as a skill source
 
 Three things about installs that nothing in a session will tell you:
 
-- **Installing copies a snapshot.** A project runs the copy it got at
-  install time, not this repository. New commits change nothing you have
-  already installed.
-- **Updating is three steps: remove the plugin, add it back, start a new
-  chat.** The app refreshes its own copy of this repository on its own
-  schedule (the plugin page shows when it last did), so a re-add is only
-  as fresh as that copy. And a chat only gets the skill files that
-  existed when it was opened, which is why the new chat is not optional.
+- **Installing copies a snapshot.** You run the copy you got at install
+  time, not this repository. New commits change nothing you have already
+  installed.
+- **Updating in the desktop app is three steps: remove the plugin, add
+  it back, start a new chat.** The app refreshes its own copy of this
+  repository on its own schedule (the plugin page shows when it last
+  did), so a re-add is only as fresh as that copy. And a chat only gets
+  the skill files that existed when it was opened, which is why the new
+  chat is not optional. **In Claude Code**, update the marketplace and
+  the plugin from the `/plugin` menu, then start a new session.
 - **Every skill can say which version it is running.** Ask in any chat:
   "which version of teach-me are you running?" The answer is the Version
   line at the bottom of the skill itself. If it does not match this
-  repository, the project is running an old snapshot; update as above.
+  repository, you are running an old snapshot; update as above.
 
 ## Where everything gets written
 

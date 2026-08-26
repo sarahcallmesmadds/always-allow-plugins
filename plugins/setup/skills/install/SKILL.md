@@ -170,10 +170,12 @@ Three sentences, once, at the end of the run, because nothing in a later
 session will volunteer them:
 
 - Installing copied a snapshot; new versions of these skills change
-  nothing here until the plugin is removed, added back, and a new chat is
-  started.
-- The app keeps its own copy of the marketplace and refreshes it on its
-  own schedule, so a re-add is only as fresh as that copy.
+  nothing here until that copy is updated.
+- In the desktop app, updating means removing the plugin, adding it back,
+  and starting a new chat; the app also keeps its own copy of the
+  marketplace and refreshes it on its own schedule, so a re-add is only
+  as fresh as that copy. In Claude Code, update the marketplace and the
+  plugin from the `/plugin` menu, then start a new session.
 - Any skill will say which version it is running when asked; the answer
   is the Version line at the bottom of the skill itself.
 

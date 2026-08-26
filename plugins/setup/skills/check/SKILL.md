@@ -52,7 +52,12 @@ meanings. Keep them apart in everything you report; the remedies differ.
 
 ## Step 4. Say which skills can run, from the contract's own table
 
-For each skill in the roster, apply the hard-stop table:
+The contract's roster names skills from plugins that may not be installed
+here. This step reports only the skills actually available in this
+session; a roster skill that is not available is never announced as able
+to run, and whether it ought to be available is step 6's question.
+
+For each available skill in the roster, apply the hard-stop table:
 
 - A skill whose hard-stop files are all present and well-formed **can run**.
 - A skill with a hard-stop file missing, malformed, or semantically empty
@@ -101,14 +106,20 @@ The marketplace ships these skills per plugin:
 For each plugin the person has added at all, compare the skills actually
 available in this session against its row. A plugin that was never added
 is **Not checked**, not a failure. A skill whose row says it ships but
-whose file is not available goes in **Broken**, by name, with the one
-remedy: remove the plugin, add it back, start a new chat; and if that
-does not restore it, the app's copy of the marketplace may be behind,
-which its plugin page shows.
+whose file is not available goes in **Broken**, by name, with the remedy
+for where the person is. In the desktop app: remove the plugin, add it
+back, start a new chat; if that does not restore it, the app's copy of
+the marketplace may be behind, which its plugin page shows. In Claude
+Code: update the marketplace and the plugin from the `/plugin` menu,
+then start a new session.
 
-Each installed skill's own last line is a Version stamp. Report the
-version per plugin, and if two skills from one plugin report different
-versions, say so in **Broken**: the install is a mix of snapshots.
+Each installed skill's own last line is a Version stamp, but read the
+stamps only where this session exposes the skill files: in Cowork the
+installed skills are mounted as files, and in Claude Code the installed
+plugin's folder can be read where it can be found. Where the files
+cannot be read, versions go in **Not checked**, never guessed. Where
+they can: report the version per plugin, and two different versions
+inside one plugin go in **Broken**: the install is a mix of snapshots.
 
 ## What this skill does not do
 

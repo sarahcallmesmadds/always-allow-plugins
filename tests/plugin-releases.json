@@ -1,0 +1,18 @@
+{
+  "setup": {
+    "version": "0.3.1",
+    "hash": "06c09cb95f22542d710562636cb3a88f7389e1f41c4631f2b4b9ac2dde85eec7"
+  },
+  "writing": {
+    "version": "0.1.1",
+    "hash": "fc0073f0e1d2c72299a24a09018306ee56dd85c0e513b269d0c663cf5de4ad57"
+  },
+  "growth": {
+    "version": "0.1.1",
+    "hash": "3981f1f7a023fed9a8af99d101af0cfbaee2e20156d6763bc5e28a0b2138be7e"
+  },
+  "learning": {
+    "version": "0.2.0",
+    "hash": "a3c7bacd508f70b05eb7d1d46bf4faaf5511e90dab80104c73b15a36d13bf7bf"
+  }
+}

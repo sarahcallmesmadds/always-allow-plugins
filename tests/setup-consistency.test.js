@@ -110,7 +110,7 @@ check('the three learning skills carry the identical nudge-lines block', () => {
     'the nudge-lines blocks differ between the three learning skills');
 });
 
-check('the installed-skills table in check matches the plugins on disk', () => {
+check('the installed-skills table in check matches what the marketplace ships', () => {
   const skill = fs.readFileSync(path.join(SETUP, 'skills', 'check', 'SKILL.md'), 'utf8');
   const section = skill.split('## Step 6.')[1];
   assert.ok(section, 'no step-6 section in check');
@@ -123,15 +123,24 @@ check('the installed-skills table in check matches the plugins on disk', () => {
     fromTable[cells[0].replace(/`/g, '')] =
       (cells[1].match(/`([a-z-]+)`/g) || []).map((s) => s.replace(/`/g, '')).sort();
   }
-  const fromDisk = {};
-  for (const plugin of fs.readdirSync(path.join(ROOT, 'plugins'))) {
-    const dir = path.join(ROOT, 'plugins', plugin, 'skills');
-    if (!fs.existsSync(dir)) continue;
-    fromDisk[plugin] = fs.readdirSync(dir)
+  // What ships is what marketplace.json lists, not what sits on disk: a
+  // plugin dropped from the marketplace must fail this comparison too.
+  const market = JSON.parse(fs.readFileSync(path.join(ROOT, '.claude-plugin', 'marketplace.json'), 'utf8'));
+  const shipped = {};
+  for (const entry of market.plugins) {
+    const dir = path.join(ROOT, entry.source, 'skills');
+    assert.ok(fs.existsSync(dir), `${entry.name}: marketplace source ${entry.source} has no skills directory`);
+    shipped[entry.name] = fs.readdirSync(dir)
       .filter((s) => fs.existsSync(path.join(dir, s, 'SKILL.md'))).sort();
   }
-  assert.deepStrictEqual(fromTable, fromDisk,
-    'the table in check and the skills on disk disagree');
+  assert.deepStrictEqual(fromTable, shipped,
+    'the table in check and the marketplace disagree');
+  const listed = new Set(market.plugins.map((p) => p.name));
+  for (const plugin of fs.readdirSync(path.join(ROOT, 'plugins'))) {
+    if (fs.existsSync(path.join(ROOT, 'plugins', plugin, 'skills'))) {
+      assert.ok(listed.has(plugin), `plugins/${plugin} holds skills but is not in marketplace.json`);
+    }
+  }
 });
 
 check('check points at the same contract file install carries', () => {
