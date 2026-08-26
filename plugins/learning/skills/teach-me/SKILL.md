@@ -6,8 +6,9 @@ description: Build a cited brief on a topic from sources actually retrieved this
 # teach-me
 
 A brief you keep, on a topic you name, where every claim rests on a source
-retrieved this run. Not a chat answer that scrolls away: a file, refreshed
-on request, that says how current it is.
+retrieved this run, with one recorded exception: lines the person owns,
+kept at their word and named in the change note. Not a chat answer that
+scrolls away: a file, refreshed on request, that says how current it is.
 
 ## The one prerequisite
 
@@ -23,17 +24,22 @@ update date where the page states one, the date read, the retrieval
 state, and on failure the error kept.
 
 - **Four retrieval states.** `full`: the tool returned the document
-  without truncation. `partial`: some content then truncation or a
-  timeout; it supports only claims inside the retrieved part, said so.
-  `snippet`: search-result text only, **discovery-only, supporting no
-  claim**, because a snippet has no page context. `failed`: nothing
-  usable, listed, never cited as read. **On `partial` or `failed`, the
-  error is kept.**
+  without truncation of any kind. Truncation the tool notes anywhere,
+  a capped quote included, makes the read `partial`: it supports only
+  claims inside the retrieved part, said so. `snippet`: search-result
+  text only, **discovery-only, supporting no claim**, because a
+  snippet has no page context. `failed`: nothing usable, listed, never
+  cited as read. **On `partial` or `failed`, the error is kept.**
 - **Claims group into source families**: material a page quotes,
   credits, or syndicates from another counts with its origin, not as a
   second voice; the page's own analysis counts with its publisher.
-  Counts report both numbers, pages read and independent origins.
-  Grouping sees only the provenance a page shows; say that once.
+  The origin count is the distinct origins, publishers and named
+  credits alike, behind at least one claim in the brief. Counts report
+  both numbers, pages read and origins, never mixed: `full` is a
+  page's state, so "N origins read in full" is a phrase this skill
+  does not write. Grouping sees only the provenance a page shows;
+  that limit is stated once in the run's report and once in
+  `## Sources`.
 - The run's report to the person opens with one aggregate coverage
   line (pages, families, states). In the brief file, the coverage line
   opens `## Sources`, which holds the full ledger; the file itself
@@ -73,8 +79,11 @@ file's own rules.
    rows and the change note; prose about the topic is never structure.
    Nothing else gets written: no conclusions, no judgments, no advice,
    and no significance words like "worth knowing" or "not urgent",
-   because no page said them. Relevance lives in what is selected and
-   how it is ordered, never in added sentences.
+   because no page said them. Two named leaks: a comparative no page
+   made ("X is the most specific"), and an uncounted "the origins do
+   not agree"; each is written as a counted pattern or not at all.
+   Relevance lives in what is selected and how it is ordered, never
+   in added sentences.
 4. Show the whole file and take the yes. **Nothing is written until the
    person approves the shown file**; a change they ask for is made and
    shown again first, and a withheld yes writes nothing. The shape:
