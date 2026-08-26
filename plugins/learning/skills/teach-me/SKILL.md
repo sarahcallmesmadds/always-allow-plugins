@@ -6,9 +6,9 @@ description: Build a cited brief on a topic from sources actually retrieved this
 # teach-me
 
 A brief you keep, on a topic you name, where every claim rests on a source
-retrieved this run, with one recorded exception: lines the person owns,
-kept at their word and named in the change note. Not a chat answer that
-scrolls away: a file, refreshed on request, that says how current it is.
+retrieved this run, except what is kept at the person's word: lines they
+claim as theirs and old text they decline to change, both named in the
+change note. A file, refreshed on request, that says how current it is.
 
 ## The one prerequisite
 
@@ -40,7 +40,7 @@ state, and on failure the error kept.
   Grouping sees only the provenance a page shows; that limit is
   said once in the report and once in `## Sources`.
 - The run's report to the person opens with one aggregate coverage
-  line (pages, families, states). In the brief file, the coverage line
+  line (pages, origins, states). In the brief file, the coverage line
   opens `## Sources`, which holds the full ledger; the file itself
   opens per the shape below.
 
