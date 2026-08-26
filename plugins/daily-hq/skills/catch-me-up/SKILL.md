@@ -127,4 +127,4 @@ most seven items in the whole brief whatever group each lands in, cuts
 named with kind, source and what each needed; the window and every
 source's covered dates are always named; nothing is written or sent.
 
-Version: daily-hq 0.1.3, 2026-08-26.
+Version: daily-hq 0.1.4, 2026-08-26.

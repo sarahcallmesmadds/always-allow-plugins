@@ -161,15 +161,27 @@ function verifyFile(folder, name, rules, report, known) {
     if (version !== '1') error(`schema version ${version} unknown; this plugin reads schema 1`);
   }
   const headerRequired = [...COMMON_HEADER, ...rules.header];
+  let lastHeaderKey = null;
   for (let i = 1; i < firstEntry; i += 1) {
     const line = body[i];
-    if (line.trim() === '' || line.startsWith('#')) continue;
+    if (line.trim() === '' || line.startsWith('#')) { lastHeaderKey = null; continue; }
+    const dash = line.match(/^\s+- (.*)$/);
+    if (dash) {
+      if (!lastHeaderKey) { error(`dash item outside a list: ${JSON.stringify(line)}`); continue; }
+      if (!Array.isArray(header[lastHeaderKey])) header[lastHeaderKey] = [];
+      header[lastHeaderKey].push(dash[1].trim());
+      continue;
+    }
     const m = line.match(/^([A-Za-z][A-Za-z -]*): ?(.*)$/);
     if (!m) { error(`line not recognised as a field: ${JSON.stringify(line)}`); continue; }
     const [, key, value] = m;
     if (key in header) error(`field "${key}" appears more than once in the header`);
     header[key] = value.trim();
+    lastHeaderKey = value.trim() === '' ? key : null;
     if (!headerRequired.includes(key) && key !== 'schema') warnUnknown(key);
+  }
+  for (const key of headerRequired) {
+    if (Array.isArray(header[key])) error(`"${key}" takes a single value, not a list`);
   }
   for (const key of headerRequired) {
     if (!(key in header)) error(`required header field "${key}" missing`);
@@ -246,6 +258,9 @@ function verifyFile(folder, name, rules, report, known) {
     seenIds.add(id);
     if (!ITEM_ID.test(id)) {
       error(`id "${id}" is not [source id]/[item id]`);
+    } else if (!/^s-[a-z0-9-]+$/.test(id.split('/')[0])) {
+      // Form is checked whether or not sources.md is here to resolve it.
+      error(`id "${id}" does not begin with an s- source id`);
     } else if (typeof entry.fields.source === 'string'
         && entry.fields.source !== id.split('/')[0]) {
       error(`entry "${id}": source "${entry.fields.source}" does not match the id prefix "${id.split('/')[0]}"`);
@@ -278,12 +293,13 @@ function verifyFile(folder, name, rules, report, known) {
       }
       if (typeof f.start === 'string' && typeof f.end === 'string'
           && realTime(f.start) && realTime(f.end)) {
-        // Same precision compares whole values; mixed precision can only
-        // be judged by day, and a same-day mix is not provably inverted.
-        const inverted = f.start.length === f.end.length
-          ? f.end < f.start
-          : f.end.slice(0, 10) < f.start.slice(0, 10);
-        if (inverted) error(`end "${f.end}" on "${id}" is before its start`);
+        // One representation per event: all-day or timed, never a mix,
+        // so the interval is always comparable.
+        if (f.start.length !== f.end.length) {
+          error(`start "${f.start}" and end "${f.end}" on "${id}" mix all-day and timed forms`);
+        } else if (f.end < f.start) {
+          error(`end "${f.end}" on "${id}" is before its start`);
+        }
       }
       if (typeof f.source === 'string' && known.sources && known.sources.has(f.source)
           && known.sources.get(f.source) !== 'calendar') {

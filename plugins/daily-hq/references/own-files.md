@@ -97,7 +97,9 @@ IANA name the run evaluated dates in), `items`. All required.
   except whitespace and `/`. Never a bare id.
 - **`source` repeats the id's prefix** and must match it exactly.
 - **`start` and `end`** are `YYYY-MM-DD` for an all-day event or
-  `YYYY-MM-DDTHH:MM` otherwise, in the header's timezone.
+  `YYYY-MM-DDTHH:MM` otherwise, in the header's timezone. One event uses
+  one form: a timed start with an all-day end, or the reverse, is
+  malformed, and an end before its start is malformed.
 - **`status`** is what the connector reported for the event, as text,
   never blank.
 - **`participants`** holds resolved `people.md` ids only. An empty list is

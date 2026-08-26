@@ -98,7 +98,9 @@ const ERROR_CASES = [
   ['snapshot-noncalendar-source', 'day-snapshot.md: error:', 'source "s-work-mail" on "s-work-mail/evt-4520" is not a calendar source; the snapshot holds calendar events'],
   ['pool-window-inverted', 'going-away-pool.md: error:', 'window start 2026-09-05 is after window end 2026-09-04'],
   ['snapshot-end-before-start', 'day-snapshot.md: error:', 'end "2026-08-25T13:00" on "s-work-calendar/evt-4471" is before its start'],
-  ['snapshot-mixed-inverted', 'day-snapshot.md: error:', 'end "2026-08-24" on "s-work-calendar/evt-4533" is before its start'],
+  ['snapshot-mixed-inverted', 'day-snapshot.md: error:', 'start "2026-08-25T09:30" and end "2026-08-24" on "s-work-calendar/evt-4533" mix all-day and timed forms'],
+  ['snapshot-mixed-precision', 'day-snapshot.md: error:', 'start "2026-08-25T09:30" and end "2026-08-25" on "s-work-calendar/evt-4533" mix all-day and timed forms'],
+  ['snapshot-unprefixed-source', 'day-snapshot.md: error:', 'id "work-calendar/evt-4471" does not begin with an s- source id'],
   ['snapshot-missing-run', 'day-snapshot.md: error:', 'required header field "run" missing'],
   ['pool-missing-window', 'going-away-pool.md: error:', 'required header field "window start" missing'],
   ['pool-dangling-owner', 'going-away-pool.md: error:', 'owner "p-nobody" on "s-work-mail/msg-18823" does not resolve to a people.md id'],
@@ -154,6 +156,14 @@ check('an unknown list-valued field warns as unknown and never malforms the file
   const lines = out.split('\n').filter((l) => l.includes('unknown field "tags"'));
   assert.strictEqual(lines.length, 1, `expected exactly one report, got ${lines.length}:\n${out}`);
   assert.ok(!out.includes('takes a single value'), `an unknown list was malformed:\n${out}`);
+});
+
+check('an unknown dashed-list header field warns as unknown and never malforms the file', () => {
+  const { code, out } = run([assemble('snapshot-unknown-header-list')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  const lines = out.split('\n').filter((l) => l.includes('unknown field "labels"'));
+  assert.strictEqual(lines.length, 1, `expected exactly one report, got ${lines.length}:\n${out}`);
+  assert.ok(!out.includes('dash item outside a list'), `a header dash list was rejected:\n${out}`);
 });
 
 check('a note: field is never reported as unknown', () => {
