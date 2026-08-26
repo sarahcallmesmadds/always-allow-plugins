@@ -65,6 +65,17 @@ function frontmatter(file) {
   return { block, fields };
 }
 
+// The value as a YAML parser would see it: a value-position comment,
+// a quoted empty string, and the null spellings all mean "no value".
+function plainScalar(raw) {
+  let v = (raw || '').trim();
+  if (v.startsWith('#')) return '';
+  if (/^(~|null|Null|NULL)$/.test(v)) return '';
+  const q = v.match(/^"(.*)"$/) || v.match(/^'(.*)'$/);
+  if (q) v = q[1].trim();
+  return v;
+}
+
 function realDate(stamp) {
   const [y, m, d] = stamp.split('-').map(Number);
   const t = new Date(Date.UTC(y, m - 1, d));
@@ -77,9 +88,10 @@ for (const [plugin, skill, file] of skillDirs()) {
   check(`${plugin}:${skill} frontmatter names itself and carries a plain description`, () => {
     const { fields } = frontmatter(file);
     assert.strictEqual(fields.name, skill, `name "${fields.name}" vs directory "${skill}"`);
-    assert.ok(fields.description && fields.description.length > 0, 'description missing or empty');
-    assert.ok(!/^[>|]/.test(fields.description),
+    assert.ok(!/^[>|]/.test(fields.description || ''),
       'description uses a YAML folded or literal value; keep it plain text on one line');
+    assert.ok(plainScalar(fields.description).length > 0,
+      'description missing or empty (a quoted empty, ~, null, or comment-only value counts as empty)');
   });
 
   check(`${plugin}:${skill} frontmatter is free of angle brackets`, () => {

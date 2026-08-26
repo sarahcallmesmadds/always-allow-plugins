@@ -5,6 +5,11 @@
 // compares the working tree against this record and fails when content
 // changed without a bump, or when a bump was never recorded.
 //
+// It records releases; it does not bless unbumped edits: a plugin whose
+// content changed while its version stayed put is refused, because
+// otherwise running this command would quietly re-baseline exactly the
+// drift the guard exists to catch.
+//
 // Run: node tests/update-release-record.js
 
 'use strict';
@@ -53,6 +58,20 @@ module.exports = { currentState, RECORD };
 
 if (require.main === module) {
   const state = currentState();
+  const prior = fs.existsSync(RECORD) ? JSON.parse(fs.readFileSync(RECORD, 'utf8')) : null;
+  if (prior) {
+    const refused = Object.entries(state)
+      .filter(([name, now]) => {
+        const was = prior[name];
+        return was && was.version === now.version && was.hash !== now.hash;
+      })
+      .map(([name]) => name);
+    if (refused.length > 0) {
+      console.error(`refusing to record: ${refused.join(', ')} changed on disk without a version bump.`);
+      console.error('Bump plugin.json and marketplace.json, restamp the skills, then rerun.');
+      process.exit(1);
+    }
+  }
   fs.writeFileSync(RECORD, JSON.stringify(state, null, 2) + '\n');
   for (const [name, { version }] of Object.entries(state)) {
     console.log(`recorded ${name} ${version}`);
