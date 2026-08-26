@@ -25,10 +25,10 @@ the tool returned the document without truncation. `partial`: some
 content then truncation or a timeout; it supports only claims inside
 the retrieved part, said so. `snippet`: search-result text only,
 **discovery-only, supporting no claim**, because a snippet has no page
-context. `failed`: nothing usable, listed, never cited as read. Pages
-group into source families by the provenance they show: a page quoting
-or syndicating another counts with its origin. **A page can carry two
-voices**: its own analysis counts with its publisher, and a claim it
+context. `failed`: nothing usable, listed, never cited as read. Claims
+group into source families by the provenance the page shows: material
+a page quotes or syndicates counts with its origin. **A page can carry
+two voices**: its own analysis counts with its publisher, and a claim it
 attributes to a named origin counts with that origin, never with the
 page repeating it. The origin count is the distinct origins,
 publishers and named attributions alike, that back at least one claim
@@ -100,8 +100,9 @@ send it.
 
 - The comparison is as good as what the search surfaced this run, and
   the ledger vouches only for what it lists.
-- Family grouping sees only the provenance a page shows; silent copying
-  can still double-count, and every output using family counts says
+- Origin grouping sees only the provenance a page shows for each
+  claim; silent copying can still double-count, and every output using
+  origin counts says
   that limit once.
 - The gap half is only as good as the better-at line setup collected in
   one question.

@@ -29,12 +29,15 @@ state, and on failure the error kept.
   claim**, because a snippet has no page context. `failed`: nothing
   usable, listed, never cited as read. **On `partial` or `failed`, the
   error is kept.**
-- **Pages group into source families**: a page quoting, crediting, or
-  syndicating another counts with its origin, not as a second voice.
+- **Claims group into source families**: material a page quotes,
+  credits, or syndicates from another counts with its origin, not as a
+  second voice; the page's own analysis counts with its publisher.
   Counts report both numbers, pages read and independent origins.
   Grouping sees only the provenance a page shows; say that once.
-- The output opens with one aggregate coverage line (pages, families,
-  states). The full ledger is the brief's `## Sources` section.
+- The run's report to the person opens with one aggregate coverage
+  line (pages, families, states). In the brief file, the coverage line
+  opens `## Sources`, which holds the full ledger; the file itself
+  opens per the shape below.
 
 ## The optional read
 
@@ -54,20 +57,24 @@ file's own rules.
 ## Creating a brief
 
 1. Search for the topic, read what the search surfaces, build the ledger.
-2. Write the brief. Directly under the header: **one bolded sentence,
-   the strongest and best-supported claim of the whole read.** No
-   preamble and no framing words; the sentence carries itself. Then
-   `## Takeaways`: three to six highlights pitched at the role in
-   `about-me.md`, each one cited or counted, selected and ranked for
-   that role. Then the topic itself in `##` sections.
+2. Write the brief. Directly under the header block, which is the
+   three header lines plus the notes instruction: **one bolded
+   sentence, substantial and not long, the strongest and
+   best-supported claim of the whole read.** No preamble and no
+   framing words; the sentence carries itself. Then `## Takeaways`:
+   three to six highlights pitched at the role in `about-me.md`, each
+   one cited or counted, selected and ranked for that role. Then the
+   topic itself in `##` sections.
 3. **Every sentence is a sourced claim, a counted pattern, or
    structure.** A sourced claim names its source and rests on a `full`
    or `partial` read per the ledger rules. A counted pattern counts
-   origins over the ledger: "four of six origins name X". Nothing else
-   gets written: no conclusions, no judgments, no advice, and no
-   significance words like "worth knowing" or "not urgent", because no
-   page said them. Relevance lives in what is selected and how it is
-   ordered, never in added sentences.
+   origins over the ledger: "four of six origins name X". Structure is
+   the non-claim scaffolding only: the header block, headings, ledger
+   rows and the change note; prose about the topic is never structure.
+   Nothing else gets written: no conclusions, no judgments, no advice,
+   and no significance words like "worth knowing" or "not urgent",
+   because no page said them. Relevance lives in what is selected and
+   how it is ordered, never in added sentences.
 4. Show the whole file and take the yes. **Nothing is written until the
    person approves the shown file**; a change they ask for is made and
    shown again first, and a withheld yes writes nothing. The shape:
@@ -119,6 +126,11 @@ The flow:
    `## Takeaways` included. **Every changed line is shown old
    beside new**, so a correction the person made by hand is visible
    before it can be lost. A line they say is theirs is kept verbatim.
+   The sentence rule from creating a brief governs every line this
+   skill writes, at creation, adoption and refresh alike; an old line
+   that breaks it is named as breaking it during the walk, so a
+   decline is informed, and text kept at the person's decline stays as
+   their choice, recorded in the change note.
 3. **Nothing is written until the end.** Assemble the final: accepted
    sections new, declined sections keeping their old text. Show the
    assembled whole once; one yes writes the file once. A run where
@@ -162,8 +174,9 @@ send it.
 - Save or label model-knowledge output as a brief or as current.
 - Support a claim with a snippet, or with any part of a page that was
   not retrieved.
-- Conclude, judge, or advise. It reports what the pages said and what
-  the counts show, and stops there.
+- Write a conclusion, judgment, or advice into a brief. It reports
+  what the pages said and what the counts show; explain-it-back marks
+  a person's account only against the brief's own lines.
 
 ## The honest limits
 
