@@ -1,6 +1,6 @@
 ---
 name: check
-description: Tell the user which always-allow skills can run today and which are blocked by which file. Use when something that worked has stopped, when another skill stops on a missing or malformed file, or when the user says "check my setup", "is this still working", "what's broken", "why won't good-morning run". Read-only. It changes nothing and repairs nothing; it says what is wrong and where to fix it.
+description: Tell the user which always-allow skills can run today and which are blocked by which file. Use when something that worked has stopped, when another skill stops on a missing or malformed file, when a skill that should be installed cannot be found, or when the user says "check my setup", "is this still working", "what's broken", "why won't good-morning run". Read-only. It changes nothing and repairs nothing; it says what is wrong and where to fix it.
 allowed-tools: Read, Bash(node:*)
 ---
 
@@ -86,6 +86,29 @@ For each entry in `sources.md` whose kind this session has a connector for:
 
 Do not read the contents of any source. Identity and reachability only;
 reading is the other skills' job, under their own rules.
+
+## Step 6. Count the installed skills against what each plugin ships
+
+The marketplace ships these skills per plugin:
+
+| Plugin | Ships |
+|---|---|
+| `setup` | `install`, `check` |
+| `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` |
+| `growth` | `time-spent`, `prioritize`, `wins`, `give-me-feedback` |
+| `learning` | `teach-me`, `best-in-class`, `a-better-way` |
+
+For each plugin the person has added at all, compare the skills actually
+available in this session against its row. A plugin that was never added
+is **Not checked**, not a failure. A skill whose row says it ships but
+whose file is not available goes in **Broken**, by name, with the one
+remedy: remove the plugin, add it back, start a new chat; and if that
+does not restore it, the app's copy of the marketplace may be behind,
+which its plugin page shows.
+
+Each installed skill's own last line is a Version stamp. Report the
+version per plugin, and if two skills from one plugin report different
+versions, say so in **Broken**: the install is a mix of snapshots.
 
 ## What this skill does not do
 

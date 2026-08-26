@@ -110,6 +110,30 @@ check('the three learning skills carry the identical nudge-lines block', () => {
     'the nudge-lines blocks differ between the three learning skills');
 });
 
+check('the installed-skills table in check matches the plugins on disk', () => {
+  const skill = fs.readFileSync(path.join(SETUP, 'skills', 'check', 'SKILL.md'), 'utf8');
+  const section = skill.split('## Step 6.')[1];
+  assert.ok(section, 'no step-6 section in check');
+  const table = section.split('\n\n').find((b) => b.includes('| Plugin |'));
+  assert.ok(table, 'no plugin table in step 6');
+  const fromTable = {};
+  for (const row of table.split('\n').slice(2)) {
+    const cells = row.split('|').map((c) => c.trim()).filter(Boolean);
+    if (cells.length !== 2) continue;
+    fromTable[cells[0].replace(/`/g, '')] =
+      (cells[1].match(/`([a-z-]+)`/g) || []).map((s) => s.replace(/`/g, '')).sort();
+  }
+  const fromDisk = {};
+  for (const plugin of fs.readdirSync(path.join(ROOT, 'plugins'))) {
+    const dir = path.join(ROOT, 'plugins', plugin, 'skills');
+    if (!fs.existsSync(dir)) continue;
+    fromDisk[plugin] = fs.readdirSync(dir)
+      .filter((s) => fs.existsSync(path.join(dir, s, 'SKILL.md'))).sort();
+  }
+  assert.deepStrictEqual(fromTable, fromDisk,
+    'the table in check and the skills on disk disagree');
+});
+
 check('check points at the same contract file install carries', () => {
   const skill = fs.readFileSync(path.join(SETUP, 'skills', 'check', 'SKILL.md'), 'utf8');
   assert.ok(skill.includes('../install/references/file-schemas.md'), 'check does not name the contract path');

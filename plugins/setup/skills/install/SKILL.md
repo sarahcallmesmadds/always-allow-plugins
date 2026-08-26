@@ -164,6 +164,19 @@ Offer to run `good-morning` if it is installed, so the last thing that
 happens is it working. If nothing can run at the end, say so plainly. That
 is a finished run, not a failed one.
 
+## Before finishing, say how updating works
+
+Three sentences, once, at the end of the run, because nothing in a later
+session will volunteer them:
+
+- Installing copied a snapshot; new versions of these skills change
+  nothing here until the plugin is removed, added back, and a new chat is
+  started.
+- The app keeps its own copy of the marketplace and refreshes it on its
+  own schedule, so a re-add is only as fresh as that copy.
+- Any skill will say which version it is running when asked; the answer
+  is the Version line at the bottom of the skill itself.
+
 ## The honest limits
 
 - **In Cowork nothing can force a skill to open a file.** The project
