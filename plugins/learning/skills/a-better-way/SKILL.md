@@ -16,7 +16,7 @@ shape; it does not do the work.
 2. **Find the end state.** If the ask does not state what it is for, ask
    for it in one question: what will you have, or stop doing, when this
    has worked? This is the one thing nothing can find.
-3. Hand back three things, and only these:
+3. When reshaping is needed, hand back three things, and only these:
    - **The reshaped ask**, worded around the end state, ready to use.
    - **What the first instinct was a step toward**, in one sentence, so
      the person sees the reframe rather than taking it on faith.
@@ -35,17 +35,28 @@ the person then asks for that. Someone who wanted the answer would have
 asked the original question; they came here for the shape, and answering
 it uninvited buries the shape under the work.
 
-When the first instinct already is the end state, say so and stop. A
-pass where nothing needed reshaping is a valid run, and inventing a
-cleverer version of an ask that was fine is the failure mode this
-boundary exists for.
+When the first instinct already is the end state, say so and stop.
+That no-change result is the one exception to handing back the three
+things: a pass where nothing needed reshaping is a valid run, and
+inventing a cleverer version of an ask that was fine is the failure
+mode this boundary exists for.
 
-## The nudge line
+## The nudge lines
 
 This skill's trigger lives in the project instructions. If the
-instructions visible in this conversation do not carry the learning
-nudge lines (the same three-line block `teach-me` hands over), end the
-run by offering them as a paste block.
+instructions visible in this conversation do not carry these lines,
+identical in all three learning skills, end the run by offering them
+as a paste block:
+
+```
+When I ask to learn, be briefed on, or stay current on a topic, offer
+teach-me; when a brief file with a refreshed date over 90 days old
+comes up, offer to refresh it.
+When I ask how I measure up in my role or what to learn next, offer
+best-in-class.
+When I am forming a sizeable request, offer a-better-way before I
+send it.
+```
 
 ## What it does not do
 

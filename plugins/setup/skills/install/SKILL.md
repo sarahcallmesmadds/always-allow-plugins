@@ -148,9 +148,11 @@ ready-to-paste text:
   stay current on a topic, or when a brief file with a `refreshed:` date
   over 90 days old comes up; offer `best-in-class` when they ask how they
   measure up or what to learn next; offer `a-better-way` when a sizeable
-  ask is forming. These lines are learning's only triggers, so leaving them
-  out leaves that plugin dormant, and a project set up before learning was
-  installed does not have them until a learning skill hands them over.
+  ask is forming. These lines are learning's only standing route: invoking
+  a skill by name always works, but nothing else offers them, so leaving
+  the lines out means learning surfaces only when remembered, and a project
+  set up before learning was installed does not have them until a learning
+  skill hands them over.
 - **One scheduled task per schedule-default skill they have installed**, each
   with a name, a frequency, and a one-line description. The defaults:
   `good-morning` daily before their working hours start, `follow-ups` daily

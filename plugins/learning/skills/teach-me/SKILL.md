@@ -28,7 +28,8 @@ state, and on failure the error kept.
   timeout; it supports only claims inside the retrieved part, said so.
   `snippet`: search-result text only, **discovery-only, supporting no
   claim**, because a snippet has no page context. `failed`: nothing
-  usable, listed, never cited as read.
+  usable, listed, never cited as read. **On `partial` or `failed`, the
+  error is kept.**
 - **Pages group into source families**: a page quoting, crediting, or
   syndicating another counts with its origin, not as a second voice.
   Counts report both numbers, pages read and independent origins.
@@ -43,16 +44,20 @@ the contract at `../../../setup/skills/install/references/file-schemas.md`:
 a file that is absent, malformed, of an unknown schema version, or
 semantically empty is set aside whole with the loss named once, never
 half-read; unknown fields reported once; a stale `last confirmed` said
-once. Without it, the brief is pitched generally and says so. If the
-contract itself cannot be opened, say so and run on this file's rules
-alone, nothing looser.
+once. Without it, the brief is pitched generally and says so. If the contract
+itself cannot be opened, say so and set `about-me.md` aside unread,
+naming the loss, because this file does not restate the reader rules
+that make that file safe to judge; everything else here runs on this
+file's own rules.
 
 ## Creating a brief
 
 1. Search for the topic, read what the search surfaces, build the ledger.
 2. Write the brief as `##` sections, every claim resting on a `full` or
    `partial` read per the ledger rules. No uncited claims.
-3. Show the whole file before writing. The shape:
+3. Show the whole file and take the yes. **Nothing is written until the
+   person approves the shown file**; a change they ask for is made and
+   shown again first, and a withheld yes writes nothing. The shape:
 
 ```markdown
 topic: EU pricing rules

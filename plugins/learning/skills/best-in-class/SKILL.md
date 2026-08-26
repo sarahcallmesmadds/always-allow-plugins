@@ -19,15 +19,19 @@ cited comparison.
 
 ## The ledger
 
-The same rules as `teach-me`, kept per run: URL, stated publication or
-update date, date read, retrieval state (`full`, `partial`, `snippet`,
-`failed`), errors kept. A `partial` supports only claims inside the
-retrieved part, said so. **A snippet is discovery-only and supports no
-claim.** Pages group into source families by the provenance they show:
-a page quoting or syndicating another counts with its origin. Counts
-report both numbers, pages read and independent origins, and agreement
-language runs over origins only. The output opens with one aggregate
-coverage line; the full ledger sits at the end of the report.
+Kept per run, one row per source: URL, the publication or update date
+where the page states one, the date read, the retrieval state, and on
+`partial` or `failed` the error kept. **Four retrieval states.** `full`:
+the tool returned the document without truncation. `partial`: some
+content then truncation or a timeout; it supports only claims inside
+the retrieved part, said so. `snippet`: search-result text only,
+**discovery-only, supporting no claim**, because a snippet has no page
+context. `failed`: nothing usable, listed, never cited as read. Pages
+group into source families by the provenance they show: a page quoting
+or syndicating another counts with its origin. Counts report both
+numbers, pages read and independent origins, and agreement language
+runs over origins only. The output opens with one aggregate coverage
+line; the full ledger sits at the end of the report.
 
 ## The two reads
 
@@ -40,7 +44,10 @@ half-read; unknown fields reported once; staleness said once. **With no
 role available from the file, ask for one**, because the standard half
 cannot truthfully run "for the role" on nothing and no file can answer
 this. With no better-at line, the gap half says what it is missing and
-never guesses a gap from nothing.
+never guesses a gap from nothing. If the contract itself cannot be
+opened, say so and set `about-me.md` aside unread, naming the loss:
+the standard half runs on a role the person gives, and the gap half
+has nothing recorded to quote.
 
 ## The output
 
@@ -61,9 +68,19 @@ never cherry-pick weaker pages until a count works.
 ## The nudge lines
 
 This skill's trigger lives in the project instructions. If the
-instructions visible in this conversation do not carry the learning
-nudge lines (the same three-line block `teach-me` hands over), end the
-run by offering them as a paste block.
+instructions visible in this conversation do not carry these lines,
+identical in all three learning skills, end the run by offering them
+as a paste block:
+
+```
+When I ask to learn, be briefed on, or stay current on a topic, offer
+teach-me; when a brief file with a refreshed date over 90 days old
+comes up, offer to refresh it.
+When I ask how I measure up in my role or what to learn next, offer
+best-in-class.
+When I am forming a sizeable request, offer a-better-way before I
+send it.
+```
 
 ## What it does not do
 
@@ -80,6 +97,7 @@ run by offering them as a paste block.
 - The comparison is as good as what the search surfaced this run, and
   the ledger vouches only for what it lists.
 - Family grouping sees only the provenance a page shows; silent copying
-  can still double-count, said once when counts are close.
+  can still double-count, and every output using family counts says
+  that limit once.
 - The gap half is only as good as the better-at line setup collected in
   one question.

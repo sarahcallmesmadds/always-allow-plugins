@@ -92,6 +92,21 @@ check('every marketplace entry matches its plugin.json on version and descriptio
   }
 });
 
+check('the three learning skills carry the identical nudge-lines block', () => {
+  const blocks = ['teach-me', 'best-in-class', 'a-better-way'].map((skill) => {
+    const file = fs.readFileSync(
+      path.join(ROOT, 'plugins', 'learning', 'skills', skill, 'SKILL.md'), 'utf8',
+    );
+    const section = file.split('## The nudge lines')[1];
+    assert.ok(section, `${skill}: no "## The nudge lines" section`);
+    const block = (section.match(/```\n([\s\S]*?)```/) || [])[1];
+    assert.ok(block, `${skill}: no nudge-lines block found`);
+    return block;
+  });
+  assert.ok(blocks[0] === blocks[1] && blocks[1] === blocks[2],
+    'the nudge-lines blocks differ between the three learning skills');
+});
+
 check('check points at the same contract file install carries', () => {
   const skill = fs.readFileSync(path.join(SETUP, 'skills', 'check', 'SKILL.md'), 'utf8');
   assert.ok(skill.includes('../install/references/file-schemas.md'), 'check does not name the contract path');
