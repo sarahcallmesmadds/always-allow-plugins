@@ -1,6 +1,6 @@
 ---
 name: best-in-class
-description: What strong looks like in the user's role right now, from sources read this run, held against what they said they are trying to get better at. Use when the user asks "what does good look like", "how do I measure up", "what should I learn next", "what does a strong <role> do these days", "am I behind on AI", "best in class". Read-only, writes nothing.
+description: What strong looks like in the user's role right now, from sources read this run, held against what they said they are trying to get better at. Use when the user asks "what does good look like", "how do I measure up", "what should I learn next", "what does a strong [role] do these days", "am I behind on AI", "best in class". Read-only, writes nothing.
 ---
 
 # best-in-class

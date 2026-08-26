@@ -1,6 +1,6 @@
 ---
 name: review-as
-description: Read a draft, plan, or deck the way a specific recorded persona would, and say where they will push back. Works on anything with an audience, not only prose. Use when the user says "review this as <someone>", "what would <my boss> think of this", "how would <someone> react to this", "would <someone> sign off on this", "pretend you're <someone> reading this", "where will this get pushback". Read-only, changes nothing.
+description: Read a draft, plan, or deck the way a specific recorded persona would, and say where they will push back. Works on anything with an audience, not only prose. Use when the user says "review this as [someone]", "what would [my boss] think of this", "how would [someone] react to this", "would [someone] sign off on this", "pretend you're [someone] reading this", "where will this get pushback". Read-only, changes nothing.
 ---
 
 # review-as
