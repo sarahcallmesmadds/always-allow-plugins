@@ -66,13 +66,16 @@ function frontmatter(file) {
 }
 
 // The value as a YAML parser would see it: a value-position comment,
-// a quoted empty string, and the null spellings all mean "no value".
+// a quoted empty string, and the null spellings all mean "no value",
+// each with or without a trailing inline comment. A quoted "null"
+// stays a real value.
 function plainScalar(raw) {
   let v = (raw || '').trim();
   if (v.startsWith('#')) return '';
+  const q = v.match(/^"([^"]*)"/) || v.match(/^'([^']*)'/);
+  if (q) return q[1].trim();
+  v = v.replace(/\s+#.*$/, '').trim();
   if (/^(~|null|Null|NULL)$/.test(v)) return '';
-  const q = v.match(/^"(.*)"$/) || v.match(/^'(.*)'$/);
-  if (q) v = q[1].trim();
   return v;
 }
 

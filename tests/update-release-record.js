@@ -56,9 +56,29 @@ function currentState() {
 
 module.exports = { currentState, RECORD };
 
+// The record the refusal judges against: the working-tree file, backed
+// per entry by the committed copy in git, so deleting the file (or one
+// entry) before rerunning does not bless anything. A repo with neither
+// is a true first run.
+function priorRecord() {
+  let fromFile = {};
+  if (fs.existsSync(RECORD)) fromFile = JSON.parse(fs.readFileSync(RECORD, 'utf8'));
+  let fromGit = {};
+  try {
+    fromGit = JSON.parse(require('child_process').execSync(
+      'git show HEAD:tests/plugin-releases.json',
+      { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
+    ));
+  } catch {
+    // no git, or the record has never been committed
+  }
+  const merged = { ...fromGit, ...fromFile };
+  return Object.keys(merged).length > 0 ? merged : null;
+}
+
 if (require.main === module) {
   const state = currentState();
-  const prior = fs.existsSync(RECORD) ? JSON.parse(fs.readFileSync(RECORD, 'utf8')) : null;
+  const prior = priorRecord();
   if (prior) {
     const refused = Object.entries(state)
       .filter(([name, now]) => {
