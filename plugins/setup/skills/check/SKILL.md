@@ -102,6 +102,7 @@ The marketplace ships these skills per plugin:
 | `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` |
 | `growth` | `time-spent`, `prioritize`, `wins`, `give-me-feedback` |
 | `learning` | `teach-me`, `best-in-class`, `a-better-way` |
+| `daily-hq` | `good-morning`, `catch-me-up`, `loose-ends`, `inbox`, `going-away` |
 
 For each plugin the person has added at all, compare the skills actually
 available in this session against its row. A plugin that was never added
@@ -143,4 +144,4 @@ bottom of the report. A person who asked "is this working" and got a page
 of warnings first will not read to the part that says the morning brief is
 broken.
 
-Version: setup 0.3.1, 2026-08-26.
+Version: setup 0.3.2, 2026-08-26.

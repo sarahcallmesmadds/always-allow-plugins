@@ -19,10 +19,11 @@ Two rules govern every skill here:
 | `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` | Built. Four review rounds, the last one eight live executions |
 | `growth` | `time-spent`, `prioritize`, `wins`, `give-me-feedback` | Built against the amended contract after its Codex round; not yet live-tested |
 | `learning` | `teach-me`, `best-in-class`, `a-better-way` | Built and field-tested 2026-08-26: five scripted tests in the desktop app, five passes |
+| `daily-hq` | `good-morning`, `catch-me-up`, `loose-ends`, `inbox`, `going-away` | Built against the contract and the plan's eight review rounds; working files fixture-tested; not yet live-tested, and its three launch diaries have not run |
 
-Two more plugins are planned (`daily-hq`, `meetings`) and one
-(`decisions`) is parked; their plans live outside this repo until they
-are built.
+One more plugin is planned (`meetings`) and one (`decisions`) is
+parked; their plans live outside this repo until they are built.
+`inbox` is a working name and may change.
 
 ## Install, and how updating actually works
 

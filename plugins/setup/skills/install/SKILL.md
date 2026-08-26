@@ -188,4 +188,4 @@ session will volunteer them:
 - **This skill cannot see their scheduled tasks.** They can. It hands over
   the text and they do the pasting.
 
-Version: setup 0.3.1, 2026-08-26.
+Version: setup 0.3.2, 2026-08-26.

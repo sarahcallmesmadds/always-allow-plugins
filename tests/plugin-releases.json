@@ -1,7 +1,7 @@
 {
   "setup": {
-    "version": "0.3.1",
-    "hash": "06c09cb95f22542d710562636cb3a88f7389e1f41c4631f2b4b9ac2dde85eec7"
+    "version": "0.3.2",
+    "hash": "9f6afe71d3c9a7d0e1ca9085ab3e41a040c7e57d4256331c0a7c1368fc5836bf"
   },
   "writing": {
     "version": "0.1.1",
@@ -10,6 +10,10 @@
   "growth": {
     "version": "0.1.1",
     "hash": "3981f1f7a023fed9a8af99d101af0cfbaee2e20156d6763bc5e28a0b2138be7e"
+  },
+  "daily-hq": {
+    "version": "0.1.0",
+    "hash": "71968fd77592eb662a5055b8f4db4a92630ddf85110b5b3dedc9be648ec27dcd"
   },
   "learning": {
     "version": "0.2.0",

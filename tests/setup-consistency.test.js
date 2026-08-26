@@ -49,6 +49,13 @@ const BUDGETS = [
   ['learning', 'teach-me', 200],
   ['learning', 'best-in-class', 200],
   ['learning', 'a-better-way', 200],
+  // The daily-hq plan set no budgets; the two engine briefs and the
+  // two-step handover get install's 250, the two lists 200.
+  ['daily-hq', 'good-morning', 250],
+  ['daily-hq', 'catch-me-up', 250],
+  ['daily-hq', 'going-away', 250],
+  ['daily-hq', 'loose-ends', 200],
+  ['daily-hq', 'inbox', 200],
 ];
 
 for (const [plugin, skill, budget] of BUDGETS) {
