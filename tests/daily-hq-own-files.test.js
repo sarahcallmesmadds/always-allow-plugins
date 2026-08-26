@@ -150,6 +150,39 @@ check('without people.md and sources.md the id checks fall back to form only, sa
   assert.ok(out.includes('sources.md: absent; entry source ids checked for form only'), out);
 });
 
+check('the s- form of a source id is still enforced with sources.md absent', () => {
+  // Round 13: the fixture case runs with sources.md present, so this
+  // reproduces the actual round 12 condition and would catch the check
+  // being quietly moved behind the sources.md lookup.
+  const dir = assemble(null);
+  fs.unlinkSync(path.join(dir, 'sources.md'));
+  const file = path.join(dir, 'day-snapshot.md');
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8')
+    .replace('id: s-work-calendar/evt-4471', 'id: work-calendar/evt-4471')
+    .replace('source: s-work-calendar', 'source: work-calendar'));
+  const { code, out } = run([dir]);
+  assert.strictEqual(code, 1, `exit ${code}\n${out}`);
+  const line = out.split('\n').find((l) => l.startsWith('day-snapshot.md: error:')
+    && l.includes('id "work-calendar/evt-4471" does not begin with an s- source id'));
+  assert.ok(line, `no s- form error in:\n${out}`);
+  assert.ok(!out.includes('is not in sources.md'), `a resolve error fired without sources.md:\n${out}`);
+});
+
+check('a known header scalar written as a dashed list is reported, not a crash', () => {
+  // Round 13: a dashed-list run: made realRunId throw. The structured
+  // report, with its summary first, is the proof the verifier survived.
+  const dir = assemble(null);
+  const file = path.join(dir, 'day-snapshot.md');
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8')
+    .replace('run: r-20260825-0730\n', 'run:\n  - r-20260825-0730\n'));
+  const { code, out } = run([dir]);
+  assert.strictEqual(code, 1, `exit ${code}\n${out}`);
+  assert.match(out, /^\d+ errors?, \d+ warnings?/m, `no summary line, likely a crash:\n${out}`);
+  const line = out.split('\n').find((l) => l.startsWith('day-snapshot.md: error:')
+    && l.includes('"run" takes a single value, not a list'));
+  assert.ok(line, `no takes-a-single-value error for run in:\n${out}`);
+});
+
 check('an unknown list-valued field warns as unknown and never malforms the file', () => {
   const { code, out } = run([assemble('snapshot-unknown-list-field')]);
   assert.strictEqual(code, 0, `exit ${code}\n${out}`);

@@ -187,12 +187,12 @@ function verifyFile(folder, name, rules, report, known) {
     if (!(key in header)) error(`required header field "${key}" missing`);
     else if (header[key] === '') error(`required header field "${key}" is blank`);
   }
-  if (header.run !== undefined && header.run !== '' && !realRunId(header.run)) {
+  if (typeof header.run === 'string' && header.run !== '' && !realRunId(header.run)) {
     error(`run "${header.run}" is not r-YYYYMMDD-HHMM with a real date and time`);
   }
   const headerDates = ['date', ...rules.header.filter((k) => k.startsWith('window '))];
   for (const key of headerDates) {
-    if (header[key] !== undefined && header[key] !== ''
+    if (typeof header[key] === 'string' && header[key] !== ''
         && (!DATE.test(header[key]) || !realDate(header[key]))) {
       error(`${key} "${header[key]}" is malformed; dates are YYYY-MM-DD`);
     }
@@ -207,7 +207,7 @@ function verifyFile(folder, name, rules, report, known) {
       && header.timezone !== '' && !realTimezone(header.timezone)) {
     error(`timezone "${header.timezone}" is not a recognised IANA name`);
   }
-  if (markerValue !== null && header.run !== undefined && markerValue !== header.run) {
+  if (markerValue !== null && typeof header.run === 'string' && markerValue !== header.run) {
     error(`complete-write marker names "${markerValue}", run is "${header.run}"`);
   }
 
@@ -344,7 +344,7 @@ function verifyFile(folder, name, rules, report, known) {
     }
   }
 
-  if (header.items !== undefined && header.items !== '') {
+  if (typeof header.items === 'string' && header.items !== '') {
     if (!/^\d+$/.test(header.items)) {
       error(`items "${header.items}" is not a whole number`);
     } else if (Number(header.items) !== entries.length) {
