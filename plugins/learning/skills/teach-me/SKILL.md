@@ -13,9 +13,8 @@ change note. A file, refreshed on request, that says how current it is.
 ## The one prerequisite
 
 **A brief is built only from pages retrieved this run.** If pages
-cannot be retrieved, say so and stop; there is nothing to build from.
-Model knowledge is never written to a brief file, never labelled a
-brief, and never called current.
+cannot be retrieved, say so and stop. Model knowledge is never
+written to a brief file, never labelled a brief, never called current.
 
 ## The web-read ledger
 
@@ -40,9 +39,10 @@ state, and on failure the error kept.
   Grouping sees only the provenance a page shows; that limit is
   said once in the report and once in `## Sources`.
 - The run's report to the person opens with one aggregate coverage
-  line (pages, origins, states). In the brief file, the coverage line
-  opens `## Sources`, which holds the full ledger; the file itself
-  opens per the shape below.
+  line (pages, origins, states), every number recounted from the
+  ledger at writing time, never recalled. In the brief file, the
+  coverage line opens `## Sources`, which holds the full ledger; the
+  file itself opens per the shape below.
 
 ## The optional read
 
