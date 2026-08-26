@@ -23,7 +23,7 @@ loss stated in the brief.
 |---|---|---|---|
 | Missing | Stop. Say where you looked, offer setup | Continue, losses named per the engine | Continue: a first run / no suppressions, said |
 | Malformed | Stop, naming the state and the plain reason together | Continue, name the loss | Treat as absent, say so; suppressions keep their readable entries |
-| Semantically empty | Stop: "no sources are configured" is never a quiet day | n/a | Same as missing |
+| Semantically empty | Stop, naming the file: "no sources are configured" / "people.md holds no entries"; never a quiet day | n/a | Same as missing |
 | Unknown schema version | Stop, naming it | Continue, name the loss | Treat as absent, say so |
 
 A malformed entry in a readable file is skipped and named; the other
@@ -140,8 +140,10 @@ age; missing or invalid means a first run, said; the new snapshot ends
 with a `complete:` marker matching its `run:` line and an `items:` count
 matching its entries, re-read after writing, failures reported now.
 Resolution states are `open`, `answered`, `closed-by-you`, `unknown`;
-a qualifying reply is from a person who is not you, not a bot, not a
-shared entry; reactions and edits are not replies; calendar and notes
-items carry `unknown` with the reason said.
+precedence when evidence conflicts is `closed-by-you`, then `answered`,
+then `open`, anything unreadable `unknown`; a qualifying reply is from a
+person who is not you, not a bot, not a shared entry; reactions and
+edits are not replies; calendar and notes items carry `unknown` with the
+reason said.
 
-Version: daily-hq 0.1.0, 2026-08-26.
+Version: daily-hq 0.1.1, 2026-08-26.

@@ -33,9 +33,14 @@ never closed at all.
   source's own window, that asks for something: a question, or a request
   directed at someone. The line quotes nothing; it names the thread,
   the source, the date, and who raised it as the source shows them.
-- **Closed**: a reply from a human address follows the raise in its
-  thread, judged by rereading the thread now, per the engine. Without an
-  identity map, any human reply counts, and the run says so.
+- **Closed**: a later reply in the thread **from a different author than
+  the raise**, compared by the source's own author values, so a raiser's
+  "any update?" follow-up never closes their own ask, and excluding
+  anything the connector itself marks as a bot. Judged by rereading the
+  thread now. **This is deliberately weaker than the engine's
+  qualifying-reply rule**, which needs the identity map this skill does
+  not read: it cannot exclude a rota address or an unmarked bot, and the
+  run says that limit once, never claiming the engine's standard.
 - **A reaction never closes a loose end, and neither does an edit.** When
   the only activity since the raise is a reaction, the line says
   "acknowledged with a reaction only".
@@ -95,10 +100,11 @@ nothing looser. Sources are read only through `sources.md`; each read
 reports one of `ok`, `empty`, `empty-unverified`, `partial`,
 `unauthorized`, `unreachable`, `malformed`, any usable partial retrieval
 being `partial`; claims are scoped to sources on `ok` or `empty`, unread
-sources named. A loose end is a question or request with no human reply
-after it in its thread, judged by rereading the thread now; reactions
+sources named. A loose end is a question or request with no later reply
+in its thread from a different author than the raise, judged by
+rereading the thread now; connector-marked bots do not close; reactions
 and edits are not replies; unreadable threads are `unknown`, listed
 separately. Oldest first, fifteen shown, the rest counted per source.
 Nothing is written or sent.
 
-Version: daily-hq 0.1.0, 2026-08-26.
+Version: daily-hq 0.1.1, 2026-08-26.

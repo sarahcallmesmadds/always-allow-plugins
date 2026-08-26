@@ -33,9 +33,10 @@ failed write state is only ever reported, never repaired.
 2. Otherwise look before asking, per this marketplace's first rule: scan
    the configured calendar sources for events whose titles say away
    (out of office, OOO, PTO, vacation, leave) and whose end falls within
-   the last 7 days. Exactly one match: the window runs from its end to
-   now, said aloud. Several: list them and ask which. None: say the
-   calendar showed none, then ask for the dates.
+   the last 7 days. Exactly one match: **the window runs from that
+   event's start to now**, so the whole absence is covered, said aloud.
+   Several: list them and ask which. None: say the calendar showed none,
+   then ask for the dates.
 3. A calendar that cannot be read is named with its status; the fallback
    to asking is stated, never silent.
 4. The brief always names its window: start, end, and the day count.
@@ -59,17 +60,22 @@ this order every run:
 1. Anything broken: required-source failures, a window the sources could
    not fully cover.
 2. **Open items**: resolution `open`, plus anything awaiting your reply,
-   ranked per the engine, capped at seven with cuts named.
+   ranked per the engine.
 3. **Answered while you were away, may still need your sign-off**:
    membership is exactly the engine's rule, the qualifying reply's
    timestamp falls inside the away window. A thread answered before the
    trip is plain `answered` and appears in neither group. This group is
    never hidden and never folded into the open items.
+   **The engine's seven-item cap covers groups 2 and 3 together**, open
+   items first, cuts named per the engine; nothing below the cap line is
+   an item.
 4. **Changes since the snapshot**, when a valid snapshot exists, always
    naming the base and its age; without one, one line saying change
-   detection has no base, never a guess. Calendar and notes items group
-   here, since their resolution state is `unknown` by kind.
-5. `unknown` items, said as unknown with the reason.
+   detection has no base, never a guess. Calendar and notes items belong
+   here and only here: their resolution state is `unknown` by kind, per
+   the engine, and they never repeat in group 5.
+5. Mail and chat items whose threads could not be re-read now, said as
+   `unknown` with the reason.
 6. The sources-read report with covered dates, then one concrete cited
    value per shared file that passed its whole validation.
 
@@ -107,7 +113,9 @@ of `ok`, `empty`, `empty-unverified`, `partial`, `unauthorized`,
 `unreachable`, `malformed`, any usable partial retrieval being `partial`;
 quiet claims are scoped to sources on `ok` or `empty`, unread sources
 named. Resolution states are `open`, `answered`, `closed-by-you`,
-`unknown`, precedence in that order, judged by rereading each thread now;
+`unknown`; precedence when evidence conflicts is `closed-by-you`, then
+`answered`, then `open`, anything unreadable `unknown`; each thread is
+judged by rereading it now;
 a qualifying reply is from a person who is not you, not a bot, not a
 shared entry, and a reaction or an edit is not a reply; the
 answered-while-away group holds exactly the threads whose latest
@@ -116,4 +124,4 @@ at seven, cuts named with kind, source and what each needed; the window
 and every source's covered dates are always named; nothing is written or
 sent.
 
-Version: daily-hq 0.1.0, 2026-08-26.
+Version: daily-hq 0.1.1, 2026-08-26.

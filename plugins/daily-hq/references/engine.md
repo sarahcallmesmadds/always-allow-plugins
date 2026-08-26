@@ -17,11 +17,17 @@ runs on the fallback rules in its own text, nothing looser.
 - A window: dates in the `about-me.md` timezone.
 - The sources to read, from `sources.md`, each intersected with its own
   `look back` / `look ahead`. Reading past a source's window is not
-  allowed; the output names the dates each source actually covered.
+  allowed, with one stated exception, next; the output names the dates
+  each source actually covered.
+- **The relationship-history exception, the only one**: for relationship
+  evidence alone, the calendar sources' history is read beyond
+  `look back`, as far back as the connector exposes, because a last-seen
+  date inside a 0-day window would make rank 3 meaningless. It reads
+  only the configured calendar sources, feeds only rank 3, never adds
+  items, and the brief says once that it was used and how far back the
+  records go.
 - The identity map: `people.md` entries plus `my handles` from
   `about-me.md`.
-- The calendar history the connector exposes, as far back as it goes, for
-  relationship evidence only.
 - The previous snapshot, if any, per `own-files.md`.
 
 **`about-me.md` is optional for the two briefs, and the degradation is
@@ -48,27 +54,35 @@ usable came back, `malformed` when what came back could not be used. The
 output reports, per source: connector called, range requested, whether
 paging finished, any error.
 
-**Positive evidence of a successful read, per kind** — the difference
-between `empty` and `empty-unverified` when zero items come back. The
-test in every case is what the response itself shows, because no
-connector is trusted on silence:
+**Positive evidence of a successful read, per kind.** This is the difference
+between `empty` and `empty-unverified` when zero items come back. **A
+bare empty list is never evidence**, because a connector that turns an
+error into an empty list produces exactly that, and from the response
+alone the two are indistinguishable. `empty` therefore needs the
+response to carry affirmative completion evidence over and above the
+empty result; without it, zero items is `empty-unverified`, and that is
+the correct answer, not a failure to be papered over:
 
-- **calendar**: the connector returned a well-formed event list for the
-  exact requested range, with nothing indicating more pages. An error
-  turned into an empty list, or a response for a narrower range, is
+- **calendar**: the response attributably covers the requested range (the
+  range echoed back, or per-day structure spanning it) and offers no
+  further page. A response that merely returns nothing is
   `empty-unverified`.
-- **mail**: the listing or search completed over the requested range with
-  paging exhausted (no continuation offered, no error). A search that
-  errors, times out, or cannot state its range is `empty-unverified`.
-- **chat**: the channel or thread read returned a well-formed message
-  list for the requested span with paging exhausted. A channel the
-  connector cannot find gives no evidence about its contents.
-- **notes**: the meeting list for the range completed without error. A
-  notes tool that answers a query with "nothing found" but no listing is
-  `empty-unverified`, because a failed index looks identical.
+- **mail**: the listing or search states or structurally shows
+  completion: an explicit end of results, a zero total, or exhausted
+  pagination the response itself shows. Zero hits with none of those is
+  `empty-unverified`.
+- **chat**: as mail, per channel or thread; a channel the connector
+  cannot find gives no evidence about its contents.
+- **notes**: an actual listing for the range that is empty. A query
+  answered "nothing found" without a listing is `empty-unverified`,
+  because a failed index looks identical.
 
-This section is what scopes the quiet-day claim, per the contract:
-"nothing needs you" may be said of a source only on `ok` or `empty`.
+**A connector whose responses never carry such evidence can never yield
+`empty`, only `empty-unverified`.** That is by design and the brief says
+so when it happens; the remedy lives with the connector, not in trusting
+silence. This section is what scopes the quiet-day claim, per the
+contract: "nothing needs you" may be said of a source only on `ok` or
+`empty`.
 
 ## The item record
 
@@ -77,9 +91,10 @@ Per item the engine returns:
 | Field | Rule |
 |---|---|
 | source id, namespaced item id, kind | `s-work-calendar/evt-42`, never a bare id |
+| thread | The connector's thread or conversation locator, carried on every mail and chat item so the resolution reread can run. A chat message outside any thread is its own thread: its channel or conversation plus its position. An item the connector gave no locator for resolves `unknown` |
 | title, start, end | Start and end absent for mail and chat |
 | participants | Resolved ids, plus unresolved raw values flagged as such |
-| prep evidence | `lacks agenda text` and `lacks attachment` — absence, not presence |
+| prep evidence | `lacks agenda text` and `lacks attachment`: absence, not presence |
 | relationship evidence | Last-seen date per resolved participant. A first meeting is relationship evidence, never prep evidence |
 | change since snapshot | `new`, `moved`, `cancelled`, `changed`, `unchanged`, `unknown` |
 | resolution state | Below |
@@ -112,12 +127,16 @@ unreadable is `unknown`.
   `answered` and appears in neither group.
 - Anything the source cannot re-read now is `unknown`, said as such.
 
-**The reread, per kind**: for **mail**, fetch the thread by its id now
-and judge the messages after the item; for **chat**, re-read the thread
-now the same way. **Calendar and notes items carry no replies, so their
-resolution state is `unknown`, with the reason stated once**: not
-unreadable, but a kind that has nothing to read. Grouping for those items
-uses change-since-snapshot, never resolution.
+**The reread, per kind**: for **mail**, fetch the item's `thread`
+locator now and judge the messages after the item; for **chat**, read
+the item's `thread` locator now, meaning the messages that follow the
+item in its thread, or in its channel or conversation when it sits in
+none. An item whose record carries no `thread` locator is `unknown`,
+said with that reason. **Calendar and notes items carry no replies, so
+their resolution state is `unknown`, with the reason stated once**: not
+unreadable, but a kind that has nothing to read. Grouping for those
+items uses change-since-snapshot, never resolution, and they are never
+listed a second time as unknown.
 
 ## Ranking and the cap
 

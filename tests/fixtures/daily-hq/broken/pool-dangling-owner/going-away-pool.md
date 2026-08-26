@@ -9,7 +9,7 @@ items: 2
 id: s-work-mail/msg-18823
 source: s-work-mail
 title: Renewal quote for Meridian
-owner: p-priya-shah
+owner: p-nobody
 status: open, awaiting your reply since 2026-08-21
 summary: Priya asked for the revised quote before the renewal call. You said you would send numbers once finance confirmed the floor.
 last-checked: 2026-08-25
@@ -23,5 +23,3 @@ status: answered, latest word is not yours
 summary: The checklist has two unticked rows waiting on design. Nobody has claimed them.
 
 complete: r-20260825-1600
-
-id: s-work-mail/msg-99999

@@ -27,7 +27,7 @@ const FILES = {
     required: ['source', 'scope', 'added', 'unmatched runs', 'reported'],
   },
   'going-away-pool.md': {
-    header: [],
+    header: ['window start', 'window end'],
     required: ['source', 'title', 'owner', 'status', 'summary'],
   },
 };
@@ -36,7 +36,7 @@ const MARKER = 'complete';
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/;
-const RUN_ID = /^r-[0-9-]+$/;
+const RUN_ID = /^r-\d{8}-\d{4}$/;
 const PERSON_ID = /^p-[a-z0-9-]+$/;
 const ITEM_ID = /^[^\s/]+\/[^\s/]+$/;
 
@@ -46,7 +46,40 @@ function realDate(stamp) {
   return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
 }
 
-function verifyFile(folder, name, rules, report) {
+// A start/end value is real: a real calendar date, and when a time is
+// carried, a real clock time.
+function realTime(stamp) {
+  if (!TIME.test(stamp) || !realDate(stamp)) return false;
+  if (stamp.length === 10) return true;
+  const [h, min] = stamp.slice(11).split(':').map(Number);
+  return h <= 23 && min <= 59;
+}
+
+function realTimezone(name) {
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: name });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// The ids the shared files beside the working files define, for the
+// cross-checks. A light scan of id: lines is enough: entries begin at
+// id: by the contract's own recognition rule. Absence means the checks
+// fall back to form only, said in the output.
+function idsFrom(folder, file, prefix) {
+  const full = path.join(folder, file);
+  if (!fs.existsSync(full)) return null;
+  const ids = new Set();
+  for (const line of fs.readFileSync(full, 'utf8').split('\n')) {
+    const m = line.match(/^id: ([a-z0-9-]+)$/);
+    if (m && m[1].startsWith(prefix)) ids.add(m[1]);
+  }
+  return ids;
+}
+
+function verifyFile(folder, name, rules, report, known) {
   const full = path.join(folder, name);
   if (!fs.existsSync(full)) {
     report.info(`${name}: absent`);
@@ -88,14 +121,15 @@ function verifyFile(folder, name, rules, report) {
   if (firstEntry === -1) firstEntry = body.length;
 
   // ------------------------------------------------------------- header
+  const header = {};
   if (!/^schema: /.test(body[0] || '')) {
     error('schema line missing; the file starts with "schema: 1"');
   } else {
     const version = body[0].slice('schema: '.length).trim();
+    header.schema = version;
     if (version !== '1') error(`schema version ${version} unknown; this plugin reads schema 1`);
   }
   const headerRequired = ['run', 'date', 'items', ...rules.header];
-  const header = {};
   for (let i = 1; i < firstEntry; i += 1) {
     const line = body[i];
     if (line.trim() === '' || line.startsWith('#')) continue;
@@ -111,11 +145,18 @@ function verifyFile(folder, name, rules, report) {
     else if (header[key] === '') error(`required header field "${key}" is blank`);
   }
   if (header.run !== undefined && header.run !== '' && !RUN_ID.test(header.run)) {
-    error(`run "${header.run}" is not r- plus digits and hyphens`);
+    error(`run "${header.run}" is not r-YYYYMMDD-HHMM`);
   }
-  if (header.date !== undefined && header.date !== ''
-      && (!DATE.test(header.date) || !realDate(header.date))) {
-    error(`date "${header.date}" is malformed; dates are YYYY-MM-DD`);
+  const headerDates = ['date', ...rules.header.filter((k) => k.startsWith('window '))];
+  for (const key of headerDates) {
+    if (header[key] !== undefined && header[key] !== ''
+        && (!DATE.test(header[key]) || !realDate(header[key]))) {
+      error(`${key} "${header[key]}" is malformed; dates are YYYY-MM-DD`);
+    }
+  }
+  if (rules.header.includes('timezone') && typeof header.timezone === 'string'
+      && header.timezone !== '' && !realTimezone(header.timezone)) {
+    error(`timezone "${header.timezone}" is not a recognised IANA name`);
   }
   if (markerValue !== null && header.run !== undefined && markerValue !== header.run) {
     error(`complete-write marker names "${markerValue}", run is "${header.run}"`);
@@ -181,10 +222,14 @@ function verifyFile(folder, name, rules, report) {
       if (!rules.required.includes(key) && !['note', 'last-checked'].includes(key)) warnUnknown(key);
     }
     const f = entry.fields;
+    if (typeof entry.fields.source === 'string' && known.sources
+        && ITEM_ID.test(id) && !known.sources.has(entry.fields.source)) {
+      error(`source "${entry.fields.source}" on "${id}" is not in sources.md`);
+    }
     if (name === 'day-snapshot.md') {
       for (const key of ['start', 'end']) {
-        if (typeof f[key] === 'string' && !TIME.test(f[key])) {
-          error(`${key} "${f[key]}" on "${id}" is malformed; YYYY-MM-DD or YYYY-MM-DDTHH:MM`);
+        if (typeof f[key] === 'string' && !realTime(f[key])) {
+          error(`${key} "${f[key]}" on "${id}" is malformed; a real YYYY-MM-DD or YYYY-MM-DDTHH:MM`);
         }
       }
       if (typeof f.participants === 'string') {
@@ -192,6 +237,9 @@ function verifyFile(folder, name, rules, report) {
       }
       for (const p of Array.isArray(f.participants) ? f.participants : []) {
         if (!PERSON_ID.test(p)) error(`participants entry "${p}" on "${id}" is not a p- id`);
+        else if (known.people && !known.people.has(p)) {
+          error(`participants entry "${p}" on "${id}" does not resolve to a people.md id`);
+        }
       }
     }
     if (name === 'brief-feedback.md') {
@@ -212,6 +260,9 @@ function verifyFile(folder, name, rules, report) {
     if (name === 'going-away-pool.md') {
       if (typeof f.owner === 'string' && f.owner !== 'unresolved' && !PERSON_ID.test(f.owner)) {
         error(`owner "${f.owner}" on "${id}" is neither a p- id nor "unresolved"`);
+      } else if (typeof f.owner === 'string' && PERSON_ID.test(f.owner)
+          && known.people && !known.people.has(f.owner)) {
+        error(`owner "${f.owner}" on "${id}" does not resolve to a people.md id`);
       }
       if (typeof f['last-checked'] === 'string'
           && (!DATE.test(f['last-checked']) || !realDate(f['last-checked']))) {
@@ -252,8 +303,14 @@ function main() {
     warn: (msg) => { warnings += 1; out.push(msg); },
     info: (msg) => { out.push(msg); },
   };
+  const known = {
+    people: idsFrom(folder, 'people.md', 'p-'),
+    sources: idsFrom(folder, 'sources.md', 's-'),
+  };
+  if (!known.people) report.info('people.md: absent; participant and owner ids checked for form only');
+  if (!known.sources) report.info('sources.md: absent; entry source ids checked for form only');
   for (const [name, rules] of Object.entries(FILES)) {
-    verifyFile(folder, name, rules, report);
+    verifyFile(folder, name, rules, report, known);
   }
   console.log(`${errors} ${errors === 1 ? 'error' : 'errors'}, ${warnings} ${warnings === 1 ? 'warning' : 'warnings'}`);
   for (const line of out) console.log(line);

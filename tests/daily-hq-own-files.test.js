@@ -86,7 +86,15 @@ const ERROR_CASES = [
   ['snapshot-bare-id', 'day-snapshot.md: error:', 'id "evt-4471" is not [source id]/[item id]'],
   ['snapshot-source-mismatch', 'day-snapshot.md: error:', 'source "s-personal-calendar" does not match the id prefix "s-work-calendar"'],
   ['snapshot-missing-timezone', 'day-snapshot.md: error:', 'required header field "timezone" missing'],
-  ['snapshot-bad-time', 'day-snapshot.md: error:', 'start "2026-08-25 14:00" on "s-work-calendar/evt-4471" is malformed; YYYY-MM-DD or YYYY-MM-DDTHH:MM'],
+  ['snapshot-bad-time', 'day-snapshot.md: error:', 'start "2026-08-25 14:00" on "s-work-calendar/evt-4471" is malformed; a real YYYY-MM-DD or YYYY-MM-DDTHH:MM'],
+  ['snapshot-impossible-time', 'day-snapshot.md: error:', 'start "2026-02-30T14:00" on "s-work-calendar/evt-4471" is malformed; a real YYYY-MM-DD or YYYY-MM-DDTHH:MM'],
+  ['snapshot-bad-timezone', 'day-snapshot.md: error:', 'timezone "Eastern" is not a recognised IANA name'],
+  ['snapshot-dangling-participant', 'day-snapshot.md: error:', 'participants entry "p-marcus-webbb" on "s-work-calendar/evt-4471" does not resolve to a people.md id'],
+  ['snapshot-unknown-source', 'day-snapshot.md: error:', 'source "s-ghost-calendar" on "s-ghost-calendar/evt-4520" is not in sources.md'],
+  ['snapshot-duplicate-header', 'day-snapshot.md: error:', 'field "schema" appears more than once in the header'],
+  ['snapshot-bad-run', 'day-snapshot.md: error:', 'run "r-7" is not r-YYYYMMDD-HHMM'],
+  ['pool-missing-window', 'going-away-pool.md: error:', 'required header field "window start" missing'],
+  ['pool-dangling-owner', 'going-away-pool.md: error:', 'owner "p-nobody" on "s-work-mail/msg-18823" does not resolve to a people.md id'],
   ['snapshot-duplicate-id', 'day-snapshot.md: error:', 'duplicate id "s-work-calendar/evt-4471"'],
   ['snapshot-missing-schema', 'day-snapshot.md: error:', 'schema line missing'],
   ['snapshot-unknown-schema', 'day-snapshot.md: error:', 'schema version 2 unknown'],
@@ -118,6 +126,19 @@ check('an unknown field in two entries warns exactly once and does not fail the 
   const lines = out.split('\n').filter((l) => l.includes('unknown field "wether"'));
   assert.strictEqual(lines.length, 1, `expected exactly one report, got ${lines.length}:\n${out}`);
   assert.ok(lines[0].startsWith('day-snapshot.md: warning:'), lines[0]);
+});
+
+check('without people.md and sources.md the id checks fall back to form only, said', () => {
+  const dir = assemble(null);
+  fs.unlinkSync(path.join(dir, 'people.md'));
+  fs.unlinkSync(path.join(dir, 'sources.md'));
+  const file = path.join(dir, 'going-away-pool.md');
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8')
+    .replace('owner: p-priya-shah', 'owner: p-nobody'));
+  const { code, out } = run([dir]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  assert.ok(out.includes('people.md: absent; participant and owner ids checked for form only'), out);
+  assert.ok(out.includes('sources.md: absent; entry source ids checked for form only'), out);
 });
 
 check('a note: field is never reported as unknown', () => {

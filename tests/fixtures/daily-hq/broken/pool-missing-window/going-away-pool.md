@@ -1,7 +1,6 @@
 schema: 1
 run: r-20260825-1600
 date: 2026-08-25
-window start: 2026-08-31
 window end: 2026-09-04
 items: 2
 
@@ -23,5 +22,3 @@ status: answered, latest word is not yours
 summary: The checklist has two unticked rows waiting on design. Nobody has claimed them.
 
 complete: r-20260825-1600
-
-id: s-work-mail/msg-99999

@@ -80,6 +80,20 @@ check('the four resolution states are in the engine and both brief fallbacks', (
   }
 });
 
+check('the precedence order is stated identically in the engine and both fallbacks', () => {
+  // Round 9 found a fallback stating the reverse order while this suite
+  // only counted state tokens; the exact phrase is pinned instead.
+  const phrase = '`closed-by-you`, then\n`answered`, then `open`';
+  const oneLine = phrase.replace('\n', ' ');
+  for (const [where, text] of [['engine.md', engine],
+    ['good-morning', skillText['good-morning']],
+    ['catch-me-up', skillText['catch-me-up']]]) {
+    assert.ok(text.includes(phrase) || text.includes(oneLine)
+      || text.replace(/\n/g, ' ').includes(oneLine),
+    `${where} does not state the precedence closed-by-you, then answered, then open`);
+  }
+});
+
 check('own-files.md and verify-own.js name the same files and required fields', () => {
   for (const [name, rules] of Object.entries(FILES)) {
     const heading = `## \`${name}\``;

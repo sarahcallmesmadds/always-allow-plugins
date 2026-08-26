@@ -25,9 +25,10 @@ Every working file opens with `schema: 1` on the first line, then its
 header fields, then its entries, and its **last non-blank line is
 `complete: [the run id]`**, matching the header's `run:` exactly.
 
-- **`run:`** is `r-` then the run's date and time as digits and hyphens,
-  `r-20260826-0730`, in the file's timezone where it has one, otherwise
-  the `about-me.md` timezone the writing skill ran under.
+- **`run:`** is `r-`, the run's date as `YYYYMMDD`, a hyphen, then the
+  time as `HHMM`: `r-20260826-0730`. Exactly that shape, in the file's
+  timezone where it has one, otherwise the `about-me.md` timezone the
+  writing skill ran under.
 - **`items:`** is the number of entries in the file, exactly.
 - A file whose marker is missing, whose marker does not match `run:`, or
   whose `items:` does not match the entry count **failed its write**. The
@@ -47,7 +48,11 @@ node "${CLAUDE_PLUGIN_ROOT}"/scripts/verify-own.js [folder]
 Anywhere the script cannot run, a skill checks by hand against this
 document. The script and this document name the same files, the same
 required fields and the same marker; a disagreement between them is a bug
-in this plugin.
+in this plugin. **Where `people.md` and `sources.md` sit beside the
+working files, the script also checks that every participant and owner
+resolves to a `people.md` id and every entry's source prefix to a
+`sources.md` id; where either file is absent, it says those ids were
+checked for form only.**
 
 ## `day-snapshot.md`
 
@@ -159,6 +164,8 @@ re-reads the sources.
 schema: 1
 run: r-20260828-1600
 date: 2026-08-28
+window start: 2026-08-31
+window end: 2026-09-04
 items: 1
 
 ## Meridian renewal quote
@@ -173,7 +180,12 @@ last-checked: 2026-08-28
 complete: r-20260828-1600
 ```
 
-**Header:** `schema`, `run`, `date`, `items`. All required.
+**Header:** `schema`, `run`, `date`, `items`, `window start`,
+`window end`. All required. **The window fields are the away window the
+preview ran for**, `YYYY-MM-DD` each, because the draft opens with the
+window and the pool is its only persisted input; a pool without its
+window would leave a later draft, or another session, unable to say
+when the absence is.
 
 **Required per entry:** `id`, `source`, `title`, `owner`, `status`,
 `summary`.

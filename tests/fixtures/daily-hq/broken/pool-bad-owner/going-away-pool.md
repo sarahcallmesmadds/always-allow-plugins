@@ -1,6 +1,8 @@
 schema: 1
 run: r-20260825-1600
 date: 2026-08-25
+window start: 2026-08-31
+window end: 2026-09-04
 items: 2
 
 ## Meridian renewal quote

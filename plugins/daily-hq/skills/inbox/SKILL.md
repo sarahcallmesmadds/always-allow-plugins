@@ -7,12 +7,12 @@ description: Sorts mail and chat by what needs you. Three buckets, needs-attenti
 
 Your mail and chat sorted by whether they need you, with the reason on
 every line. The output is a sorted read, never an action: this skill
-holds a hard written rule that **it changes no state anywhere — no read
+holds a hard written rule that **it changes no state anywhere: no read
 marks, no archive, no labels**, because its prior art did all three and
 a sorter that acts is a different tool.
 
-The shared machine's reading and resolution rules are
-`../../references/engine.md`; the shared-file formats are the contract at
+The shared machine's reading rules are `../../references/engine.md`; the
+shared-file formats are the contract at
 `../../../setup/skills/install/references/file-schemas.md`. If either
 cannot be opened, say so; "When the references cannot be opened" then
 governs. `about-me.md` and `sources.md` are hard stops: sorting by what
@@ -20,6 +20,15 @@ needs you is the whole skill, and without `my handles` there is no you.
 `priorities.md` is optional: matches raise items into attention with the
 matching term named, per the contract's rules; without it, the loss is
 said once.
+
+**This skill does not read `people.md`**, per the contract's consumer
+table, so it uses the engine's resolution vocabulary only as far as
+`my handles` reaches: `closed-by-you` and mention-of-you detection work;
+`open` against `answered` is judged by whether any reply not from you
+follows the item, rereading the thread now; and it cannot tell a person
+from a rota or a bot the connector does not mark, which is said once per
+run. An "answered" here is weaker than the engine's qualifying reply,
+and the output never claims otherwise.
 
 ## The read
 
@@ -33,12 +42,12 @@ sources named.
 ## The three buckets, in this order
 
 1. **Needs attention.** Items where the evidence says you: a mention of
-   you or a question to you (via `my handles`), a thread whose resolution
-   state is `open` with you in it, a reply to something you wrote, a
-   priority match (term named), an amount or deadline in the title.
-   Every line names its reason and its resolution state, per the engine,
-   with the reread done now. Ordered by resolution first (`open` before
-   `answered`), then oldest first.
+   you or a question to you (via `my handles`), a thread that is `open`
+   with you in it, a reply to something you wrote, a priority match
+   (term named), an amount or deadline in the title. Every line names
+   its reason and its state as this skill can judge it (the scoped
+   vocabulary above), with the reread done now. Ordered `open` before
+   `answered`, then oldest first.
 2. **Calendar churn.** Invitation, acceptance, decline, update and
    cancellation mail. Before anything else is said about it, sweep it and
    surface: an invitation to you that you have not answered, and the same
@@ -97,4 +106,4 @@ attention lines each naming their reason, the three counts summing to
 the total, and no state changed anywhere: no read marks, no archive, no
 labels, nothing drafted, nothing sent.
 
-Version: daily-hq 0.1.0, 2026-08-26.
+Version: daily-hq 0.1.1, 2026-08-26.

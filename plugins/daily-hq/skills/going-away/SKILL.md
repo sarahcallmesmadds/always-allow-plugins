@@ -35,18 +35,28 @@ window is read back before anything is written.
    skill reads calendar, mail, chat and notes kinds.
 2. **In flight is exactly this**: a calendar event inside the away
    window from a configured calendar source, except those its `skip:`
-   prose excludes; and a mail or chat thread, inside its source's
-   window, whose resolution state is `open`, or `answered` where the
-   latest word is not yours. Calendar history feeds relationship
-   evidence only, per the engine.
-3. **The proposed owner per item is the resolved `people.md` person,
-   not you and not a `shared` entry, most recently active on the item.**
-   No such person resolves: the owner is `unresolved`, which becomes a
-   handover warning, never a rejected pool.
+   prose excludes, **and except the away events themselves** (the event
+   that set the window, and any event whose title says away in the same
+   terms the window scan uses); and a mail or chat thread, inside its
+   source's window, whose resolution state is `open`, or `answered`
+   where the latest word is not yours. A calendar event is a candidate
+   because it will happen without you, which is a fact, not a claim
+   that it needs coverage: deciding that is exactly what the preview's
+   pruning is for, and the preview says so. Calendar history feeds
+   relationship evidence only, per the engine.
+3. **The proposed owner is a guess from evidence, per kind, and is
+   always said as a guess.** For a calendar event: the organiser, where
+   the connector names one and it resolves to a `people.md` person that
+   is not you and not `shared`. For a mail or chat thread: the resolved
+   person, not you, not `shared`, **and not the item's raiser** (a
+   requester waiting on you is not its cover), who most recently wrote
+   in the thread. Nothing qualifies: the owner is `unresolved`, which
+   becomes a handover warning, never a rejected pool.
 4. Show the preview: every candidate item, its owner, its status line,
    and its two-sentence summary written now, at preview time, never
    thread content. Then write `going-away-pool.md` per `own-files.md`:
-   run id, count, items, marker last. Re-read it and check marker and
+   run id, the away window, count, items, marker last. Re-read it and
+   check marker and
    count before claiming the pool is written; a failed write is reported
    now.
 5. **Dropping an item rewrites the pool with a new count and a new
@@ -66,8 +76,9 @@ window is read back before anything is written.
 3. The draft groups items by owner, one section per person, each item
    with its status line and summary; `unresolved` owners become a
    warning block at the top: "no owner found for these, assign before
-   sending." It opens with the away window and closes with where to
-   reach nothing, which the person edits.
+   sending." It opens with the pool's recorded away window, and it ends
+   with a placeholder line for how to reach you in a real emergency,
+   left blank for the person to fill or delete.
 4. The draft is shown for the person to send themselves. It is never
    sent, posted, or saved anywhere beyond being shown, unless the
    person asks for it as a file.
@@ -108,11 +119,12 @@ retrieval being `partial`; claims are scoped to sources on `ok` or
 `empty`, unread sources named. In flight is a calendar event in the
 window, or a mail or chat thread that is `open`, or `answered` with the
 latest word not yours, judged by rereading each thread now. The pool
-file carries a run id, an item count matching its entries, per item a
-namespaced id, source, title, an owner that is a `people.md` id or
-`unresolved`, a status line and a one-line summary that quotes nothing,
-and ends with a `complete:` marker matching the run id; the draft is
-built from the pool alone, refuses a pool that fails these checks, and
-nothing is ever sent.
+file carries a run id, the away window it was built for, an item count
+matching its entries, per item a namespaced id, source, title, an owner
+that is a `people.md` id or `unresolved`, a status line and a one-line
+summary that quotes nothing, and ends with a `complete:` marker
+matching the run id; the draft is built from the pool alone, opens with
+the pool's window, refuses a pool that fails these checks, and nothing
+is ever sent.
 
-Version: daily-hq 0.1.0, 2026-08-26.
+Version: daily-hq 0.1.1, 2026-08-26.
