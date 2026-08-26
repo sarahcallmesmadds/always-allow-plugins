@@ -16,7 +16,7 @@ const PLUGIN = path.join(ROOT, 'plugins', 'daily-hq');
 const CONTRACT = path.join(ROOT, 'plugins', 'setup', 'skills', 'install', 'references', 'file-schemas.md');
 const ENGINE = path.join(PLUGIN, 'references', 'engine.md');
 const OWN = path.join(PLUGIN, 'references', 'own-files.md');
-const { FILES } = require(path.join(PLUGIN, 'scripts', 'verify-own.js'));
+const { FILES, COMMON_HEADER } = require(path.join(PLUGIN, 'scripts', 'verify-own.js'));
 
 const SKILLS = ['good-morning', 'catch-me-up', 'loose-ends', 'inbox', 'going-away'];
 
@@ -115,9 +115,11 @@ check('own-files.md and verify-own.js name the same files, headers and required 
     const documentedHeader = (headerLine.match(/`([a-z][a-z -]*)`/g) || [])
       .map((s) => s.replace(/`/g, ''))
       .filter((k) => k !== 'schema');
-    assert.deepStrictEqual(documentedHeader.sort(),
-      ['run', 'date', 'items', ...rules.header].sort(),
-      `${name}: own-files.md header documents [${documentedHeader}] but the script requires [${['run', 'date', 'items', ...rules.header]}]`);
+    // COMMON_HEADER is the script's own export, so a field dropped from
+    // the verifier fails here against the documented list.
+    const scriptHeader = [...COMMON_HEADER, ...rules.header];
+    assert.deepStrictEqual(documentedHeader.sort(), scriptHeader.sort(),
+      `${name}: own-files.md header documents [${documentedHeader}] but the script requires [${scriptHeader}]`);
   }
 });
 

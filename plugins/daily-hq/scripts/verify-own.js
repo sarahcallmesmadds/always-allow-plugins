@@ -34,6 +34,11 @@ const FILES = {
 
 const MARKER = 'complete';
 
+// The header fields every working file requires after schema. The
+// consistency suite compares own-files.md against this single list, so
+// dropping a field here fails that comparison rather than passing quietly.
+const COMMON_HEADER = ['run', 'date', 'items'];
+
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/;
 const PERSON_ID = /^p-[a-z0-9-]+$/;
@@ -155,7 +160,7 @@ function verifyFile(folder, name, rules, report, known) {
     header.schema = version;
     if (version !== '1') error(`schema version ${version} unknown; this plugin reads schema 1`);
   }
-  const headerRequired = ['run', 'date', 'items', ...rules.header];
+  const headerRequired = [...COMMON_HEADER, ...rules.header];
   for (let i = 1; i < firstEntry; i += 1) {
     const line = body[i];
     if (line.trim() === '' || line.startsWith('#')) continue;
@@ -253,7 +258,10 @@ function verifyFile(folder, name, rules, report, known) {
     }
     for (const key of Object.keys(entry.fields)) {
       if (!rules.required.includes(key) && !['note', 'last-checked'].includes(key)) warnUnknown(key);
-      if (Array.isArray(entry.fields[key]) && key !== 'participants') {
+      // Only a known scalar field is malformed as a list; an unknown
+      // list-valued field is kept and warned like any unknown field.
+      if (Array.isArray(entry.fields[key]) && key !== 'participants'
+          && (rules.required.includes(key) || key === 'last-checked')) {
         error(`"${key}" on "${id}" takes a single value, not a list`);
       }
     }
@@ -269,9 +277,13 @@ function verifyFile(folder, name, rules, report, known) {
         }
       }
       if (typeof f.start === 'string' && typeof f.end === 'string'
-          && realTime(f.start) && realTime(f.end)
-          && f.start.length === f.end.length && f.end < f.start) {
-        error(`end "${f.end}" on "${id}" is before its start`);
+          && realTime(f.start) && realTime(f.end)) {
+        // Same precision compares whole values; mixed precision can only
+        // be judged by day, and a same-day mix is not provably inverted.
+        const inverted = f.start.length === f.end.length
+          ? f.end < f.start
+          : f.end.slice(0, 10) < f.start.slice(0, 10);
+        if (inverted) error(`end "${f.end}" on "${id}" is before its start`);
       }
       if (typeof f.source === 'string' && known.sources && known.sources.has(f.source)
           && known.sources.get(f.source) !== 'calendar') {
@@ -362,6 +374,6 @@ function main() {
   process.exit(errors > 0 ? 1 : 0);
 }
 
-module.exports = { FILES, MARKER };
+module.exports = { FILES, MARKER, COMMON_HEADER };
 
 if (require.main === module) main();

@@ -98,6 +98,8 @@ const ERROR_CASES = [
   ['snapshot-noncalendar-source', 'day-snapshot.md: error:', 'source "s-work-mail" on "s-work-mail/evt-4520" is not a calendar source; the snapshot holds calendar events'],
   ['pool-window-inverted', 'going-away-pool.md: error:', 'window start 2026-09-05 is after window end 2026-09-04'],
   ['snapshot-end-before-start', 'day-snapshot.md: error:', 'end "2026-08-25T13:00" on "s-work-calendar/evt-4471" is before its start'],
+  ['snapshot-mixed-inverted', 'day-snapshot.md: error:', 'end "2026-08-24" on "s-work-calendar/evt-4533" is before its start'],
+  ['snapshot-missing-run', 'day-snapshot.md: error:', 'required header field "run" missing'],
   ['pool-missing-window', 'going-away-pool.md: error:', 'required header field "window start" missing'],
   ['pool-dangling-owner', 'going-away-pool.md: error:', 'owner "p-nobody" on "s-work-mail/msg-18823" does not resolve to a people.md id'],
   ['snapshot-duplicate-id', 'day-snapshot.md: error:', 'duplicate id "s-work-calendar/evt-4471"'],
@@ -144,6 +146,14 @@ check('without people.md and sources.md the id checks fall back to form only, sa
   assert.strictEqual(code, 0, `exit ${code}\n${out}`);
   assert.ok(out.includes('people.md: absent; participant and owner ids checked for form only'), out);
   assert.ok(out.includes('sources.md: absent; entry source ids checked for form only'), out);
+});
+
+check('an unknown list-valued field warns as unknown and never malforms the file', () => {
+  const { code, out } = run([assemble('snapshot-unknown-list-field')]);
+  assert.strictEqual(code, 0, `exit ${code}\n${out}`);
+  const lines = out.split('\n').filter((l) => l.includes('unknown field "tags"'));
+  assert.strictEqual(lines.length, 1, `expected exactly one report, got ${lines.length}:\n${out}`);
+  assert.ok(!out.includes('takes a single value'), `an unknown list was malformed:\n${out}`);
 });
 
 check('a note: field is never reported as unknown', () => {
