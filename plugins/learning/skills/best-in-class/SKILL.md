@@ -9,13 +9,12 @@ One comparison: the outside standard for the role, current and counted,
 against the person's own recorded line about what they are trying to get
 better at. Not career advice from nowhere; a cited gap statement.
 
-## The hard stop
+## The one prerequisite
 
-**The current comparison needs live web access.** A session that cannot
-retrieve pages stops here and says so. If the person asks anyway, answer
-from model knowledge as an explicitly different thing, labelled as such
-and never called current. There is no path from model knowledge to the
-cited comparison.
+**The comparison is built only from pages retrieved this run.** If
+pages cannot be retrieved, say so and stop; there is nothing to
+compare against. Model knowledge is never presented as the comparison
+and never called current.
 
 ## The ledger
 
@@ -28,8 +27,13 @@ the retrieved part, said so. `snippet`: search-result text only,
 **discovery-only, supporting no claim**, because a snippet has no page
 context. `failed`: nothing usable, listed, never cited as read. Pages
 group into source families by the provenance they show: a page quoting
-or syndicating another counts with its origin. Counts report both
-numbers, pages read and independent origins, and agreement language
+or syndicating another counts with its origin. **A page can carry two
+voices**: its own analysis counts with its publisher, and a claim it
+attributes to a named origin counts with that origin, never with the
+page repeating it. The origin count is the distinct origins,
+publishers and named attributions alike, that back at least one claim
+the output uses; the coverage line reports pages read and that count,
+and every "N of M" in the body uses that same M. Agreement language
 runs over origins only. The output opens with one aggregate coverage
 line; the full ledger sits at the end of the report.
 

@@ -9,13 +9,12 @@ A brief you keep, on a topic you name, where every claim rests on a source
 retrieved this run. Not a chat answer that scrolls away: a file, refreshed
 on request, that says how current it is.
 
-## The hard stop
+## The one prerequisite
 
-**The cited product needs live web access.** A session that cannot
-retrieve pages stops here and says so. If the person asks anyway, answer
-from model knowledge as an explicitly different thing: labelled as such,
-never written to a brief file, never called current, never called the
-brief. There is no path from model knowledge to a saved brief.
+**A brief is built only from pages retrieved this run.** If pages
+cannot be retrieved, say so and stop; there is nothing to build from.
+Model knowledge is never written to a brief file, never labelled a
+brief, and never called current.
 
 ## The web-read ledger
 
@@ -39,8 +38,10 @@ state, and on failure the error kept.
 
 ## The optional read
 
-`about-me.md` (role, for pitching the brief at the right level) follows
-the contract at `../../../setup/skills/install/references/file-schemas.md`:
+`about-me.md` (role, for pitching the brief and its takeaways at the
+right level) is read only when a brief is being built this run, and
+follows the contract at
+`../../../setup/skills/install/references/file-schemas.md`:
 a file that is absent, malformed, of an unknown schema version, or
 semantically empty is set aside whole with the loss named once, never
 half-read; unknown fields reported once; a stale `last confirmed` said
@@ -53,9 +54,21 @@ file's own rules.
 ## Creating a brief
 
 1. Search for the topic, read what the search surfaces, build the ledger.
-2. Write the brief as `##` sections, every claim resting on a `full` or
-   `partial` read per the ledger rules. No uncited claims.
-3. Show the whole file and take the yes. **Nothing is written until the
+2. Write the brief. Directly under the header: **one bolded sentence,
+   the strongest and best-supported claim of the whole read.** No
+   preamble and no framing words; the sentence carries itself. Then
+   `## Takeaways`: three to six highlights pitched at the role in
+   `about-me.md`, each one cited or counted, selected and ranked for
+   that role. Then the topic itself in `##` sections.
+3. **Every sentence is a sourced claim, a counted pattern, or
+   structure.** A sourced claim names its source and rests on a `full`
+   or `partial` read per the ledger rules. A counted pattern counts
+   origins over the ledger: "four of six origins name X". Nothing else
+   gets written: no conclusions, no judgments, no advice, and no
+   significance words like "worth knowing" or "not urgent", because no
+   page said them. Relevance lives in what is selected and how it is
+   ordered, never in added sentences.
+4. Show the whole file and take the yes. **Nothing is written until the
    person approves the shown file**; a change they ask for is made and
    shown again first, and a withheld yes writes nothing. The shape:
 
@@ -67,6 +80,12 @@ written by: teach-me
 Your corrections and additions go under ## My notes; refresh rewrites
 the body and never touches that section.
 
+**<the one sentence to remember: bolded, sourced, standing alone>**
+
+## Takeaways
+
+- <three to six, each cited or counted, pitched at the role>
+
 ## <section>
 ...
 
@@ -76,7 +95,7 @@ the body and never touches that section.
 ## My notes
 ```
 
-4. It saves as `brief-<topic-slug>.md` at the top level of the project
+5. It saves as `brief-<topic-slug>.md` at the top level of the project
    folder, beside the shared files but not one of them. **If that name is
    taken, by anyone's file, do not touch it**: propose the next free slug
    (`-2`, then `-3`), or the adoption flow below if the person wants that
@@ -96,7 +115,8 @@ The flow:
 1. **Re-run discovery**, not just the old citations: search the topic
    fresh, re-read the prior sources, and report new, removed, changed
    and failed sources before proposing anything.
-2. Walk the body section by section. **Every changed line is shown old
+2. Walk the body section by section, the top sentence and
+   `## Takeaways` included. **Every changed line is shown old
    beside new**, so a correction the person made by hand is visible
    before it can be lost. A line they say is theirs is kept verbatim.
 3. **Nothing is written until the end.** Assemble the final: accepted
@@ -142,6 +162,8 @@ send it.
 - Save or label model-knowledge output as a brief or as current.
 - Support a claim with a snippet, or with any part of a page that was
   not retrieved.
+- Conclude, judge, or advise. It reports what the pages said and what
+  the counts show, and stops there.
 
 ## The honest limits
 
