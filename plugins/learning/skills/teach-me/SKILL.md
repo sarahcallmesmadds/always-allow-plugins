@@ -1,14 +1,14 @@
 ---
 name: teach-me
-description: Build a cited brief on a topic from sources actually retrieved this run, keep it as a file the user owns, and refresh it on request. Use when the user says "teach me X", "brief me on X", "keep me current on X", "what's the state of X", "refresh my brief", or when a brief file whose refreshed date is over 90 days old is used in the conversation. Explain-it-back is a mode of the brief. Writes only brief files carrying its own written-by marker, and only after showing the result.
+description: Build a cited brief on a topic from sources actually retrieved this run, keep it as a file the user owns, and rerun it on request. Use when the user says "teach me X", "brief me on X", "keep me current on X", "what's the state of X", "refresh my brief", "rerun this", or when a brief file whose refreshed date is over 90 days old is used in the conversation. Explain-it-back is a mode of the brief. Writes only brief files carrying its own written-by marker, and only after showing the result.
 ---
 
 # teach-me
 
 A brief you keep, on a topic you name, where every claim rests on a source
-retrieved this run, except what is kept at the person's word: lines they
-claim as theirs and old text they decline to change, both named in the
-change note. A file, refreshed on request, that says how current it is.
+retrieved this run; the one exception is `## My notes`, the person's own
+section, carried forward verbatim. A file, rerun on request, that says
+how current it is.
 
 ## The one prerequisite
 
@@ -92,8 +92,9 @@ topic: EU pricing rules
 refreshed: 2026-08-25
 written by: teach-me
 
-Your corrections and additions go under ## My notes; refresh rewrites
-the body and never touches that section.
+This file lives at the top level of your project folder and is yours.
+Your notes go under ## My notes; a refresh rebuilds everything else
+from fresh reads and never touches that section.
 
 **<the one sentence to remember: bolded, sourced, standing alone>**
 
@@ -125,29 +126,22 @@ asks for a file to be taken over is its content rebuilt as a managed
 brief, shown and approved before anything is written. A lookalike header
 is never treated as authorship.
 
-The flow:
+**A refresh is a rerun**, asked for in words like "refresh this" or
+"rerun this". Discovery starts over and the body is rebuilt current;
+there is no line-by-line merge with the old text. The flow:
 
 1. **Re-run discovery**, not just the old citations: search the topic
    fresh, re-read the prior sources, and report new, removed, changed
-   and failed sources before proposing anything.
-2. Walk the body section by section, the top sentence and
-   `## Takeaways` included. **Every changed line is shown old
-   beside new**, so a correction the person made by hand is visible
-   before it can be lost. A line they say is theirs is kept verbatim.
-   The sentence rule from creating a brief governs every line this
-   skill writes, at creation, adoption and refresh alike; an old line
-   that breaks it is named as breaking it during the walk, so a
-   decline is informed, and text kept at the person's decline stays as
-   their choice, recorded in the change note.
-3. **Nothing is written until the end.** Assemble the final: accepted
-   sections new, declined sections keeping their old text. Show the
-   assembled whole once; one yes writes the file once. A run where
-   nothing is accepted writes nothing.
-4. `## My notes` is carried forward verbatim, always.
-5. The change note in `## Sources` records what this run took, what it
-   declined, and any section that kept old text, so a mixed file is
-   recorded rather than hidden. **`refreshed:` means exactly: the date
-   of the run that last wrote this file.**
+   and failed sources.
+2. Rebuild the brief per Creating a brief, from this run's reads only.
+   **`## My notes` is carried forward verbatim, always**; the rest of
+   the file is replaced.
+3. Show the whole rebuilt file once; one yes writes it once. A
+   withheld yes writes nothing.
+4. The change note in `## Sources` records that this run rebuilt the
+   body and names the sources that joined, dropped, or failed since
+   the prior run. **`refreshed:` means exactly: the date of the run
+   that last wrote this file.**
 
 ## Explain-it-back
 
@@ -178,7 +172,7 @@ send it.
 - Write to any of the nine shared files.
 - Refresh, rewrite, or adopt a file without its marker, outside the
   explicit adoption flow.
-- Rewrite `## My notes` or any line the person claims.
+- Rewrite `## My notes`.
 - Save or label model-knowledge output as a brief or as current.
 - Support a claim with a snippet, or with any part of a page that was
   not retrieved.
@@ -190,9 +184,7 @@ send it.
 
 - A brief is as current as the run that last wrote it, and `refreshed:`
   with the change note say exactly that.
-- An edit made silently inside the body is shown old-beside-new at
-  refresh but is not guaranteed to survive a quick yes. The guaranteed
-  home for the person's own words is `## My notes`, and the header says
-  so.
+- A refresh replaces the body. The one home for the person's own words
+  is `## My notes`, and the header says so.
 - Discovery is a search, not a guarantee. The ledger vouches only for
   what it lists.
