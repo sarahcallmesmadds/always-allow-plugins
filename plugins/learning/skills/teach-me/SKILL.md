@@ -139,9 +139,9 @@ there is no line-by-line merge with the old text. The flow:
 3. Show the whole rebuilt file once; one yes writes it once. A
    withheld yes writes nothing.
 4. The change note in `## Sources` records that this run rebuilt the
-   body and names the sources that joined, dropped, or failed since
-   the prior run. **`refreshed:` means exactly: the date of the run
-   that last wrote this file.**
+   body and names the sources that joined, dropped, changed, or failed
+   since the prior run. **`refreshed:` means exactly: the date of the
+   run that last wrote this file.**
 
 ## Explain-it-back
 
