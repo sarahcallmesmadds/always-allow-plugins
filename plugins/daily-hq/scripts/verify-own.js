@@ -36,7 +36,6 @@ const MARKER = 'complete';
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/;
-const RUN_ID = /^r-\d{8}-\d{4}$/;
 const PERSON_ID = /^p-[a-z0-9-]+$/;
 const ITEM_ID = /^[^\s/]+\/[^\s/]+$/;
 
@@ -53,6 +52,13 @@ function realTime(stamp) {
   if (stamp.length === 10) return true;
   const [h, min] = stamp.slice(11).split(':').map(Number);
   return h <= 23 && min <= 59;
+}
+
+// A run id is r-YYYYMMDD-HHMM with a real calendar date and clock time.
+function realRunId(value) {
+  const m = value.match(/^r-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})$/);
+  if (!m) return false;
+  return realDate(`${m[1]}-${m[2]}-${m[3]}`) && Number(m[4]) <= 23 && Number(m[5]) <= 59;
 }
 
 function realTimezone(name) {
@@ -77,6 +83,26 @@ function idsFrom(folder, file, prefix) {
     if (m && m[1].startsWith(prefix)) ids.add(m[1]);
   }
   return ids;
+}
+
+// sources.md ids with their kinds, so the snapshot can insist on
+// calendar sources, not merely existing ones.
+function sourceKinds(folder) {
+  const full = path.join(folder, 'sources.md');
+  if (!fs.existsSync(full)) return null;
+  const kinds = new Map();
+  let currentId = null;
+  for (const line of fs.readFileSync(full, 'utf8').split('\n')) {
+    const idm = line.match(/^id: ([a-z0-9-]+)$/);
+    if (idm) {
+      currentId = idm[1].startsWith('s-') ? idm[1] : null;
+      if (currentId) kinds.set(currentId, null);
+      continue;
+    }
+    const km = line.match(/^kind: (.+)$/);
+    if (km && currentId) kinds.set(currentId, km[1].trim());
+  }
+  return kinds;
 }
 
 function verifyFile(folder, name, rules, report, known) {
@@ -144,8 +170,8 @@ function verifyFile(folder, name, rules, report, known) {
     if (!(key in header)) error(`required header field "${key}" missing`);
     else if (header[key] === '') error(`required header field "${key}" is blank`);
   }
-  if (header.run !== undefined && header.run !== '' && !RUN_ID.test(header.run)) {
-    error(`run "${header.run}" is not r-YYYYMMDD-HHMM`);
+  if (header.run !== undefined && header.run !== '' && !realRunId(header.run)) {
+    error(`run "${header.run}" is not r-YYYYMMDD-HHMM with a real date and time`);
   }
   const headerDates = ['date', ...rules.header.filter((k) => k.startsWith('window '))];
   for (const key of headerDates) {
@@ -153,6 +179,12 @@ function verifyFile(folder, name, rules, report, known) {
         && (!DATE.test(header[key]) || !realDate(header[key]))) {
       error(`${key} "${header[key]}" is malformed; dates are YYYY-MM-DD`);
     }
+  }
+  const ws = header['window start'];
+  const we = header['window end'];
+  if (typeof ws === 'string' && typeof we === 'string'
+      && DATE.test(ws) && realDate(ws) && DATE.test(we) && realDate(we) && ws > we) {
+    error(`window start ${ws} is after window end ${we}`);
   }
   if (rules.header.includes('timezone') && typeof header.timezone === 'string'
       && header.timezone !== '' && !realTimezone(header.timezone)) {
@@ -172,6 +204,7 @@ function verifyFile(folder, name, rules, report, known) {
     const dash = line.match(/^\s+- (.*)$/);
     if (dash) {
       if (!current || !lastListKey) { error(`dash item outside a list: ${JSON.stringify(line)}`); continue; }
+      if (!Array.isArray(current.fields[lastListKey])) current.fields[lastListKey] = [];
       current.fields[lastListKey].push(dash[1].trim());
       continue;
     }
@@ -193,7 +226,7 @@ function verifyFile(folder, name, rules, report, known) {
       if (current.fields[key].some((s) => s === '')) error(`malformed inline list on "${current.id}": ${value}`);
       lastListKey = null;
     } else if (value === '') {
-      current.fields[key] = [];
+      current.fields[key] = '';
       lastListKey = key;
     } else {
       current.fields[key] = value;
@@ -214,12 +247,15 @@ function verifyFile(folder, name, rules, report, known) {
     }
     for (const key of rules.required) {
       if (!(key in entry.fields)) error(`required field "${key}" missing on "${id}"`);
-      else if (entry.fields[key].length === 0 && key !== 'participants') {
+      else if (entry.fields[key] === '' && key !== 'participants') {
         error(`required field "${key}" is blank on "${id}"`);
       }
     }
     for (const key of Object.keys(entry.fields)) {
       if (!rules.required.includes(key) && !['note', 'last-checked'].includes(key)) warnUnknown(key);
+      if (Array.isArray(entry.fields[key]) && key !== 'participants') {
+        error(`"${key}" on "${id}" takes a single value, not a list`);
+      }
     }
     const f = entry.fields;
     if (typeof entry.fields.source === 'string' && known.sources
@@ -228,9 +264,18 @@ function verifyFile(folder, name, rules, report, known) {
     }
     if (name === 'day-snapshot.md') {
       for (const key of ['start', 'end']) {
-        if (typeof f[key] === 'string' && !realTime(f[key])) {
+        if (typeof f[key] === 'string' && f[key] !== '' && !realTime(f[key])) {
           error(`${key} "${f[key]}" on "${id}" is malformed; a real YYYY-MM-DD or YYYY-MM-DDTHH:MM`);
         }
+      }
+      if (typeof f.start === 'string' && typeof f.end === 'string'
+          && realTime(f.start) && realTime(f.end)
+          && f.start.length === f.end.length && f.end < f.start) {
+        error(`end "${f.end}" on "${id}" is before its start`);
+      }
+      if (typeof f.source === 'string' && known.sources && known.sources.has(f.source)
+          && known.sources.get(f.source) !== 'calendar') {
+        error(`source "${f.source}" on "${id}" is not a calendar source; the snapshot holds calendar events`);
       }
       if (typeof f.participants === 'string') {
         error(`participants on "${id}" must be a bracketed inline list or indented dash items`);
@@ -305,7 +350,7 @@ function main() {
   };
   const known = {
     people: idsFrom(folder, 'people.md', 'p-'),
-    sources: idsFrom(folder, 'sources.md', 's-'),
+    sources: sourceKinds(folder),
   };
   if (!known.people) report.info('people.md: absent; participant and owner ids checked for form only');
   if (!known.sources) report.info('sources.md: absent; entry source ids checked for form only');

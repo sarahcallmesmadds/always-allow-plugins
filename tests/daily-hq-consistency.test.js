@@ -94,7 +94,7 @@ check('the precedence order is stated identically in the engine and both fallbac
   }
 });
 
-check('own-files.md and verify-own.js name the same files and required fields', () => {
+check('own-files.md and verify-own.js name the same files, headers and required fields', () => {
   for (const [name, rules] of Object.entries(FILES)) {
     const heading = `## \`${name}\``;
     assert.ok(own.includes(heading), `own-files.md has no section for ${name}`);
@@ -108,6 +108,16 @@ check('own-files.md and verify-own.js name the same files and required fields', 
       .filter((k) => k !== 'id');
     assert.deepStrictEqual(documented.sort(), [...rules.required].sort(),
       `${name}: own-files.md documents [${documented}] but the script requires [${rules.required}]`);
+    // The header line too: round 10 found the window fields protected in
+    // one direction only.
+    const headerLine = section.split('\n\n').find((b) => b.includes('**Header:**'));
+    assert.ok(headerLine, `${name}: no "Header" line in own-files.md`);
+    const documentedHeader = (headerLine.match(/`([a-z][a-z -]*)`/g) || [])
+      .map((s) => s.replace(/`/g, ''))
+      .filter((k) => k !== 'schema');
+    assert.deepStrictEqual(documentedHeader.sort(),
+      ['run', 'date', 'items', ...rules.header].sort(),
+      `${name}: own-files.md header documents [${documentedHeader}] but the script requires [${['run', 'date', 'items', ...rules.header]}]`);
   }
 });
 

@@ -3,8 +3,12 @@
 `good-morning` and `catch-me-up` are one machine over different windows:
 `good-morning` runs it over today plus each source's own window,
 `catch-me-up` over the away window. `inbox` and `loose-ends` use its
-reading, resolution and reporting rules over their own reads. This
-document is that machine, written once so the skills cannot drift apart.
+reading and reporting rules over their own reads; **their resolution
+rules are deliberately weaker than this document's**, because their
+contract rows withhold the files the full standard needs, and each
+states its own executable rule in its own text. The resolution standard
+below belongs to the two briefs and to `going-away`. This document is
+that machine, written once so the skills cannot drift apart.
 
 The shared-file formats are the contract at
 `../../setup/skills/install/references/file-schemas.md`; this document
@@ -140,8 +144,11 @@ listed a second time as unknown.
 
 ## Ranking and the cap
 
-Seven items. Warnings, the day's shape and the read-files line are not
-items. An item takes its highest rank.
+**Seven items in the whole brief, however its groups present them**: an
+item record shown anywhere in the output, whatever its kind, resolution
+or group, counts against the seven. Warnings, the day's shape and the
+read-files line are not items; everything the engine returns is. An
+item takes its highest rank.
 
 | Rank | Signal, executably |
 |---|---|

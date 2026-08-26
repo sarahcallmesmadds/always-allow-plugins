@@ -1,6 +1,6 @@
 {
   "name": "daily-hq",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The day, run for you. A morning brief that ranks today against what changed and caps itself at seven items, a catch-up for when you were away that leads with what still needs you, the questions nobody ever answered, your mail and chat sorted by what needs you without touching anything, and a handover draft for before you go away. Needs the files setup writes and at least one configured source; every run names what it read, what it could not check, and the dates it covered. Nothing here sends anything, and nothing writes except the plugin's own snapshot, suppression and handover-pool files in your project folder.",
   "author": {
     "name": "Sarah Madden",

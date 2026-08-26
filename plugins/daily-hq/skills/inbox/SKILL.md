@@ -106,4 +106,4 @@ attention lines each naming their reason, the three counts summing to
 the total, and no state changed anywhere: no read marks, no archive, no
 labels, nothing drafted, nothing sent.
 
-Version: daily-hq 0.1.1, 2026-08-26.
+Version: daily-hq 0.1.2, 2026-08-26.

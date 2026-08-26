@@ -37,8 +37,10 @@ node "${CLAUDE_PLUGIN_ROOT}"/scripts/verify-own.js [folder]
 
 Today plus each source's own `look back` / `look ahead`, in the
 `about-me.md` timezone, per the contract: the range always includes
-today. Reading past a source's window is not allowed; the brief names the
-dates each source actually covered.
+today. Reading past a source's window is not allowed, with the engine's
+one stated exception: relationship history from the calendar sources,
+feeding rank 3 alone, never adding items, said once when used. The
+brief names the dates each source actually covered.
 
 ## The read
 
@@ -146,4 +148,4 @@ person who is not you, not a bot, not a shared entry; reactions and
 edits are not replies; calendar and notes items carry `unknown` with the
 reason said.
 
-Version: daily-hq 0.1.1, 2026-08-26.
+Version: daily-hq 0.1.2, 2026-08-26.

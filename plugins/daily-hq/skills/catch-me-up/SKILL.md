@@ -44,9 +44,11 @@ failed write state is only ever reported, never repaired.
 ## The read
 
 As `good-morning`'s read, over the away window intersected with each
-source's own `look back` (reading past a source's window is not allowed,
-and when the away window is longer than a source's `look back`, the brief
-says which days of that source it could not cover and names the fix).
+source's own `look back` (reading past a source's window is not
+allowed, apart from the engine's one stated exception for relationship
+history, and when the away window is longer than a source's
+`look back`, the brief says which days of that source it could not
+cover and names the fix).
 Configuration failures first; the contract's seven statuses per source;
 required-source failures at the top; the quiet-day claim scoped to what
 was read, unread sources named.
@@ -54,21 +56,22 @@ was read, unread sources named.
 ## The brief
 
 Build item records per the engine: dedup, resolution states with the
-reread done now, change since the snapshot where one exists. Then, in
+reread done now, change since the snapshot where one exists. Rank them
+per the engine and apply the engine's cap: **at most seven items in the
+whole brief, whatever group each lands in**, cuts named per the engine.
+The groups below are how the seven surviving items are presented, in
 this order every run:
 
 1. Anything broken: required-source failures, a window the sources could
-   not fully cover.
+   not fully cover. Not items; never capped.
 2. **Open items**: resolution `open`, plus anything awaiting your reply,
    ranked per the engine.
 3. **Answered while you were away, may still need your sign-off**:
    membership is exactly the engine's rule, the qualifying reply's
    timestamp falls inside the away window. A thread answered before the
    trip is plain `answered` and appears in neither group. This group is
-   never hidden and never folded into the open items.
-   **The engine's seven-item cap covers groups 2 and 3 together**, open
-   items first, cuts named per the engine; nothing below the cap line is
-   an item.
+   never hidden and never folded into the open items; when the cap cuts
+   from it, the cut lines say so.
 4. **Changes since the snapshot**, when a valid snapshot exists, always
    naming the base and its age; without one, one line saying change
    detection has no base, never a guess. Calendar and notes items belong
@@ -77,7 +80,7 @@ this order every run:
 5. Mail and chat items whose threads could not be re-read now, said as
    `unknown` with the reason.
 6. The sources-read report with covered dates, then one concrete cited
-   value per shared file that passed its whole validation.
+   value per shared file that passed its whole validation. Not items.
 
 An all-empty window is said plainly with the window named; it is a
 scoped quiet claim, never proof the time away was quiet.
@@ -119,9 +122,9 @@ judged by rereading it now;
 a qualifying reply is from a person who is not you, not a bot, not a
 shared entry, and a reaction or an edit is not a reply; the
 answered-while-away group holds exactly the threads whose latest
-qualifying reply falls inside the away window. Open items first, capped
-at seven, cuts named with kind, source and what each needed; the window
-and every source's covered dates are always named; nothing is written or
-sent.
+qualifying reply falls inside the away window. Open items first, at
+most seven items in the whole brief whatever group each lands in, cuts
+named with kind, source and what each needed; the window and every
+source's covered dates are always named; nothing is written or sent.
 
-Version: daily-hq 0.1.1, 2026-08-26.
+Version: daily-hq 0.1.2, 2026-08-26.
