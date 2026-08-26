@@ -74,8 +74,10 @@ file's own rules.
    or `partial` read per the ledger rules. A counted pattern counts
    origins over the ledger: "four of six origins name X". Structure is
    the non-claim scaffolding only: the title, the ownership record,
-   headings, ledger rows and the change note; prose about the topic is
-   never structure.
+   headings, ledger rows, the change note, and the three sentences
+   this skill itself requires (the coverage line, the provenance
+   limit, the My notes survival line); prose about the topic is never
+   structure.
    Nothing else gets written: no conclusions, no judgments, no advice,
    and no significance words like "worth knowing" or "not urgent",
    because no page said them. Two named leaks: a comparative no page
@@ -103,16 +105,19 @@ file's own rules.
 5. It saves as `brief-<topic-slug>.docx`, a Word document at the top
    level of the project folder, beside the shared files but not one of
    them. A session that cannot produce a Word document says so and
-   offers a markdown file as the named fallback, never silently. **If
-   that name is taken, by anyone's file, do not touch it**: propose
-   the next free slug (`-2`, then `-3`), or the adoption flow below if
-   the person wants that file taken over.
+   offers `brief-<topic-slug>.md` instead; the format change gets its
+   own yes, never a silent default. **If the name being saved is
+   taken, by anyone's file, do not touch it**: propose the next free
+   slug (`-2`, then `-3`), or the adoption flow below if the person
+   wants that file taken over.
 
 ## Refresh
 
 **Only documents whose Sources section carries `written by: teach-me`
 are refreshed.** A brief-named file without that line is someone else's
-document whatever its shape; stop and say so. **Adoption is explicit**:
+document whatever its shape; stop and say so. A document whose contents
+cannot be reliably read is a different state, not an unowned file: say
+the read failed and stop, changing nothing. **Adoption is explicit**:
 only when the person asks for a file to be taken over is its content
 rebuilt as a managed brief, shown and approved before anything is
 written. A lookalike shape is never treated as authorship.

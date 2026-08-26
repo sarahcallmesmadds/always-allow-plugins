@@ -32,9 +32,12 @@ Install:
 
 ## Where everything gets written
 
-Markdown files in the project folder. Nothing else. No Notion, no database,
-no account. The file formats every skill reads by are in
-`plugins/setup/skills/install/references/file-schemas.md`.
+Files in the project folder. Nothing else. No Notion, no database, no
+account. The nine shared files are markdown, and the formats every skill
+reads them by are in
+`plugins/setup/skills/install/references/file-schemas.md`. The one
+exception is `teach-me`'s brief, which saves as a Word document, because
+its reader is a person rather than a skill.
 
 ## Tests
 

@@ -12,9 +12,12 @@ SaaS process).
   default trigger is a schedule or something that already happens. A third
   test decides whether something is a skill at all: it has to do something you
   would not get by just asking.
-- **Everything writes to markdown files in the project folder. Nothing else.**
+- **Everything writes to files in the project folder. Nothing else.**
   No Notion, no database, no account. The default has to work for someone who
-  has nothing.
+  has nothing. The nine shared files are markdown, machine-facing, and governed
+  by the contract; `teach-me`'s brief is a Word document, the one deliberate
+  human-facing exception, ruled by Sarah on 2026-08-26 after the first field
+  test showed a markdown brief is the wrong object for this marketplace's user.
 - **The file contract lives at
   `plugins/setup/skills/install/references/file-schemas.md`.** It was copied
   verbatim from `~/.planning/SCHEMAS-always-allow-shared-files.md` on
