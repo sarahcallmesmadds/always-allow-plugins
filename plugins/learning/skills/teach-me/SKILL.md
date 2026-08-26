@@ -36,10 +36,9 @@ state, and on failure the error kept.
   The origin count is the distinct origins, publishers and named
   credits alike, behind at least one claim in the brief. Counts report
   both numbers, pages read and origins, never mixed: `full` is a
-  page's state, so "N origins read in full" is a phrase this skill
-  does not write. Grouping sees only the provenance a page shows;
-  that limit is stated once in the run's report and once in
-  `## Sources`.
+  page's state, so "N origins read in full" is never written.
+  Grouping sees only the provenance a page shows; that limit is
+  said once in the report and once in `## Sources`.
 - The run's report to the person opens with one aggregate coverage
   line (pages, families, states). In the brief file, the coverage line
   opens `## Sources`, which holds the full ledger; the file itself
