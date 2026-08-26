@@ -16,7 +16,8 @@ shape; it does not do the work.
 2. **Find the end state.** If the ask does not state what it is for, ask
    for it in one question: what will you have, or stop doing, when this
    has worked? This is the one thing nothing can find.
-3. When reshaping is needed, hand back three things, and only these:
+3. When reshaping is needed, the reshaping deliverable is three things,
+   and only these:
    - **The reshaped ask**, worded around the end state, ready to use.
    - **What the first instinct was a step toward**, in one sentence, so
      the person sees the reframe rather than taking it on faith.
@@ -35,11 +36,11 @@ the person then asks for that. Someone who wanted the answer would have
 asked the original question; they came here for the shape, and answering
 it uninvited buries the shape under the work.
 
-When the first instinct already is the end state, say so and stop.
-That no-change result is the one exception to handing back the three
-things: a pass where nothing needed reshaping is a valid run, and
-inventing a cleverer version of an ask that was fine is the failure
-mode this boundary exists for.
+When the first instinct already is the end state, say so instead of
+the three things: a pass where nothing needed reshaping is a valid
+run, and inventing a cleverer version of an ask that was fine is the
+failure mode this boundary exists for. Either result may be followed
+by the nudge-lines offer below, which sits outside the deliverable.
 
 ## The nudge lines
 
