@@ -157,8 +157,8 @@ ready-to-paste text:
   with a name, a frequency, and a one-line description. The defaults:
   `good-morning` daily before their working hours start, `follow-ups` daily
   at end of day, `why-we-decided` weekly, `time-spent` weekly, `wins` weekly
-  at the end of the week, `give-me-feedback` monthly. The unnamed inbox
-  skill gets no task, because it has no name yet.
+  at the end of the week, `give-me-feedback` monthly. `inbox` gets no task
+  because it runs on demand.
 
 Offer to run `good-morning` if it is installed, so the last thing that
 happens is it working. If nothing can run at the end, say so plainly. That
@@ -188,4 +188,4 @@ session will volunteer them:
 - **This skill cannot see their scheduled tasks.** They can. It hands over
   the text and they do the pasting.
 
-Version: setup 0.3.3, 2026-08-26.
+Version: setup 0.3.4, 2026-08-27.

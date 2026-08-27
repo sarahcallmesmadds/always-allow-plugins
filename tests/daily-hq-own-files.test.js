@@ -151,9 +151,8 @@ check('without people.md and sources.md the id checks fall back to form only, sa
 });
 
 check('the s- form of a source id is still enforced with sources.md absent', () => {
-  // Round 13: the fixture case runs with sources.md present, so this
-  // reproduces the actual round 12 condition and would catch the check
-  // being quietly moved behind the sources.md lookup.
+  // The main fixture has sources.md present; this isolates the fallback and
+  // catches the form check being moved behind the sources.md lookup.
   const dir = assemble(null);
   fs.unlinkSync(path.join(dir, 'sources.md'));
   const file = path.join(dir, 'day-snapshot.md');
@@ -169,8 +168,8 @@ check('the s- form of a source id is still enforced with sources.md absent', () 
 });
 
 check('a known header scalar written as a dashed list is reported, not a crash', () => {
-  // Round 13: a dashed-list run: made realRunId throw. The structured
-  // report, with its summary first, is the proof the verifier survived.
+  // A dashed-list run value once made realRunId throw. The structured report,
+  // with its summary first, proves the verifier survives malformed input.
   const dir = assemble(null);
   const file = path.join(dir, 'day-snapshot.md');
   fs.writeFileSync(file, fs.readFileSync(file, 'utf8')

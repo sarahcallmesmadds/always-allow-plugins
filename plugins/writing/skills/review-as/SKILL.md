@@ -96,4 +96,4 @@ failure the shared files are designed against.
   pushback is the pushback.
 - Edit the work. It reports; the user decides what moves.
 
-Version: writing 0.1.1, 2026-08-26.
+Version: writing 0.1.2, 2026-08-27.

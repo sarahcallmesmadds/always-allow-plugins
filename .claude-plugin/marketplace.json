@@ -12,7 +12,7 @@
       "name": "setup",
       "source": "./plugins/setup",
       "description": "Runs once. Gets you from \"I installed this\" to \"it knows who I am, and something runs tomorrow morning without me.\" Finds what it can, asks only what it cannot, shows you the whole suggestion, and writes the files every other skill reads. Its check skill tells you at any time which skills can run and which are blocked by which file.",
-      "version": "0.3.3",
+      "version": "0.3.4",
       "author": {
         "name": "Sarah Madden"
       },
@@ -28,7 +28,7 @@
       "name": "writing",
       "source": "./plugins/writing",
       "description": "Four skills for work that already exists: put your voice back into generated text, catch the habits that mean nobody edited it, read a draft as the specific person who will push back, and reorder an answer so the reader knows what to do. Nothing here writes from scratch, sends, or publishes.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": {
         "name": "Sarah Madden"
       },
@@ -62,7 +62,7 @@
       "name": "daily-hq",
       "source": "./plugins/daily-hq",
       "description": "The day, run for you. A morning brief that ranks today against what changed and caps itself at seven items, a catch-up for when you were away that leads with what still needs you, the questions nobody ever answered, your mail and chat sorted by what needs you without touching anything, and a handover draft for before you go away. Needs the files setup writes and at least one configured source; every run names what it read, what it could not check, and the dates it covered. Nothing here sends anything, and nothing writes except the plugin's own snapshot, suppression and handover-pool files in your project folder.",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "author": {
         "name": "Sarah Madden"
       },

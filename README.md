@@ -11,15 +11,15 @@ Two rules govern every skill here:
   a schedule or something that already happens, usually the calendar. Invoking
   by hand is the fallback, not the design.
 
-## What is here so far
+## Available plugins
 
-| Plugin | Skills | State |
-|---|---|---|
-| `setup` | `install`, `check` | Built. The verifier is fixture-tested; three review rounds answered |
-| `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` | Built. Four review rounds, the last one eight live executions |
-| `growth` | `time-spent`, `prioritize`, `wins`, `give-me-feedback` | Built against the amended contract after its Codex round; not yet live-tested |
-| `learning` | `teach-me`, `best-in-class`, `a-better-way` | Built and field-tested 2026-08-26: five scripted tests in the desktop app, five passes |
-| `daily-hq` | `good-morning`, `catch-me-up`, `loose-ends`, `inbox`, `going-away` | Built against the contract and the plan's eight review rounds; working files fixture-tested; not yet live-tested, and its three launch diaries have not run |
+| Plugin | Skills |
+|---|---|
+| `setup` | `install`, `check` |
+| `writing` | `sound-like-me`, `slop-check`, `review-as`, `say-it-simply` |
+| `growth` | `time-spent`, `prioritize`, `wins`, `give-me-feedback` |
+| `learning` | `teach-me`, `best-in-class`, `a-better-way` |
+| `daily-hq` | `good-morning`, `catch-me-up`, `loose-ends`, `inbox`, `going-away` |
 
 One more plugin is planned (`meetings`) and one (`decisions`) is
 parked; their plans live outside this repo until they are built.

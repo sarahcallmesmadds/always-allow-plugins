@@ -81,8 +81,7 @@ check('the four resolution states are in the engine and both brief fallbacks', (
 });
 
 check('the precedence order is stated identically in the engine and both fallbacks', () => {
-  // Round 9 found a fallback stating the reverse order while this suite
-  // only counted state tokens; the exact phrase is pinned instead.
+  // Token presence alone does not protect ordering, so pin the exact phrase.
   const phrase = '`closed-by-you`, then\n`answered`, then `open`';
   const oneLine = phrase.replace('\n', ' ');
   for (const [where, text] of [['engine.md', engine],
@@ -108,8 +107,7 @@ check('own-files.md and verify-own.js name the same files, headers and required 
       .filter((k) => k !== 'id');
     assert.deepStrictEqual(documented.sort(), [...rules.required].sort(),
       `${name}: own-files.md documents [${documented}] but the script requires [${rules.required}]`);
-    // The header line too: round 10 found the window fields protected in
-    // one direction only.
+    // Check the header in both directions so neither side can drift alone.
     const headerLine = section.split('\n\n').find((b) => b.includes('**Header:**'));
     assert.ok(headerLine, `${name}: no "Header" line in own-files.md`);
     const documentedHeader = (headerLine.match(/`([a-z][a-z -]*)`/g) || [])

@@ -29,12 +29,9 @@ function check(what, fn) {
   }
 }
 
-// The plans set these budgets (setup plan revision 9; writing plan revision
-// 1, where the two shipped reference skills "should not grow" past their
-// measured 156 and 136; growth plan revision 2, under 200 each). The two
-// measured writing budgets are widened by exactly the two lines of the
-// version stamp every skill carries since 2026-08-26; the no-prose-growth
-// intent stands.
+// These budgets keep each skill compact enough to load and follow reliably.
+// The shorter writing references have tighter measured ceilings; setup and the
+// multi-stage skills have more room for their execution contracts.
 const BUDGETS = [
   ['setup', 'install', 250],
   ['setup', 'check', 150],
@@ -49,8 +46,8 @@ const BUDGETS = [
   ['learning', 'teach-me', 200],
   ['learning', 'best-in-class', 200],
   ['learning', 'a-better-way', 200],
-  // The daily-hq plan set no budgets; the two engine briefs and the
-  // two-step handover get install's 250, the two lists 200.
+  // The two engine briefs and two-step handover get 250 lines; the two lists
+  // get 200.
   ['daily-hq', 'good-morning', 250],
   ['daily-hq', 'catch-me-up', 250],
   ['daily-hq', 'going-away', 250],
