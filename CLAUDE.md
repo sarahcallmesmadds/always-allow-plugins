@@ -16,14 +16,11 @@ SaaS process).
   No Notion, no database, no account. The default has to work for someone who
   has nothing. The nine shared files are markdown, machine-facing, and governed
   by the contract; `teach-me`'s brief is a Word document, the one deliberate
-  human-facing exception, ruled by Sarah on 2026-08-26 after the first field
-  test showed a markdown brief is the wrong object for this marketplace's user.
-- **The file contract lives at
-  `plugins/setup/skills/install/references/file-schemas.md`.** It was copied
-  verbatim from `~/.planning/SCHEMAS-always-allow-shared-files.md` on
-  2026-08-25. If the two ever disagree, say so rather than silently preferring
-  either. Skills read and write those files by that contract and nothing
-  looser.
+  human-facing exception, chosen after field testing showed a markdown brief is
+  the wrong object for this marketplace's user.
+- **The canonical file contract lives at
+  `plugins/setup/skills/install/references/file-schemas.md`.** Skills read and
+  write those files by that contract and nothing looser.
 - **The marketplace is best-effort in Cowork and enforceable only in Claude
   Code.** Nothing in Cowork can prove a skill opened a file, a skill there
   cannot create a project or a scheduled task, nothing fires on a calendar
@@ -34,7 +31,7 @@ SaaS process).
   nothing keeps them in sync.
 - **Plans for unbuilt plugins live in `~/.planning/`, not in this repo.** The
   plan documents are private; this repo is written as if public.
-- **Fixtures use fictional people only.** Nothing from Sarah's real files,
-  clients, or contacts goes into a fixture.
+- **Fixtures use fictional people only.** Nothing from real files, clients, or
+  contacts goes into a fixture.
 - **Tests run with `node tests/run-all.js`.** A change to a script lands with
   the suite green, and a defect fixed gets a check that would have caught it.

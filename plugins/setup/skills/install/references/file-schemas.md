@@ -1,24 +1,8 @@
 # The shared files
 
-Copied from `~/.planning/SCHEMAS-always-allow-shared-files.md` on 2026-08-25,
-when the first skill was built against it, with build-time corrections two
-review rounds caught: the priorities, personas and sources examples and
-required-field lists now carry the per-entry `last confirmed` the global rule
-already required, the window form names its singular, the voice example
-carries the instruction line the rules already required, and the
-no-duplicate-keys rule is stated rather than implied. Amended again
-2026-08-25 after a five-persona review of the writing plugin: the `Never`
-exemptions now cover numbers, dates and amounts; `personas.md` carries a
-setup-written privacy line, because the file is a candid read of named
-colleagues; and `person:` resolution is verified by `setup` and `check`,
-never judged by consumers that do not read `people.md`. Amended a third
-time 2026-08-25 when `growth` was scoped against this document: the three
-record files gain their own section and `wins.md` its entry schema, because
-the shipped `setup` was already creating them with no contract behind them;
-the consumer table now carries the four growth skills; the work-calendar
-example lists `time-spent`; and `w-` joins the id prefixes. This copy is
-what the installed plugin reads. If the two ever disagree beyond those
-listed changes, say so rather than silently preferring either.
+This file is the canonical contract for the nine shared markdown files. It
+defines their recognition rules, schemas, examples, validation behavior and
+consumer responsibilities. The installed plugin reads this copy directly.
 
 `setup` writes these. Other plugins read them.
 
@@ -143,14 +127,14 @@ used to carry.
 schema: 1
 last confirmed: 2026-08-24
 
-name: Sarah Madden
-role: Head of Revenue Operations
-company: Acme
+name: Jordan Lee
+role: Operations Lead
+company: Example Company
 timezone: America/New_York
 working hours: 09:00-18:00 Mon,Tue,Wed,Thu,Fri
 my handles:
-  - email:sarah@acme.com
-  - slack:acme.slack.com:U07L4GTGUAF
+  - email:jordan@example.test
+  - slack:workspace.example.test:U012EXAMPLE
 
 ## What I do
 
@@ -165,8 +149,7 @@ The answer to the one question setup asks that nothing can find.
 
 - **`my handles` is how a skill knows which participant is you**, typed the
   same way as `people.md` handles. Without it, "what needs you" cannot tell a
-  thread that mentions you from one that mentions anybody. Found by itemising
-  the prior art, which carried the person's own Slack id hardcoded.
+  thread that mentions you from one that mentions anybody.
 
 - **`timezone` is an IANA name.** A consumer that cannot recognise it reports
   "timezone unrecognised, using UTC" and continues. Reported, never silent.
@@ -400,7 +383,7 @@ last confirmed: 2026-08-24
 ## Work calendar
 id: s-work-calendar
 kind: calendar
-account: sarah@acme.com
+account: jordan@example.test
 required for: [good-morning, catch-me-up, prep-me, time-spent]
 look back: 0 days
 look ahead: 1 day
@@ -411,7 +394,7 @@ last confirmed: 2026-08-24
 ## Work mail
 id: s-work-mail
 kind: mail
-account: sarah@acme.com
+account: jordan@example.test
 required for: [good-morning, inbox]
 look back: 7 days
 read: inbox, sent
@@ -421,12 +404,12 @@ last confirmed: 2026-08-24
 ## Team chat
 id: s-team-chat
 kind: chat
-account: acme.slack.com
+account: workspace.example.test
 required for: []
 look back: 2 days
 read: direct messages, mentions
 skip: channels I am only lurking in
-except: ignore the deal rows Sarah owns for admin reasons
+except: ignore the reporting-only deal rows I own for admin reasons
 last confirmed: 2026-08-24
 ```
 
@@ -449,10 +432,9 @@ last confirmed: 2026-08-24
   today's 2pm meeting. Anything else in these fields is malformed.
 - **`kind` is `calendar`, `mail`, `chat` or `notes`. Anything else is
   malformed**, never ignored, because `kind: email` is a typo that would
-  silently drop a required source. `notes` is a meeting-notes tool such as
-  Granola, added because the prior art reads one every morning.
-- **A CRM and a project tracker are not expressible in v1**, and the prior art
-  reads both. That is a stated loss, not an oversight: a generalised
+  silently drop a required source. `notes` is a meeting-notes tool.
+- **A CRM and a project tracker are not expressible in v1.** That is a stated
+  loss, not an oversight: a generalised
   `good-morning` starts without pipeline movement and sprint status, and adding
   those kinds is a schema version 2 question.
 - **Configuration failures are reported before reading, outside the status
@@ -598,8 +580,8 @@ version said "anything producing prose", which no builder could enumerate.
 
 ## How `setup` writes them
 
-- **True atomic replacement of six files does not exist here**, and an earlier
-  version promised it anyway. What `setup` actually does: writes the full new
+- **True atomic replacement of nine files does not exist here.** What `setup`
+  actually does: writes the full new
   set aside, verifies every file and cross-reference, then replaces the live
   files one at a time and re-verifies the live set. **A failure mid-replacement
   is reported naming which files are new and which are old**, and the verified

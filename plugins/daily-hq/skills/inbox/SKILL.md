@@ -8,8 +8,7 @@ description: Sorts mail and chat by what needs you. Three buckets, needs-attenti
 Your mail and chat sorted by whether they need you, with the reason on
 every line. The output is a sorted read, never an action: this skill
 holds a hard written rule that **it changes no state anywhere: no read
-marks, no archive, no labels**, because its prior art did all three and
-a sorter that acts is a different tool.
+marks, no archive, no labels**. A sorter that acts is a different tool.
 
 The shared machine's reading rules are `../../references/engine.md`; the
 shared-file formats are the contract at
@@ -106,4 +105,4 @@ attention lines each naming their reason, the three counts summing to
 the total, and no state changed anywhere: no read marks, no archive, no
 labels, nothing drafted, nothing sent.
 
-Version: daily-hq 0.1.6, 2026-08-26.
+Version: daily-hq 0.1.7, 2026-08-27.

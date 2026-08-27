@@ -32,7 +32,7 @@ header fields, then its entries, and its **last non-blank line is
 - **`items:`** is the number of entries in the file, exactly.
 - A file whose marker is missing, whose marker does not match `run:`, or
   whose `items:` does not match the entry count **failed its write**. The
-  plan's rule for what a reader then does is per file, below; the common
+  recovery rule for what a reader then does is per file, below; the common
   ground is that it is said aloud, never silently repaired, and the next
   writer reports the failed state before replacing the file.
 - **A failed write is reported by the run that made it**, in that run's own

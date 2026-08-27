@@ -1,19 +1,19 @@
 {
   "setup": {
-    "version": "0.3.3",
-    "hash": "0f12e805388cd62990a241a8fbfb9e4c6ab6b5da20dcd361b0c217f05844486f"
+    "version": "0.3.4",
+    "hash": "f3142be545053bac9830f7db7cd2923bc29187550bc6cd52b6e9355d113d86a4"
   },
   "writing": {
-    "version": "0.1.1",
-    "hash": "fc0073f0e1d2c72299a24a09018306ee56dd85c0e513b269d0c663cf5de4ad57"
+    "version": "0.1.2",
+    "hash": "7da919aa767a6cd16ae1fbbfa2d8742517593379e298a35db27b36c511acbe85"
   },
   "growth": {
     "version": "0.1.1",
     "hash": "3981f1f7a023fed9a8af99d101af0cfbaee2e20156d6763bc5e28a0b2138be7e"
   },
   "daily-hq": {
-    "version": "0.1.6",
-    "hash": "c0832ec3a5f1bc49e96faa7185264a5d9cab512048cf4584e4b5591d546cea04"
+    "version": "0.1.7",
+    "hash": "cdf7a07a251204f5754705a54cf3bede4bb617434c2b71cef3afc9981473ca7a"
   },
   "learning": {
     "version": "0.2.0",

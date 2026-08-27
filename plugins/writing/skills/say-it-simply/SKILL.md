@@ -104,4 +104,4 @@ advice to rerun setup over a guide that exists.
 - Use a shared file silently: the contract's read-time checks apply, and
   anything skipped is named in the notice slot.
 
-Version: writing 0.1.1, 2026-08-26.
+Version: writing 0.1.2, 2026-08-27.

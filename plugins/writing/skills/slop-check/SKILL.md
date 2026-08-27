@@ -85,9 +85,9 @@ change something), end the report with one question: "is this a plan or
 proposal? If yes I'll also check three things plans need." On a yes, add:
 options with no recommendation; no owner and no date; and no cut line,
 nothing saying what it is not doing. That last one is the most useful
-question to ask of any proposal. The author answers what the document is;
-deciding it in code was wrong in both directions for six review rounds of
-the sibling tool. Text without plan furniture gets no question.
+question to ask of any proposal. The author answers what the document is; a
+classifier cannot reliably settle that from the text alone. Text without plan
+furniture gets no question.
 
 ## How to report
 
@@ -124,4 +124,4 @@ the report body included. Plenty of people write this way and plenty of
 generated text does not. And it cannot stop anyone shipping anything; it
 reports, and the sending stays theirs.
 
-Version: writing 0.1.1, 2026-08-26.
+Version: writing 0.1.2, 2026-08-27.
